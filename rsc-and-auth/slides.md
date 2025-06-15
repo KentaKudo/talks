@@ -293,7 +293,7 @@ I'm not going to cover how to implement login form and handle login requests.
 - **Cookie-based** - All data in secure HTTP-only cookie
 - **DB-based** - Session in DB, client gets session ID
 
-Use trusted libraries: **auth.js**, **Auth0** 🛡️
+Use trusted libraries: **auth.js** (fka next-auth), **Auth0** 🛡️
 
 <!--
 Once authenticated, you create a session. It usually stores:
@@ -302,14 +302,32 @@ Once authenticated, you create a session. It usually stores:
 - expiration timestamp
 - maybe other metadata
 
-Two main ways to store session data:
+There are two main ways to store session data:
 - Cookie-based: Store all session info in a secure HTTP-only cookie
 - DB-based: Store session in the DB, and give the client just a session ID
-    - (Even for DB-baed you use cookie to pass session id back to client)
+    - (Even for DB-based you use cookie to pass session id back to client)
 
-DB-based is more secure but adds some complexity. Either way, make sure cookies are secure and HTTP-only to prevent malicious attacks such as CSRF attach.
+DB-based is more secure but adds some complexity.
+Either way, make sure cookies are secure and HTTP-only to prevent malicious attacks such as CSRF attach.
 
 To implement authentication and session management correctly, it's recommended to use trusted libraries like auth.js (formerly next-auth) or Auth0 so you’re not reinventing session handling.
+-->
+
+## Authorisation — How to structure your code
+
+```ts
+const user = await db.user.findUnique({ where: { id } });
+```
+
+<!--
+The last piece is authorisation. And for it let’s talk about how to structure your code.
+
+Of course you can access data directly from server components like this.
+
+But there are a couple of issues doing so:
+- Firstly, it
+- Secondly, ...
+- And finally, ...
 -->
 
 ---
@@ -318,6 +336,8 @@ To implement authentication and session management correctly, it's recommended t
 
 **Data Access Layer** - Next.js team recommendation
 
+![laying](/layering.png)
+
 ```ts
 // ❌ Don't do this in server components
 const user = await db.user.findUnique({ where: { id } });
@@ -325,6 +345,10 @@ const user = await db.user.findUnique({ where: { id } });
 // ✅ Do this instead
 const user = await getUser();
 ```
+
+<!--
+The Next.js team recommends creating a layer between server components and data that handles data access calling it Data Access Layer (DAL).
+-->
 
 ---
 
