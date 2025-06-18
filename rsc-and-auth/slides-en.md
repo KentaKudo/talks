@@ -4,7 +4,7 @@ theme: default
 class: invert
 paginate: true
 backgroundColor: #1a1a1a
-color: #ffffff
+color: #f2f2f2
 ---
 
 # React Server Components & Auth
@@ -43,12 +43,11 @@ I joined this meetup last time, but this is my first time speaking—nice to off
 2. **When & Where** should auth happen?
 3. **How** to implement it in practice?
 
-Let's jump in! 🚀
-
 <!--
 Today I’ll be talking about auth in the context of React Server Components (RSC).
 
-When I started learning RSC, I realised I didn’t fully understand how authentication and authorisation should work, especially because of my lack of experience in server-side rendering. So I dug in—and I’ll walk you through what I learned.
+When I started learning RSC, I realised I didn’t fully understand how authentication and authorisation should work,
+especially because of my lack of experience in server-side rendering. So I dug in—and I’ll walk you through what I learned.
 
 Here’s a quick agenda:
 - First: Why do we even need to rethink auth for RSC?
@@ -75,13 +74,13 @@ But with RSC, things get a little trickier.
 **Authorisation (authZ)** = What can they do?
 **Access Control** = authN + authZ
 
-We all know this... but RSC changes the game.
-
 <!--
 Just a quick refresher:
 - Authentication (authN) = confirming who the user is
 - Authorization (authZ) = checking what they’re allowed to do
 And these two combined is sometimes called access control.
+
+Now let's check out how RSC changes the game.
 -->
 
 ---
@@ -122,7 +121,7 @@ So the next question is: when & where should auth happen?
 
 In the RSC world:
 
-- **Read access** → Inside server components (and server actions)
+- **Read access** → Inside server components
 - **Write access** → Inside server actions
 
 Both cases need authorization! 🔒
@@ -185,7 +184,7 @@ Treat them like mini-APIs - auth required here too
 
 ### 3. Optional: Middleware (Next.js)
 
-Route-level access checks, but keep it lightweight!
+Route-level access checks
 
 <!--
 So the next question is where should it happen?
@@ -268,8 +267,6 @@ The last topic is how it practically looks like in code.
 2. **Session Management** - Track logged-in users
 3. **Authorisation** - Check resource access
 
-Let's focus on the RSC-specific parts! 📋
-
 <!--
 There are three parts:
 - Authentication: Confirm user identity (e.g. login form + password)
@@ -296,7 +293,7 @@ I'm not going to cover how to implement login form and handle login requests.
 Use trusted libraries: **auth.js** (fka next-auth), **Auth0** 🛡️
 
 <!--
-Once authenticated, you create a session. It usually stores:
+Once authenticated, you create a session. It usually contains:
 - user ID
 - roles or permissions
 - expiration timestamp
@@ -319,6 +316,10 @@ To implement authentication and session management correctly, it's recommended t
 const user = await db.user.findUnique({ where: { id } });
 ```
 
+❌ **Security risk** - Easy to forget auth checks
+❌ **Inconsistent patterns** - Auth logic scattered everywhere
+❌ **Hard to maintain** - Security mixed with UI code
+
 <!--
 The last piece is authorisation. And for it let’s talk about how to structure your code.
 
@@ -336,15 +337,7 @@ But there are a couple of issues doing so:
 
 **Data Access Layer** - Next.js team recommendation
 
-![laying](/layering.png)
-
-```ts
-// ❌ Don't do this in server components
-const user = await db.user.findUnique({ where: { id } });
-
-// ✅ Do this instead
-const user = await getUser();
-```
+![laying](./layering.png)
 
 <!--
 The Next.js team recommends creating a layer between server components and data that handles data access calling it Data Access Layer (DAL).
@@ -359,30 +352,61 @@ The Next.js team recommends creating a layer between server components and data 
 ✅ Keep server components clean
 ✅ Consistent security patterns
 
+<!--
+By adding layer structure and having layer that is responsible for data access:
+- you can isolate where auth checks and data access happen,
+- it’s easier to audit and reuse, and
+- it keeps your server components clean
+-->
+
 ---
 
 ## DAL Example
 
 ```ts
+// some-server-component.tsx
+import { getUser } from "dal.ts";
+const SomeServerComponent = () => {
+  const user = await getUser();
+  ...
+}
+```
+
+```ts
 // dal.ts
 export const getUser = async () => {
   const session = await verifySession();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
-
+  if (!session) throw new Error("Unauthorized");
   const user = await db.user.findUnique({
     where: { id: session.userId },
   });
-
-  // Return safe DTO
-  return {
-    id: user.publicId,
-    name: user.name,
-    email: user.email,
-  };
+  return { id: user.publicId };
 };
 ```
+
+<!--
+Here's an example of DAL pattern:
+- In your server component, don’t access the DB directly
+- Instead, call a method like getUser() from dal.ts
+- Inside that DAL method, verify the session first
+- Once session is verified, fetch the data and return it back to the component
+
+By structuring data access like this, you can make sure no matter where user data is retrieved it's authorised.
+-->
+
+---
+
+## Tips for better DAL
+
+<!--
+There are few tricks to make DAL better.
+
+Sometimes you want to access different types of resource in a single rendering.
+For example retrieving user data and the documents data the user created.
+Because verifySession() is called inside the DAL methods, it's called every time DAL methods are called, and it can be expensive depending on your auth implementation.
+
+How should we work it around?
+-->
 
 ---
 
@@ -400,16 +424,22 @@ export const getUser = cache(async () => {
   const session = await verifySession();
   // fetch data...
 });
-
 export const getDocuments = cache(async () => {
   const session = await verifySession(); // Only runs once per request!
   // fetch data...
 });
 ```
 
-- Caches result during single render cycle
+- Caches result during single render cycle → No extra session checks
 - Per-request only → safe from data leaks
-- No extra session checks
+
+<!--
+To fix that, wrap your DAL methods with React’s cache():
+
+This caches the result during a single render cycle—no extra session checks. It’s per-request, so it’s safe.
+
+Another concern is what if DAL files are imported in client component accidentally?
+-->
 
 ---
 
@@ -421,7 +451,15 @@ import "server-only";
 ```
 
 **Throws build error** if imported in client component
-Nice safeguard! 🛡️
+
+<!--
+We don't want DAL files to be sent to client browser.
+
+React team provides a nice npm package called 'server-only'.
+Once it's imported, it throws a build error if that file itself is imported from a client component.
+
+So that's a nice safeguard.
+-->
 
 ---
 
@@ -439,89 +477,53 @@ return {
 };
 ```
 
-Just like you would from an API! 📡
+→ Just like you would from an API 📡
+
+<!--
+Also, to avoid accidentally leaking sensitive data to the client:
+- We can define a dedicated data model that can be sent to client
+- It's called DTOs (Data Transfer Objects)
+- It's instantiated in the DAL and sent back to the caller to make sure
+- To return only safe, structured data—just like you would from an API
+-->
 
 ---
 
-## What Happens When Auth Fails?
+# Wrap-up
 
-RSC security risks are different:
-
-- Traditional SPA: Unauthorized API calls fail
-- **RSC**: Mistakes can leak data during server-side rendering
-
-**If you forget auth in server component** → sensitive data sent to client bundle! 💥
-
----
-
-# Key Takeaways
+<!--
+This is the end of my talk today
+So let me wrap it up
+-->
 
 ---
 
 ## Main Points to Remember
 
-1. **RSC changes where auth happens, not why it matters**
-
-   - Boundary blurred, but data still needs protection
-
-2. **Always authorize at point of data access**
-   - Server components reading data ✓
-   - Server actions updating data ✓
+- RSC changes the structure—not the need—for auth
+- Authorize in server components, actions, route handlers
+- Middleware is optional, use carefully
+- DAL helps manage complexity
+- Use trusted libraries for session handling
 
 ---
 
-## Main Points (continued)
+## Thanks for listening!
 
-3. **Use a Data Access Layer**
+### References:
 
-   - Centralized auth logic
-   - Clean components
-   - Easy to audit
-   - React's `cache()` prevents redundant checks
+- **[Next.js documentation on authentication](https://nextjs.org/docs/app/guides/authentication)**
+  - highly recommend diving deeper there
+- **[How to Think About Security in Next.js](https://nextjs.org/blog/security-nextjs-server-components-actions)**
 
-4. **Don't roll your own auth**
-   - Use Auth.js or Auth0
-   - They've solved the hard problems
-
----
-
-# What's Next?
-
----
-
-## Getting Started with RSC
-
-**Recommendations**:
-
-- Start with **simple DAL pattern** in your next project
-- Read **Next.js auth documentation** (really comprehensive!)
-- Experiment with **middleware** for route-level protection
-
-**The mental shift takes time**, but once it clicks, it makes sense.
-You're putting security checks exactly where your data lives.
-
----
-
-# Outro
-
----
-
-## Wrapping Up
-
+<!--
 That's all from me today!
 
 I hope this helps you think about auth in RSC projects—and maybe saves you from some of the confusion I had when I first started.
 
-**Heavily inspired by Next.js documentation on authentication** - highly recommend diving deeper there.
-
----
-
-## Questions?
+This talk is heavily inspired by Next.js documentation on authentication. So please check it out if you haven't.
 
 Thanks for listening!
 
 I'd love to take any questions you might have.
-
----
-
-## Thank You! 🙏
+-->

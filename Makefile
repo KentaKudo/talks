@@ -26,18 +26,18 @@ run-pdf:
 		--rm --init \
 		-v $$(pwd)/$(DIR):/home/marp/app/ \
 		-e LANG=$(LANG) \
-		marp-libreoffice $(FILE) --pdf
+		marp-libreoffice $(FILE) --pdf --allow-local-files
 
 run-pptx:
 	docker run \
 		--rm --init \
 		-v $$(pwd)/$(DIR):/home/marp/app/ \
 		-e LANG=$(LANG) \
-		marp-libreoffice $(FILE) --pptx
+		marp-libreoffice $(FILE) --pptx --allow-local-files
 
 run-editable-pptx:
 	docker run \
 		--rm --init \
 		-v $$(pwd)/$(DIR):/home/marp/app/ \
 		-e LANG=$(LANG) \
-		marp-libreoffice $(FILE) --pptx --pptx-editable
+		marp-libreoffice $(FILE) --pptx --pptx-editable --allow-local-files
