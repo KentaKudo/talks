@@ -40,6 +40,10 @@ Let me use this opportunity to announce something......
 
 # 📚 Book Announcement
 
+<div style="display: flex; align-items: center; gap: 40px;">
+
+<div style="flex: 1;">
+
 ## "世界で働くエンジニア"
 
 - 10 Japanese software engineers working abroad
@@ -48,6 +52,18 @@ Let me use this opportunity to announce something......
 - Spin-off from **London Tech Talk** podcast
 
 _(Japanese only for now!)_
+
+![QR Code](adobe-express-qr-code.png)
+
+</div>
+
+<div style="flex: 0 0 300px;">
+
+![Book Cover](LondonTechTalk_10co-authors.webp)
+
+</div>
+
+</div>
 
 <!--
 
