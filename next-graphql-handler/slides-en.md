@@ -422,8 +422,6 @@ but of course you can choose whichever style you like.
 
 ✅ **Backend-less Architecture**: Next.js + GraphQL + Route Handlers
 
-🔗 **Template**: https://github.com/KentaKudo/next-graphql-handler
-
 <!--
 
 # Recap: GraphQL can still be an option
@@ -433,7 +431,6 @@ Let me recap the talk.
 - Even after RSC era, I believe GraphQL stays great option for BFF interface
 - The powerfulness of GraphQL comes from the combination of its flexible query and easy to understand mutation interface
 - Backend-less Architecture: NextJS + GraphQL powered by Route Handlers
-    - Template: https://github.com/KentaKudo/next-graphql-handler
 
 -->
 
@@ -449,10 +446,14 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 https://github.com/KentaKudo/next-graphql-handler
 
-### ⚠️ With great power comes great responsibility
+### 📖 Recommended Reading: Black Hat GraphQL
+
+https://nostarch.com/black-hat-graphql
+
+⚠️ **With great power comes great responsibility**
 
 - Be careful when implementing GraphQL servers
-- Highly recommended reading for server-side implementation
+- Highly recommended for server-side implementation
 
 ---
 
@@ -464,7 +465,7 @@ https://github.com/KentaKudo/next-graphql-handler
 
 # References
 
-- The talk mostly came out of my recent experience and realisation but i recently read this book about GraphQL:
+- The talk mostly came out of my recent experience and realisation but i recently read this book about GraphQL: "Black Hat GraphQL"
 - The power comes with responsibility: there are few things you need to be careful when implementing GraphQL server.
 - Highly recommended if you have chance to implement GraphQL server side
 
