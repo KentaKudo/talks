@@ -53,13 +53,13 @@ Let me use this opportunity to announce something......
 
 _(Japanese only for now!)_
 
-![QR Code](adobe-express-qr-code.png)
+<img src="adobe-express-qr-code.png" width="150" />
 
 </div>
 
-<div style="flex: 0 0 300px;">
+<div style="flex: 0 0 auto;">
 
-![Book Cover](LondonTechTalk_10co-authors.webp)
+<img src="LondonTechTalk_10co-authors.webp" width="250" />
 
 </div>
 
