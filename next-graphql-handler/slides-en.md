@@ -426,7 +426,7 @@ const helloQuery = graphql(`
 `);
 
 export default async function Home() {
-  const result = await getClient().query(helloQuery, {});
+  const result = await getClient().query(helloQuery, {}).toPromise();
   if (result.error) {
     return <div>Error: {result.error.message}</div>;
   }
@@ -729,5 +729,17 @@ For example:
 Highly recommended if you have chance to implement GraphQL server side.
 
 Thank you for listening!
+
+-->
+
+---
+
+<!--
+
+- “How do you handle authn/authz with Yoga in route handlers?”
+- “How do you avoid N+1 in resolvers?”
+- “What’s your approach to caching with RSC + GraphQL?”
+- “Edge runtime compatibility?”
+- “Why urql vs Apollo / gql.tada / graphql-request?”
 
 -->
