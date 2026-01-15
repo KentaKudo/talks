@@ -43,9 +43,8 @@ Let me use this opportunity to announce something......
 <style scoped>
 .columns {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 40px;
-  align-items: center;
 }
 </style>
 
@@ -148,17 +147,15 @@ Let's get started!
 
 ---
 
-# 1. Introduction
+# 1. Introduction — Do we still need GraphQL?
 
-## Do we still need GraphQL?
-
-### The React Server Component Era
+## The React Server Component Era
 
 - **RSC** enables server-side data fetching per component
 - Prior to RSC: fetch all data in a single query
 - Common argument: _"GraphQL is less necessary for overfetch/underfetch"_
 
-### 💡 My Realization
+## 💡 My Realization
 
 Recently wrote REST API for the first time in a while...
 (PATCH endpoint became a mini-RPC with 8 optional fields + doc spelunking)
@@ -186,11 +183,9 @@ GraphQL still provides value through its typed, discoverable contract and excell
 
 ---
 
-# 2. Rediscover GraphQL
+# 2. Rediscover GraphQL — Straightforward Queries
 
-## Straightforward Queries
-
-### Graph Structure
+## Graph Structure
 
 ```graphql
 query GetUserWithPosts($id: ID!) {
@@ -225,11 +220,9 @@ Straightforwardness of Queries:
 
 ---
 
-# 2. Rediscover GraphQL
+# 2. Rediscover GraphQL — Ergonomic Mutations
 
-## Ergonomic Mutations
-
-### REST API
+## REST API
 
 ```
 PATCH /posts/:id
@@ -237,7 +230,7 @@ PATCH /posts/:id
 
 Complex arguments, requires scrutinizing API docs
 
-### GraphQL
+## GraphQL
 
 ```graphql
 mutation UpdatePostTitle($id: ID!, $title: String!) {
@@ -272,26 +265,26 @@ This combination of interface: graph structure for query and RPC style for mutat
 
 ---
 
-# 3. Co-Located Backend Architecture
+# 3. Co-Located Backend Architecture — with Route Handler
 
-## with Route Handler
-
-### Next.js Route Handlers
+## Next.js Route Handlers
 
 - Server-side code accessed like a backend API
 - App Router: **Route Handlers**
 - Pages Router: **API Routes**
 
-### Growing Trend
+## Growing Trend
 
 Building Next.js apps **without a separate backend service** using Route Handlers
 _(Still runs server-side inside Next.js)_
 
-### 🚀 Template Available
+## 🚀 Template Available
 
 GitHub repository template: GraphQL + Route Handlers
 
 https://github.com/KentaKudo/next-graphql-handler
+
+_Note: This template demonstrates the core concepts and is not production-ready yet._
 
 <!--
 
@@ -306,15 +299,15 @@ Note: This still runs server-side inside Next.js - you're just avoiding a separa
 So I wanted to explore the co-located backend architecture that provides GraphQL backend inside the Route Handler.
 I published the result as GitHub repository template here: https://github.com/KentaKudo/next-graphql-handler
 
+Keep in mind: This template is built to demonstrate the idea and architectural pattern. It's not intended to solve real-life production problems yet - you'll need to add proper authentication, authorization, error handling, and other production concerns we'll discuss later.
+
 Let me explain how it works.
 
 -->
 
 ---
 
-# 3. Co-Located Backend Architecture
-
-## Implementation with graphql-yoga
+# 3. Co-Located Backend Architecture — Implementation with graphql-yoga
 
 ```ts
 import { createYoga } from "graphql-yoga";
@@ -326,11 +319,7 @@ const { handleRequest } = createYoga({
   schema,
 });
 
-export {
-  handleRequest as GET,
-  handleRequest as POST,
-  handleRequest as OPTIONS, // For CORS preflight
-};
+export { handleRequest as GET, handleRequest as POST };
 ```
 
 **That's it for a demo!** ✨
@@ -371,21 +360,19 @@ For production, you'll need to add auth/session handling, error masking, rate li
 
 ---
 
-# 3. Co-Located Backend Architecture
+# 3. Co-Located Backend Architecture — Client Side
 
-## Client Side
-
-### Tech Stack
+## Tech Stack
 
 - **graphql-codegen**: Generate TypeScript from GraphQL queries
 - **urql**: GraphQL client library for client components
 - Hit `/api/graphql` endpoint
 
-### RSC + Client Components
+## RSC + Client Components
 
 Server Components can query directly; `urql` lives in client components
 
-### Bonus: Easy Migration
+## Bonus: Easy Migration
 
 Want to spin up a separate server?
 
@@ -539,9 +526,7 @@ const builder = new SchemaBuilder({});
 builder.queryType({
   fields: (t) => ({
     hello: t.string({
-      args: {
-        name: t.arg.string(),
-      },
+      args: { name: t.arg.string() },
       resolve: (parent, { name }) => `hello, ${name || "World"}`,
     }),
   }),
@@ -568,11 +553,9 @@ If you refactor your TypeScript types, the schema automatically updates.
 
 ---
 
-# 5. Production Considerations
+# 5. Production Considerations — GraphQL is Powerful: Protect It
 
-## GraphQL is Powerful: Protect It
-
-### Security & Performance
+## Security & Performance
 
 ⚠️ **Authorization**: Field-level auth (not only route level)
 ⚠️ **N+1 Prevention**: Batching / DataLoader patterns
@@ -581,11 +564,11 @@ If you refactor your TypeScript types, the schema automatically updates.
 ⚠️ **Error Masking**: Don't leak internal errors
 ⚠️ **Rate Limiting**: Protect against abuse
 
-### Recommended: Persisted Queries
+## Recommended: Persisted Queries
 
 Pre-register queries for security & performance
 
-### Caching Strategy
+## Caching Strategy
 
 CDN / Route segment caching vs GraphQL response caching
 
@@ -612,11 +595,9 @@ Think about your caching strategy: CDN caching, Next.js route segment caching, a
 
 ---
 
-# 5. Production Considerations
+# 5. Production Considerations — When GraphQL Still Shines
 
-## When GraphQL Still Shines
-
-### RSC + BFF Pattern
+## RSC + BFF Pattern
 
 RSC enables colocated fetching, but you can still benefit from:
 
@@ -624,7 +605,7 @@ RSC enables colocated fetching, but you can still benefit from:
 ✅ **Multiple clients**: Web, mobile, different teams
 ✅ **Multiple UI surfaces**: Different pages, widgets, micro-frontends
 
-### Bottom Line
+## Bottom Line
 
 RSC changes **where** you fetch, not **what** your interface contract should be
 
@@ -647,11 +628,9 @@ GraphQL still excels at providing a well-defined, typed, discoverable contract b
 
 ---
 
-# 6. Recap
+# 6. Recap — GraphQL is Still a Great Option
 
-## GraphQL is Still a Great Option
-
-### Key Takeaways
+## Key Takeaways
 
 ✅ **RSC era**: GraphQL remains excellent for BFF interface
 
@@ -731,8 +710,6 @@ Highly recommended if you have chance to implement GraphQL server side.
 Thank you for listening!
 
 -->
-
----
 
 <!--
 
