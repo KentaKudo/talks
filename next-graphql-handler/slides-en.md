@@ -14,6 +14,13 @@ React Osaka - Nov 2025
 
 ---
 
+# About Me
+
+- 💼 Freelance Software Engineer
+- 🏢 Previously at Mercari UK
+- 🌍 Lived in the UK for 6 years
+- 🏯 Moved to Kansai last year
+
 <!--
 
 Hi everyone, I'm Kenta.
@@ -30,6 +37,17 @@ Let me use this opportunity to announce something......
 -->
 
 ---
+
+# 📚 Book Announcement
+
+## "世界で働くエンジニア"
+
+- 10 Japanese software engineers working abroad
+- Beta release now, official release end of month
+- Available as epub and pdf (free updates)
+- Spin-off from **London Tech Talk** podcast
+
+_(Japanese only for now!)_
 
 <!--
 
@@ -54,6 +72,14 @@ If you have any questions, please let me know!
 
 ---
 
+# Today's Agenda
+
+1. **Introduction**: Do we still need GraphQL?
+2. **Rediscover GraphQL**: Straightforward queries and granular mutations
+3. **Backend-less Architecture** with Route Handler
+4. **Code-first Approach** with Pothos GraphQL
+5. **Recap**: GraphQL can still be an option
+
 <!--
 
 The title of the talk today is: Revisiting GraphQL in the RSC Era, and a Fully Self-Contained Backend Inside Next.js
@@ -72,6 +98,22 @@ Let's get started!
 
 ---
 
+# 1. Introduction
+
+## Do we still need GraphQL?
+
+### The React Server Component Era
+
+- **RSC** enables server-side data fetching per component
+- Prior to RSC: fetch all data in a single query
+- Common argument: _"GraphQL is no longer needed"_
+
+### 💡 My Realization
+
+Recently wrote REST API for the first time in a while...
+
+**GraphQL benefits go beyond fetching all data at once**
+
 <!--
 
 # 1. Introduction: Do we still need GraphQL?
@@ -87,6 +129,24 @@ I've been using GraphQL as BFF for a while now, and I recently had a chance to d
 -->
 
 ---
+
+# 2. Rediscover GraphQL
+
+## Straightforward Queries
+
+### Graph Structure
+
+```graphql
+user {
+  name
+  posts {
+    title
+    content
+  }
+}
+```
+
+Navigate nodes by tracing relations
 
 <!--
 
@@ -106,6 +166,28 @@ Straightforwardness of Queries:
 
 ---
 
+# 2. Rediscover GraphQL
+
+## Comfortable Mutations
+
+### REST API
+
+```
+PATCH /posts/:id
+```
+
+Complex arguments, requires scrutinizing API docs
+
+### GraphQL
+
+```graphql
+mutation UpdatePostTitle($id: ID!, $title: String!) {
+  updatePostTitle(id: $id, title: $title)
+}
+```
+
+Clear, business logic at the interface level
+
 <!--
 
 # 2. Rediscover GraphQL: straightforward queries and granular mutations
@@ -124,6 +206,24 @@ This combination of interface: graph structure for query and RPC style for mutat
 
 ---
 
+# 3. Backend-less Architecture
+
+## with Route Handler
+
+### Next.js Route Handlers
+
+- Server-side code accessed like a backend API
+- App Router: **Route Handlers**
+- Pages Router: **API Routes**
+
+### Growing Trend
+
+Building Next.js apps without separate backend using Route Handlers
+
+### 🚀 Template Available
+
+GitHub repository template: GraphQL + Route Handlers
+
 <!--
 
 # 3. Backend-less Architecture with Route Handler
@@ -140,6 +240,26 @@ Let me explain how it works.
 -->
 
 ---
+
+# 3. Backend-less Architecture
+
+## Implementation with graphql-yoga
+
+```ts
+const { handleRequest } = createYoga({
+  graphqlEndpoint: "/api/graphql",
+  fetchAPI: { Response },
+  schema,
+});
+
+export {
+  handleRequest as GET,
+  handleRequest as POST,
+  handleRequest as OPTIONS,
+};
+```
+
+**That's it!** ✨
 
 <!--
 
@@ -171,6 +291,23 @@ it's as simple as this.
 
 ---
 
+# 3. Backend-less Architecture
+
+## Client Side
+
+### Tech Stack
+
+- **graphql-codegen**: Generate TypeScript from GraphQL queries
+- **urql**: GraphQL client library
+- Hit `/api/graphql` endpoint
+
+### Bonus: Easy Migration
+
+Want to spin up a separate server?
+
+→ Just hook the Yoga instance into Express, Hono, etc.
+→ Keep React/Next.js-specific code in the binding layer
+
 <!--
 
 # 3. Backend-less Architecture with Route Handler
@@ -185,6 +322,24 @@ Just be careful to contain all the react/nextjs support in this binding.
 -->
 
 ---
+
+# 4. Code-first vs Schema-first
+
+### Code-first
+
+Generate GraphQL schema from codebase
+→ Code is the source of truth
+
+### Schema-first
+
+Write schema, generate resolver skeleton
+→ Schema is the source of truth
+
+### My Preference: Code-first with Pothos
+
+Template uses **Pothos GraphQL** for code-first approach
+
+_(But choose whatever works for you!)_
 
 <!--
 
@@ -204,6 +359,23 @@ but of course you can choose whichever style you like.
 
 ---
 
+# Recap
+
+## GraphQL is Still a Great Option
+
+### Key Takeaways
+
+✅ **RSC era**: GraphQL remains excellent for BFF interface
+
+✅ **Powerful combination**:
+
+- Flexible graph queries
+- Easy-to-understand mutations (RPC-style)
+
+✅ **Backend-less Architecture**: Next.js + GraphQL + Route Handlers
+
+🔗 **Template**: `<url>`
+
 <!--
 
 # Recap: GraphQL can still be an option
@@ -218,6 +390,23 @@ Let me recap the talk.
 -->
 
 ---
+
+# References
+
+### Recommended Reading
+
+📖 Recent GraphQL book (details TBD)
+
+⚠️ **With great power comes great responsibility**
+
+- Be careful when implementing GraphQL servers
+- Highly recommended for server-side implementation
+
+---
+
+# Thank You! 🙏
+
+**Questions?**
 
 <!--
 
