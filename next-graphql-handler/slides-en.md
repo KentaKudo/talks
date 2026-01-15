@@ -108,6 +108,8 @@ section {
 
 **Scan to get your copy!**
 
+https://store.london-tech-talk.com/products/book_engineers_working_abroad
+
 <!--
 
 **[STAY ON THIS SLIDE - Let audiences scan the QR code]**
@@ -268,6 +270,8 @@ Building Next.js apps without separate backend using Route Handlers
 
 GitHub repository template: GraphQL + Route Handlers
 
+https://github.com/KentaKudo/next-graphql-handler
+
 <!--
 
 # 3. Backend-less Architecture with Route Handler
@@ -277,7 +281,7 @@ It's server side code and can be accessed from frontend just like backend API.
 I've seen more and more cases of people adapting the architecture to build NextJS application without server-side using Route Handlers.
 
 So I wanted to explore the backend-less architecture that provides GraphQL backend inside the Route Handler.
-I published the result as GitHub repository template here: <url>
+I published the result as GitHub repository template here: https://github.com/KentaKudo/next-graphql-handler
 
 Let me explain how it works.
 
@@ -418,7 +422,7 @@ but of course you can choose whichever style you like.
 
 ✅ **Backend-less Architecture**: Next.js + GraphQL + Route Handlers
 
-🔗 **Template**: `<url>`
+🔗 **Template**: https://github.com/KentaKudo/next-graphql-handler
 
 <!--
 
@@ -429,7 +433,7 @@ Let me recap the talk.
 - Even after RSC era, I believe GraphQL stays great option for BFF interface
 - The powerfulness of GraphQL comes from the combination of its flexible query and easy to understand mutation interface
 - Backend-less Architecture: NextJS + GraphQL powered by Route Handlers
-    - Template: <url>
+    - Template: https://github.com/KentaKudo/next-graphql-handler
 
 -->
 
@@ -437,14 +441,18 @@ Let me recap the talk.
 
 # References
 
-### Recommended Reading
+### 📚 Book: 世界で働くエンジニア
 
-📖 Recent GraphQL book (details TBD)
+https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
-⚠️ **With great power comes great responsibility**
+### 🚀 Template Repository
+
+https://github.com/KentaKudo/next-graphql-handler
+
+### ⚠️ With great power comes great responsibility
 
 - Be careful when implementing GraphQL servers
-- Highly recommended for server-side implementation
+- Highly recommended reading for server-side implementation
 
 ---
 
