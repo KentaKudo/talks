@@ -40,9 +40,16 @@ Let me use this opportunity to announce something......
 
 # 📚 Book Announcement
 
-<div style="display: flex; align-items: center; gap: 40px;">
+<style scoped>
+.columns {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+}
+</style>
 
-<div style="flex: 1;">
+<div class="columns">
+<div>
 
 ## "世界で働くエンジニア"
 
@@ -56,13 +63,11 @@ _(Japanese only for now!)_
 <img src="adobe-express-qr-code.png" width="150" />
 
 </div>
-
-<div style="flex: 0 0 auto;">
+<div>
 
 <img src="LondonTechTalk_10co-authors.webp" width="250" />
 
 </div>
-
 </div>
 
 <!--
