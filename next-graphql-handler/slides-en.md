@@ -10,7 +10,7 @@ color: #f2f2f2
 # Revisiting GraphQL in the RSC Era, and a Fully Self-Contained Backend Inside Next.js
 
 **Kenta Kudo** - Freelance Software Engineer
-React Osaka - Nov 2025
+React Osaka - Jan 2026
 
 ---
 
@@ -43,8 +43,9 @@ Let me use this opportunity to announce something......
 <style scoped>
 .columns {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
+  align-items: center;
 }
 </style>
 
@@ -60,12 +61,10 @@ Let me use this opportunity to announce something......
 
 _(Japanese only for now!)_
 
-<img src="adobe-express-qr-code.png" width="150" />
-
 </div>
 <div>
 
-<img src="LondonTechTalk_10co-authors.webp" width="250" />
+<img src="LondonTechTalk_10co-authors.webp" width="300" />
 
 </div>
 </div>
@@ -88,6 +87,30 @@ The project is span out from the community of London Tech Talk podcast hosted by
 The podcast is also highly recommended if you're interested in working abroad as a software engineer.
 
 If you have any questions, please let me know!
+
+-->
+
+---
+
+<style scoped>
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+</style>
+
+# Purchase the Book
+
+<img src="adobe-express-qr-code.png" width="400" />
+
+**Scan to get your copy!**
+
+<!--
+
+**[STAY ON THIS SLIDE - Let audiences scan the QR code]**
 
 -->
 
