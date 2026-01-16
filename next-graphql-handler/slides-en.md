@@ -10,7 +10,7 @@ color: #f2f2f2
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
 
 **Kenta Kudo** - Freelance Software Engineer
-React Osaka - Jan 2026
+_React Osaka - Jan 2026_
 
 ---
 
@@ -19,7 +19,7 @@ React Osaka - Jan 2026
 - 💼 Freelance Software Engineer
 - 🏢 Previously at Mercari UK
 - 🌍 Lived in the UK for 6 years
-- 🏯 Moved to Kansai last year
+- 🏯 Moved to Kansai last year — Still very new!
 
 <!--
 
@@ -27,12 +27,12 @@ Hi everyone, I'm Kenta.
 
 Let me quickly introduce myself again to fill in the background:
 
-- I'm a freelance software engineer
+- I'm currently working as a freelance software engineer
 - Previously worked at companies such as Mercari UK
-- Lived in the UK for 6 years
-- I moved to Kansai last year — Still very new!
+- Lived in the UK for 6 years, and
+- I moved to Kansai last year — yeah I'm still very new to this area!
 
-Let me use this opportunity to announce something......
+Before we get technical, let me use this opportunity to announce something...
 
 -->
 
@@ -58,8 +58,6 @@ Let me use this opportunity to announce something......
 - Available as epub and pdf (free updates)
 - Spin-off from **London Tech Talk** podcast
 
-_(Japanese only for now!)_
-
 </div>
 <div>
 
@@ -70,21 +68,17 @@ _(Japanese only for now!)_
 
 <!--
 
-Quick announcement, then we'll get technical.
-
 I co-authored a book titled "世界で働くエンジニア"
 
 It's an omnibus style autobiography made of 10 different Japanese software engineers working abroad.
 The book is currently in beta release and will be officially released at the end of this month.
-You can already purchase from here.
-The book is available both as epub and pdf file and you can get free updates whenever new version is published.
 
-(Sorry only Japanese version is available as of now...!)
+But you can already purchase it, and I'll show you the link to the detail page in the next slide.
+The book is available both as epub and pdf file, and you can get free updates whenever new version is published.
 
-Please have a look if you're interested or introduce to your friends who might be interested.
-Feedback is very welcome.
+Please have a look if you're interested or introduce to your friends who might be interested. Feedback is also very welcome.
 
-The project spun out from the community of London Tech Talk podcast hosted by Ken, who's my colleague at high school who lives in London now.
+The project spun out from the community of London Tech Talk podcast hosted by Ken, who lives in London now.
 The podcast is also highly recommended if you're interested in working abroad as a software engineer.
 
 If you have any questions, please let me know!
@@ -115,6 +109,17 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 **[STAY ON THIS SLIDE - Let audiences scan the QR code]**
 
+And here's the link to the detail page.
+
+I read through the book, and very honestly it's really interesting and inspiring book I'd say. I'd want and get motivated if the book existed before I moved abroad.
+
+You can enjoy ten different life stories about how they ended up working abroad.
+
+Does anyone need more time to take pictures?
+The link is included in the slides I'm going to upload, and also I'm reacheable on the Discord channel.
+
+Ok let's move on to my talk.
+
 -->
 
 ---
@@ -124,9 +129,8 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 1. **Introduction**: Do we still need GraphQL?
 2. **Rediscover GraphQL**: Straightforward queries and granular mutations
 3. **Co-Located Backend Architecture** with Route Handler
-4. **Code-first Approach** with Pothos GraphQL
-5. **Production Considerations**: Using GraphQL safely
-6. **Recap**: GraphQL can still be an option
+4. **Production Considerations**: Using GraphQL safely
+5. **Recap**: GraphQL can still be an option
 
 <!--
 
@@ -134,12 +138,11 @@ The title of the talk today is: Revisiting GraphQL in the RSC Era, and Co-Locate
 
 Here's today's agenda:
 
-- Introduction: Do we still need GraphQL?
-- Rediscover GraphQL: straightforward queries and granular mutations
-- Co-Located Backend Architecture with Route Handler
-- Code-first Approach with Pothos GraphQL
-- Production Considerations: Using GraphQL safely
-- Recap: GraphQL can still be an option
+In the first section I'll cover the background.
+Then I'll talk about what makes GraphQL powerful and why it's still valid after RSC era.
+Then I'll demonstrate having GraphQL process inside NextJS framework allowing us to co-locate backend inside the Next.js project.
+
+Lastly I'll cover some topics around using GraphQL in production environment, and close the talk with recap.
 
 Let's get started!
 
@@ -175,7 +178,7 @@ Background:
 
 I've been using GraphQL as BFF for a while now, and I recently had a chance to design and write REST API for the first time in a while and realised the benefit of GraphQL is not only that I can fetch all the data at once...
 
-For example, I hit a PATCH endpoint that became a mini-RPC with 8 optional fields and had to do serious doc spelunking to understand it.
+For example, I hit a PATCH endpoint that became a mini-RPC with 8 optional fields and had to do serious doc spelunking to understand it. <= ちょっと変、自分で実装してるんだからdocをsplunkingする必要はないはず
 
 GraphQL still provides value through its typed, discoverable contract and excellent ergonomics.
 
@@ -256,7 +259,7 @@ Ergonomics of Mutations:
 - In REST API, you'd define PATCH /posts/:id endpoint to update specific post
     - This makes the arguments of the endpoint complicated requiring client dev to scrutinise the api doc to understand and implement what they want to do.
 - In GraphQL, you'd define UpdatePostTitle mutation making it more straightforward to understand what it does
-    - Surfacing business logic to interface and move business logic into backend rather than requiring frontend to "空気を読む"
+    - Surfacing business logic to interface and move business logic into backend rather than requiring frontend to read through API doc
     - REST can also model business intent with custom endpoints, but GraphQL provides first-class typed arguments, discoverability, and consistent client ergonomics
 
 This combination of interface: graph structure for query and RPC style for mutation, turns GraphQL very powerful tool and is IMO the most suitable option for frontend-backend communication.
@@ -329,28 +332,11 @@ _(Production needs: auth/session, error masking, rate limits, query cost—cover
 
 # 3. Co-Located Backend Architecture with Route Handler
 
-The GraphQL process is provided using graphql-yoga package. I also use GraphQL Pothos to implement resolvers. I'll cover this later but let me move on for now.
+The GraphQL process is provided using graphql-yoga package.
 
 The magic happens here in route.ts
 
-It creates yoga instance and then expose its handler method as Route Handler routes like this:
-
-```ts
-import { createYoga } from "graphql-yoga";
-import { schema } from "./schema";
-
-const { handleRequest } = createYoga({
-  graphqlEndpoint: "/api/graphql",
-  fetchAPI: { Response },
-  schema,
-});
-
-export {
-  handleRequest as GET,
-  handleRequest as POST,
-  handleRequest as OPTIONS, // For browsers / CORS preflight
-};
-```
+It creates yoga instance and then expose its handler method as Route Handler routes like this.
 
 It's as simple as this for a demo.
 
@@ -500,8 +486,6 @@ _(But choose whatever works for you!)_
 
 # 4. Code-first vs Schema-first
 
-I close this section by touching what I skipped just before.
-
 This is a backend side topic about how to implement GraphQL resolvers: code-first or schema-first
 
 - Code-first: is to generate GraphQL schema from codebase taking code as source of truth
@@ -564,14 +548,6 @@ If you refactor your TypeScript types, the schema automatically updates.
 ⚠️ **Error Masking**: Don't leak internal errors
 ⚠️ **Rate Limiting**: Protect against abuse
 
-## Recommended: Persisted Queries
-
-Pre-register queries for security & performance
-
-## Caching Strategy
-
-CDN / Route segment caching vs GraphQL response caching
-
 <!--
 
 # 5. Production Considerations: GraphQL is Powerful, Protect It
@@ -586,10 +562,6 @@ Key considerations:
 - Introspection: Disable in production or gate it behind authentication
 - Error masking: Don't leak internal error details to clients
 - Rate limiting: Protect your API against abuse
-
-Persisted queries are a great optional feature where you pre-register allowed queries.
-
-Think about your caching strategy: CDN caching, Next.js route segment caching, and GraphQL response caching all play different roles.
 
 -->
 
