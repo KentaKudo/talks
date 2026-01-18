@@ -7,6 +7,8 @@ backgroundColor: #1a1a1a
 color: #f2f2f2
 ---
 
+`#LT` `#GraphQL` `#Next.js` `#Route Handler` `#RSC`
+
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
 
 **Kenta Kudo** - Freelance Software Engineer
@@ -32,7 +34,8 @@ Let me quickly introduce myself again to fill in the background:
 - Lived in the UK for 6 years, and
 - I moved to Kansai last year — yeah I'm still very new to this area!
 
-Before we get technical, let me use this opportunity to announce something...
+Today I'm going to give a lightning talk about GraphQL and RSC/Next.js
+But before we get technical, let me use this opportunity to announce something...
 
 -->
 
@@ -154,31 +157,25 @@ Let's get started!
 
 ## The React Server Component Era
 
-- **RSC** enables server-side data fetching per component
+- **RSC** enables server-side data fetching **per component**
 - Prior to RSC: fetch all data in a single query
 - Common argument: _"GraphQL is less necessary for overfetch/underfetch"_
 
 ## 💡 My Realization
 
-Recently wrote REST API for the first time in a while...
-(PATCH endpoint became a mini-RPC with 8 optional fields + doc spelunking)
-
-**GraphQL benefits go beyond fetching all data at once**
-Still useful for **contract + ergonomics**
+- **GraphQL benefits go beyond fetching all data at once**
+- Still useful for **contract + ergonomics**
 
 <!--
+React Server Component is gradually recognised and used real life system though they've been experiencing some issues recently
 
-# 1. Introduction: Do we still need GraphQL?
+- With the emergence of RSC, you can now fetch data on server side *PER COMPONENT*
+  - Prior to RSC, the best practice is to fetch all the relevant data on the page in a single query to reduce the number of fetches
+  - GraphQL fit very well for this usecase turning it one of the best options for frontend-backend communication
+- However, RSC enabled each component to fetch only data they need by themselves without sacrificing performance
+  - Some say "GraphQL is less necessary for overfetch/underfetch"
 
-Background:
-
-- With the emergence of RSC, you can now fetch data on server side per component
-    - Prior to RSC, the best practice is to fetch all the relevant data on the page in a single query to reduce the number of fetches
-- Some say "GraphQL is less necessary for overfetch/underfetch because Server Component can fetch only data they need by themselves without sacrificing performance"
-
-I've been using GraphQL as BFF for a while now, and I recently had a chance to design and write REST API for the first time in a while and realised the benefit of GraphQL is not only that I can fetch all the data at once...
-
-For example, I hit a PATCH endpoint that became a mini-RPC with 8 optional fields and had to do serious doc spelunking to understand it. <= ちょっと変、自分で実装してるんだからdocをsplunkingする必要はないはず
+I've been using GraphQL as BFF for a while now, and I recently had a chance to design and write REST API for RSC enabled Next.js application, and realised the benefit of GraphQL is not only that I can fetch all the data at once...
 
 GraphQL still provides value through its typed, discoverable contract and excellent ergonomics.
 
@@ -207,17 +204,17 @@ _(Schema design still matters: connections, pagination, etc.)_
 
 <!--
 
-# 2. Rediscover GraphQL: straightforward queries and granular mutations
-
-Straightforwardness of Queries:
+The first point is straightforwardness of Queries
 
 - GraphQL queries all the resources as graph structure as the name suggests
-    - Meaning you can navigate one node after another but tracing the relation it has
-    - In this query example, a user has posts node which returns the posts the user has
-    - The mental model is so straightforward that I don't even need to read through API documentation
-        - You still probably need to read documentation but the main question is "Does node X have node Y?" instead of "Which endpoint return what I need?"
-- And yes the most famous benefit of GraphQL i.e. you can fetch as much as data you want without needing to ask backend dev to update the API
-    - As long as the resolver to resolve the node is implemented, how you access the data is left to client dev
+  - Meaning you can navigate one node after another but tracing the relation it has
+  - In this query example, a user has posts node which returns the posts the user has
+  - The mental model is so straightforward that I don't even need to read through API documentation
+    - You still probably need to read documentation but the main question is "Does node X have node Y?" instead of "Which endpoint return what I need?"
+- And yes one of the best selling points of GraphQL is that you can fetch as much data as you want without needing to ask backend dev to update the API
+  - As long as the resolver for the node is implemented, how you access the data is left to client dev
+
+This graph structure is suitable for client / backend interface and is very unique to GraphQL keeping it to stay as great option for client / backend interface.
 
 -->
 
@@ -231,7 +228,23 @@ Straightforwardness of Queries:
 PATCH /posts/:id
 ```
 
-Complex arguments, requires scrutinizing API docs
+- Complex arguments
+- Requires scrutinizing API docs
+
+<!--
+
+The second point is Ergonomics of Mutations.
+
+- In REST API, you'd define PATCH endpoint to update specific post like this
+  - this give the endpoint the entire responsibility to update the post making the arguments of the endpoint complicated
+  - this requires client dev to scrutinise the api doc to understand and implement what they want to do.
+- In GraphQL mutations are defined in RPC style
+
+-->
+
+---
+
+# 2. Rediscover GraphQL — Ergonomic Mutations
 
 ## GraphQL
 
@@ -246,23 +259,19 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 }
 ```
 
-**Advantages**: First-class typed arguments + discoverability + consistent client ergonomics
-Business logic surfaces at the interface level
+**Advantages**:
+- First-class typed arguments + discoverability + consistent client ergonomics
+- Business logic surfaces at the interface level
 
 <!--
 
-# 2. Rediscover GraphQL: straightforward queries and granular mutations
+- You'd define UpdatePostTitle mutation making it more straightforward to understand what it does
+  - this surfaces business logic to interface moving business logic into backend rather than requiring frontend to read through API doc
+  - You can define custom endpoints with REST for specific purpose, but GraphQL provides first-class typed arguments, discoverability, and consistent client ergonomics
 
-Ergonomics of Mutations:
+This combination of interface: graph structure for query and RPC style for mutation, turns GraphQL very powerful tool and is IMO the very suitable option for frontend-backend communication.
 
-- Mutations are defined in RPC style
-- In REST API, you'd define PATCH /posts/:id endpoint to update specific post
-    - This makes the arguments of the endpoint complicated requiring client dev to scrutinise the api doc to understand and implement what they want to do.
-- In GraphQL, you'd define UpdatePostTitle mutation making it more straightforward to understand what it does
-    - Surfacing business logic to interface and move business logic into backend rather than requiring frontend to read through API doc
-    - REST can also model business intent with custom endpoints, but GraphQL provides first-class typed arguments, discoverability, and consistent client ergonomics
-
-This combination of interface: graph structure for query and RPC style for mutation, turns GraphQL very powerful tool and is IMO the most suitable option for frontend-backend communication.
+Let me move on to the second topic of the talk...
 
 -->
 
@@ -273,21 +282,12 @@ This combination of interface: graph structure for query and RPC style for mutat
 ## Next.js Route Handlers
 
 - Server-side code accessed like a backend API
-- App Router: **Route Handlers**
-- Pages Router: **API Routes**
+  - App Router → **Route Handlers**
+  - Pages Router → **API Routes**
 
 ## Growing Trend
 
-Building Next.js apps **without a separate backend service** using Route Handlers
-_(Still runs server-side inside Next.js)_
-
-## 🚀 Template Available
-
-GitHub repository template: GraphQL + Route Handlers
-
-https://github.com/KentaKudo/next-graphql-handler
-
-_Note: This template demonstrates the core concepts and is not production-ready yet._
+- Building Next.js apps **without a separate backend service** using Route Handlers
 
 <!--
 
@@ -295,14 +295,31 @@ _Note: This template demonstrates the core concepts and is not production-ready 
 
 Next.js provides feature called Route Handlers (App Router) / API Routes (Pages Router).
 It's server side code and can be accessed from frontend just like backend API.
-I've seen more and more cases of people adapting the architecture to build Next.js application without a separate backend service using Route Handlers.
 
-Note: This still runs server-side inside Next.js - you're just avoiding a separate backend service.
+And it seems more and more people adapt the architecture to build Next.js application without a separate backend service using Route Handlers.
+
+-->
+
+---
+
+# 3. Co-Located Backend Architecture — with Route Handler
+
+## 🚀 Template Available
+
+GitHub repository template: GraphQL + Route Handlers
+
+https://github.com/KentaKudo/next-graphql-handler
+
+_Note: This template demonstrates the core concepts and is intended to be used in production environment._
+
+<!--
 
 So I wanted to explore the co-located backend architecture that provides GraphQL backend inside the Route Handler.
+
 I published the result as GitHub repository template here: https://github.com/KentaKudo/next-graphql-handler
 
-Keep in mind: This template is built to demonstrate the idea and architectural pattern. It's not intended to solve real-life production problems yet - you'll need to add proper authentication, authorization, error handling, and other production concerns we'll discuss later.
+Keep in mind: This template is built to demonstrate the idea and architectural pattern.
+It's not intended to solve real-life production problems yet - you'll need to add proper authentication, authorization, error handling, and other production concerns.
 
 Let me explain how it works.
 
@@ -311,6 +328,8 @@ Let me explain how it works.
 ---
 
 # 3. Co-Located Backend Architecture — Implementation with graphql-yoga
+
+`/api/graphql/route.ts`
 
 ```ts
 import { createYoga } from "graphql-yoga";
@@ -325,22 +344,15 @@ const { handleRequest } = createYoga({
 export { handleRequest as GET, handleRequest as POST };
 ```
 
-**That's it for a demo!** ✨
-_(Production needs: auth/session, error masking, rate limits, query cost—covered later)_
-
 <!--
-
-# 3. Co-Located Backend Architecture with Route Handler
 
 The GraphQL process is provided using graphql-yoga package.
 
 The magic happens here in route.ts
 
-It creates yoga instance and then expose its handler method as Route Handler routes like this.
+It creates yoga instance and then expose its handler methods, which are GET and POST, as Route Handler routes like this.
 
-It's as simple as this for a demo.
-
-For production, you'll need to add auth/session handling, error masking, rate limiting, query cost limits, and logging/tracing. We'll cover these considerations in a later slide.
+For production, you might need to add authentication, logging etc. but the bare minimum working example is as simple as this.
 
 -->
 
@@ -354,10 +366,6 @@ For production, you'll need to add auth/session handling, error masking, rate li
 - **urql**: GraphQL client library for client components
 - Hit `/api/graphql` endpoint
 
-## RSC + Client Components
-
-Server Components can query directly; `urql` lives in client components
-
 ## Bonus: Easy Migration
 
 Want to spin up a separate server?
@@ -368,25 +376,22 @@ Want to spin up a separate server?
 
 <!--
 
-# 3. Co-Located Backend Architecture with Route Handler
-
-For the client side, I use graphql-codegen to generate TypeScript code from GraphQL query then use urql as client library.
+Moving on to the client side, I use graphql-codegen to generate TypeScript code from GraphQL query then use urql as client library.
 
 By hitting `/api/graphql`, it can get the result via GraphQL interface.
 
-Note on RSC: If the app uses RSC heavily, urql lives in client components, while server components can query the GraphQL endpoint directly using the urql server-side client.
-
-And a great thing is that even when you want to actually spin up server process and have frontend talk to it, the only thing you need to do is take the yoga instance and hook into server process you like such as Express or Hono.
+And a great thing is that even when you want to actually spin up dedicated server process, the only thing you need to do is take the yoga instance and hook into server process such as Express or Hono.
 Yoga is framework-agnostic; only the adapter changes.
-Just be careful to contain all the React/Next.js support in this binding.
+
+Just be careful to contain all the React/Next.js support in the route.ts.
+
+Let's the check the client code.
 
 -->
 
 ---
 
-# 3. Co-Located Backend Architecture
-
-## Example: Server Component
+# 3. Co-Located Backend Architecture — Example: Server Component
 
 ```tsx
 import { graphql } from "@/graphql";
@@ -409,12 +414,10 @@ export default async function Home() {
 
 <!--
 
-# 3. Co-Located Backend Architecture with Route Handler
-
 Here's an example of a Server Component querying the GraphQL endpoint.
 
 We use graphql-codegen to generate TypeScript types from the query.
-The server component can directly await the query using the urql client.
+The server component can directly await the query using the urql client accessed with getClient().
 
 This gives you full type safety from schema to component.
 
@@ -422,22 +425,17 @@ This gives you full type safety from schema to component.
 
 ---
 
-# 3. Co-Located Backend Architecture
-
-## Example: Client Component
+# 3. Co-Located Backend Architecture — Example: Client Component
 
 ```tsx
 "use client";
-
 import { graphql } from "@/graphql";
 import { useQuery } from "@urql/next";
-
 const helloQuery = graphql(`
   query HelloFromClientComponent {
     hello(name: "from client component")
   }
 `);
-
 export const ClientComponent = () => {
   const [result] = useQuery({ query: helloQuery });
   if (result.error) {
@@ -448,96 +446,20 @@ export const ClientComponent = () => {
 ```
 
 <!--
-
-# 3. Co-Located Backend Architecture with Route Handler
-
-And here's an example of a Client Component using urql hooks.
+And here's the Client Component using urql hooks.
 
 The client component uses the standard urql hooks pattern.
+
 Both server and client components hit the same /api/graphql endpoint.
 
 This gives you flexibility to choose where to fetch based on your needs.
+For example you can mix it with Server Action to provide the best user experience.
 
 -->
 
 ---
 
-# 4. Code-first vs Schema-first
-
-### Code-first
-
-Generate GraphQL schema from codebase
-→ Code is the source of truth
-**When to choose**: Great DX in TypeScript mono-repo
-
-### Schema-first
-
-Write schema, generate resolver skeleton
-→ Schema is the source of truth
-**When to choose**: Language-agnostic teams / schema governance
-
-### My Preference: Code-first with Pothos
-
-Template uses **Pothos GraphQL** for code-first approach
-
-_(But choose whatever works for you!)_
-
-<!--
-
-# 4. Code-first vs Schema-first
-
-This is a backend side topic about how to implement GraphQL resolvers: code-first or schema-first
-
-- Code-first: is to generate GraphQL schema from codebase taking code as source of truth
-  - Great for TypeScript mono-repos with excellent DX
-- Schema-first: is the other way around i.e. write schema and generate resolver skeleton from it
-  - Great for language-agnostic teams or when you need schema governance
-
-I personally prefer code-first approach and GraphQL Pothos package the template has in the resolver is for that purpose.
-But of course you can choose whichever style you like.
-
--->
-
----
-
-# 4. Code-first Example with Pothos
-
-```ts
-import SchemaBuilder from "@pothos/core";
-
-const builder = new SchemaBuilder({});
-
-builder.queryType({
-  fields: (t) => ({
-    hello: t.string({
-      args: { name: t.arg.string() },
-      resolve: (parent, { name }) => `hello, ${name || "World"}`,
-    }),
-  }),
-});
-
-export const schema = builder.toSchema();
-```
-
-Type-safe, concise, and TypeScript-native
-
-<!--
-
-# 4. Code-first Example with Pothos
-
-Here's what a Pothos schema definition looks like.
-
-You define your types and resolvers in TypeScript code.
-Pothos provides a type-safe builder API that generates the GraphQL schema.
-
-The big advantage is that everything is type-checked at compile time.
-If you refactor your TypeScript types, the schema automatically updates.
-
--->
-
----
-
-# 5. Production Considerations — GraphQL is Powerful: Protect It
+# 4. Production Considerations — GraphQL is Powerful: Protect It
 
 ## Security & Performance
 
@@ -567,7 +489,7 @@ Key considerations:
 
 ---
 
-# 5. Production Considerations — When GraphQL Still Shines
+# 4. Production Considerations — When GraphQL Still Shines
 
 ## RSC + BFF Pattern
 
@@ -600,7 +522,7 @@ GraphQL still excels at providing a well-defined, typed, discoverable contract b
 
 ---
 
-# 6. Recap — GraphQL is Still a Great Option
+# 5. Recap — GraphQL is Still a Great Option
 
 ## Key Takeaways
 
@@ -690,5 +612,74 @@ Thank you for listening!
 - “What’s your approach to caching with RSC + GraphQL?”
 - “Edge runtime compatibility?”
 - “Why urql vs Apollo / gql.tada / graphql-request?”
+
+-->
+
+---
+
+# COLUMN. Code-first vs Schema-first
+
+### Code-first
+
+Generate GraphQL schema from codebase
+→ Code is the source of truth
+**When to choose**: Great DX in TypeScript mono-repo
+
+### Schema-first
+
+Write schema, generate resolver skeleton
+→ Schema is the source of truth
+**When to choose**: Language-agnostic teams / schema governance
+
+### My Preference: Code-first with Pothos
+
+Template uses **Pothos GraphQL** for code-first approach
+
+_(But choose whatever works for you!)_
+
+<!--
+This is a backend side topic about how to implement GraphQL resolvers: code-first or schema-first
+
+- Code-first: is to generate GraphQL schema from codebase taking code as source of truth
+  - Great for TypeScript mono-repos with excellent DX
+- Schema-first: is the other way around i.e. write schema and generate resolver skeleton from it
+  - Great for language-agnostic teams or when you need schema governance
+
+I personally prefer code-first approach and GraphQL Pothos package the template has in the resolver is for that purpose.
+But of course you can choose whichever style you like.
+
+-->
+
+---
+
+# COLUMN. Code-first Example with Pothos
+
+```ts
+import SchemaBuilder from "@pothos/core";
+
+const builder = new SchemaBuilder({});
+
+builder.queryType({
+  fields: (t) => ({
+    hello: t.string({
+      args: { name: t.arg.string() },
+      resolve: (parent, { name }) => `hello, ${name || "World"}`,
+    }),
+  }),
+});
+
+export const schema = builder.toSchema();
+```
+
+Type-safe, concise, and TypeScript-native
+
+<!--
+Here's what a Pothos schema definition looks like.
+
+You define your types and resolvers in TypeScript code.
+Pothos provides a type-safe builder API that generates the GraphQL schema.
+
+The big advantage is that everything is type-checked at compile time.
+If you refactor your TypeScript types, the schema automatically updates.
 
 -->
