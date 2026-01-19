@@ -459,36 +459,6 @@ For example you can mix it with Server Action to provide the best user experienc
 
 ---
 
-# 4. Production Considerations — GraphQL is Powerful: Protect It
-
-## Security & Performance
-
-⚠️ **Authorization**: Field-level auth (not only route level)
-⚠️ **N+1 Prevention**: Batching / DataLoader patterns
-⚠️ **Query Complexity**: Depth & cost limits
-⚠️ **Introspection**: Disable in production (or gate it)
-⚠️ **Error Masking**: Don't leak internal errors
-⚠️ **Rate Limiting**: Protect against abuse
-
-<!--
-
-# 5. Production Considerations: GraphQL is Powerful, Protect It
-
-While the demo shows how simple it is to set up GraphQL with Yoga, production deployments need careful attention to security and performance.
-
-Key considerations:
-
-- Authorization: Implement field-level authorization, not just at the route level
-- N+1 queries: Use batching and DataLoader patterns to avoid performance issues
-- Query complexity: Set depth and cost limits to prevent expensive queries
-- Introspection: Disable in production or gate it behind authentication
-- Error masking: Don't leak internal error details to clients
-- Rate limiting: Protect your API against abuse
-
--->
-
----
-
 # 4. Production Considerations — When GraphQL Still Shines
 
 ## RSC + BFF Pattern
@@ -558,10 +528,6 @@ Let me recap the talk.
 
 # References
 
-### 📚 Book: 世界で働くエンジニア
-
-https://store.london-tech-talk.com/products/book_engineers_working_abroad
-
 ### 🚀 Template Repository
 
 https://github.com/KentaKudo/next-graphql-handler
@@ -570,15 +536,13 @@ https://github.com/KentaKudo/next-graphql-handler
 
 https://nostarch.com/black-hat-graphql
 
-⚠️ **With great power comes great responsibility**
-
-Examples of GraphQL risks:
-
 - **DoS via expensive queries** (deeply nested queries)
 - **Authorization pitfalls** (forgetting field-level checks)
 - **Information disclosure** (introspection in production)
 
-Highly recommended if you implement GraphQL server-side
+### 📚 _世界で働くエンジニア_
+
+https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 ---
 
@@ -587,8 +551,6 @@ Highly recommended if you implement GraphQL server-side
 **Questions?**
 
 <!--
-
-# References
 
 The talk mostly came out of my recent experience and realization, but I recently read this book about GraphQL: "Black Hat GraphQL"
 
@@ -617,7 +579,7 @@ Thank you for listening!
 
 ---
 
-# COLUMN. Code-first vs Schema-first
+# APPX. Code-first vs Schema-first
 
 ### Code-first
 
@@ -638,6 +600,7 @@ Template uses **Pothos GraphQL** for code-first approach
 _(But choose whatever works for you!)_
 
 <!--
+
 This is a backend side topic about how to implement GraphQL resolvers: code-first or schema-first
 
 - Code-first: is to generate GraphQL schema from codebase taking code as source of truth
@@ -652,7 +615,7 @@ But of course you can choose whichever style you like.
 
 ---
 
-# COLUMN. Code-first Example with Pothos
+# APPX. Code-first Example with Pothos
 
 ```ts
 import SchemaBuilder from "@pothos/core";
@@ -674,6 +637,7 @@ export const schema = builder.toSchema();
 Type-safe, concise, and TypeScript-native
 
 <!--
+
 Here's what a Pothos schema definition looks like.
 
 You define your types and resolvers in TypeScript code.
@@ -681,5 +645,33 @@ Pothos provides a type-safe builder API that generates the GraphQL schema.
 
 The big advantage is that everything is type-checked at compile time.
 If you refactor your TypeScript types, the schema automatically updates.
+
+-->
+
+---
+
+# APPX. Production Considerations — GraphQL is Powerful: Protect It
+
+## Security & Performance
+
+⚠️ **Authorization**: Field-level auth (not only route level)
+⚠️ **N+1 Prevention**: Batching / DataLoader patterns
+⚠️ **Query Complexity**: Depth & cost limits
+⚠️ **Introspection**: Disable in production (or gate it)
+⚠️ **Error Masking**: Don't leak internal errors
+⚠️ **Rate Limiting**: Protect against abuse
+
+<!--
+
+While the demo shows how simple it is to set up GraphQL with Yoga, production deployments need careful attention to security and performance.
+
+Key considerations:
+
+- Authorization: Implement field-level authorization, not just at the route level
+- N+1 queries: Use batching and DataLoader patterns to avoid performance issues
+- Query complexity: Set depth and cost limits to prevent expensive queries
+- Introspection: Disable in production or gate it behind authentication
+- Error masking: Don't leak internal error details to clients
+- Rate limiting: Protect your API against abuse
 
 -->
