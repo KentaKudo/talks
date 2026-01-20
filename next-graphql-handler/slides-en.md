@@ -7,12 +7,26 @@ backgroundColor: #1a1a1a
 color: #f2f2f2
 ---
 
+<!--
+TODO:
+  - translate the slides in japanese
+  - Japanese announcement
+-->
+
 `#LT` `#GraphQL` `#Next.js` `#Route Handler` `#RSC`
 
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
 
 **Kenta Kudo** - Freelance Software Engineer
 _React Osaka - Jan 2026_
+
+<!--
+
+Hi everyone, I'm Kenta.
+
+Today I'm going to give a Lightning Talk based on my recent thoughts around GraphQL and RSC.
+
+-->
 
 ---
 
@@ -25,17 +39,14 @@ _React Osaka - Jan 2026_
 
 <!--
 
-Hi everyone, I'm Kenta.
-
 Let me quickly introduce myself again to fill in the background:
 
 - I'm currently working as a freelance software engineer
 - Previously worked at companies such as Mercari UK
-- Lived in the UK for 6 years, and
-- I moved to Kansai last year — yeah I'm still very new to this area!
+- Lived in the UK for 6 years and came back to Japan 3 years ago, and
+- I moved to Kansai last year — so I'm still very new to this area!
 
-Today I'm going to give a lightning talk about GraphQL and RSC/Next.js
-But before we get technical, let me use this opportunity to announce something...
+Before we get technical, let me use this opportunity to announce something...
 
 -->
 
@@ -54,7 +65,7 @@ But before we get technical, let me use this opportunity to announce something..
 <div class="columns">
 <div>
 
-## "世界で働くエンジニア"
+## _世界で働くエンジニア_
 
 - 10 Japanese software engineers working abroad
 - Beta release now, official release end of month
@@ -73,18 +84,15 @@ But before we get technical, let me use this opportunity to announce something..
 
 I co-authored a book titled "世界で働くエンジニア"
 
-It's an omnibus style autobiography made of 10 different Japanese software engineers working abroad.
-The book is currently in beta release and will be officially released at the end of this month.
+- It's an omnibus style autobiography made of 10 different Japanese software engineers working abroad.
+- The book is currently in beta release and will be officially released at the end of this month.
+- But you can already purchase it, and I'll show you the link to the detail page in the next slide.
+- The book is available both as epub and pdf file, and you can get free updates whenever new version is published.
 
-But you can already purchase it, and I'll show you the link to the detail page in the next slide.
-The book is available both as epub and pdf file, and you can get free updates whenever new version is published.
-
-Please have a look if you're interested or introduce to your friends who might be interested. Feedback is also very welcome.
+Please have a look if you're interested or please introduce to your friends who might be interested. Feedback is also very welcome.
 
 The project spun out from the community of London Tech Talk podcast hosted by Ken, who lives in London now.
-The podcast is also highly recommended if you're interested in working abroad as a software engineer.
-
-If you have any questions, please let me know!
+The podcast is also highly recommended. So please check it out.
 
 -->
 
@@ -112,14 +120,17 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 **[STAY ON THIS SLIDE - Let audiences scan the QR code]**
 
-And here's the link to the detail page.
+And here's the link to the book detail page.
 
-I read through the book, and very honestly it's really interesting and inspiring book I'd say. I'd want and get motivated if the book existed before I moved abroad.
+- I read through the book, and very honestly it's really fun reading and inspiring book I'd say.
+- You can enjoy ten different life stories about how they ended up working abroad.
+- I'd get motivated if I read the book before I moved abroad.
 
-You can enjoy ten different life stories about how they ended up working abroad.
+Does anyone need more time?
 
-Does anyone need more time to take pictures?
-The link is included in the slides I'm going to upload, and also I'm reacheable on the Discord channel.
+The link is included in the slides I'm going to share after the talk, and also I'm reacheable on the Discord channel.
+
+If you have any questions about the book, please let me know!
 
 Ok let's move on to my talk.
 
@@ -132,8 +143,7 @@ Ok let's move on to my talk.
 1. **Introduction**: Do we still need GraphQL?
 2. **Rediscover GraphQL**: Straightforward queries and granular mutations
 3. **Co-Located Backend Architecture** with Route Handler
-4. **Production Considerations**: Using GraphQL safely
-5. **Recap**: GraphQL can still be an option
+4. **Recap**: GraphQL can still be an option
 
 <!--
 
@@ -141,11 +151,10 @@ The title of the talk today is: Revisiting GraphQL in the RSC Era, and Co-Locate
 
 Here's today's agenda:
 
-In the first section I'll cover the background.
-Then I'll talk about what makes GraphQL powerful and why it's still valid after RSC era.
-Then I'll demonstrate having GraphQL process inside NextJS framework allowing us to co-locate backend inside the Next.js project.
-
-Lastly I'll cover some topics around using GraphQL in production environment, and close the talk with recap.
+- In the first section I'll introduce the background of the topic.
+- Then I'll talk about what makes GraphQL powerful and why it's still the case after the RSC era.
+- Then I'll demonstrate having GraphQL process using Route Handler allowing us to co-locate backend inside the Next.js project.
+- I'll close the talk with recap.
 
 Let's get started!
 
@@ -153,13 +162,13 @@ Let's get started!
 
 ---
 
-# 1. Introduction — Do we still need GraphQL?
+# 1. Introduction — "Do we still need GraphQL?"
 
 ## The React Server Component Era
 
-- **RSC** enables server-side data fetching **per component**
+- **RSC** enables server-side data fetching **_per component_**
 - Prior to RSC: fetch all data in a single query
-- Common argument: _"GraphQL is less necessary for overfetch/underfetch"_
+- Recent argument: _"GraphQL is less necessary for RSC"_
 
 ## 💡 My Realization
 
@@ -167,17 +176,18 @@ Let's get started!
 - Still useful for **contract + ergonomics**
 
 <!--
-React Server Component is gradually recognised and used real life system though they've been experiencing some issues recently
+React Server Component is gradually recognised and used real life system even though they've been experiencing some issues.
 
 - With the emergence of RSC, you can now fetch data on server side *PER COMPONENT*
-  - Prior to RSC, the best practice is to fetch all the relevant data on the page in a single query to reduce the number of fetches
+  - Prior to RSC, the best practice is to fetch all the relevant data on the page in a single query and pass it down to where it needs
+  - This is because at that time only page route could fetch data on server side
   - GraphQL fit very well for this usecase turning it one of the best options for frontend-backend communication
 - However, RSC enabled each component to fetch only data they need by themselves without sacrificing performance
-  - Some say "GraphQL is less necessary for overfetch/underfetch"
+  - Some say "GraphQL is less necessary for RSC"
 
-I've been using GraphQL as BFF for a while now, and I recently had a chance to design and write REST API for RSC enabled Next.js application, and realised the benefit of GraphQL is not only that I can fetch all the data at once...
-
-GraphQL still provides value through its typed, discoverable contract and excellent ergonomics.
+- I've some experience using GraphQL as BFF, Backend for Frontend, for sometime now
+- So I'm kind of used to its interface
+- But then I recently had a chance to design REST API for RSC enabled Next.js application, and realised the benefit of GraphQL is not only that I can fetch all the data at once but it still provides value through its typed, discoverable contract and excellent ergonomics.
 
 -->
 
@@ -199,22 +209,24 @@ query GetUserWithPosts($id: ID!) {
 }
 ```
 
-Navigate nodes by tracing relations
+💡 Navigate nodes by tracing relations
 _(Schema design still matters: connections, pagination, etc.)_
 
 <!--
 
-The first point is straightforwardness of Queries
+The first point is straightforwardness of queries
 
 - GraphQL queries all the resources as graph structure as the name suggests
-  - Meaning you can navigate one node after another but tracing the relation it has
+  - Meaning you can navigate one node after another tracing the relation it has
   - In this query example, a user has posts node which returns the posts the user has
   - The mental model is so straightforward that I don't even need to read through API documentation
-    - You still probably need to read documentation but the main question is "Does node X have node Y?" instead of "Which endpoint return what I need?"
-- And yes one of the best selling points of GraphQL is that you can fetch as much data as you want without needing to ask backend dev to update the API
+    - ...You might still need to read documentation but it's very likely provided as introspection with handy built-in web UI
+    - more importantly because of its graph structure the question is "I assume node X have node Y, does it?" instead of "Which endpoint return what I need?"
+- Also one of the best selling points of GraphQL has been that you can fetch as much data as you want without needing to ask backend dev to update the API
   - As long as the resolver for the node is implemented, how you access the data is left to client dev
+  - You may get user node from different query / mutation but as long as it's the same user node there always is posts node under it
 
-This graph structure is suitable for client / backend interface and is very unique to GraphQL keeping it to stay as great option for client / backend interface.
+Straightforwardness of the graph structure still provides great DX even for more granular data fetch.
 
 -->
 
@@ -236,9 +248,12 @@ PATCH /posts/:id
 The second point is Ergonomics of Mutations.
 
 - In REST API, you'd define PATCH endpoint to update specific post like this
-  - this give the endpoint the entire responsibility to update the post making the arguments of the endpoint complicated
-  - this requires client dev to scrutinise the api doc to understand and implement what they want to do.
-- In GraphQL mutations are defined in RPC style
+- this gives the endpoint responsibility to update any properties of the post making the input of the endpoint complicated
+- this requires client dev to spelunking the api doc to understand and call the endpoint in the way backend expects it to do
+- the mental model of REST is resource oriented
+  - the representation is the combination of resource and action, i.e. HTTP method, on it
+- as a result verbs you can choose are quite limited forcing endpoint to take more responsibility
+- this leads more business logic to reside in client side
 
 -->
 
@@ -265,13 +280,14 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 
 <!--
 
-- You'd define UpdatePostTitle mutation making it more straightforward to understand what it does
-  - this surfaces business logic to interface moving business logic into backend rather than requiring frontend to read through API doc
-  - You can define custom endpoints with REST for specific purpose, but GraphQL provides first-class typed arguments, discoverability, and consistent client ergonomics
+- On the other hand, GraphQL mutations are defined in RPC style
+- You'd define UpdatePostTitle mutation making it more straightforward to understand what it does rather than single interface that updates any fields of post at once
+- this surfaces business logic to interface moving business logic into backend instead of frontend
+- Even though it's technically possible to define custom endpoints with REST, but GraphQL provides operation-centric interface providing consistent client ergonomics
 
-This combination of interface: graph structure for query and RPC style for mutation, turns GraphQL very powerful tool and is IMO the very suitable option for frontend-backend communication.
+The combination of interface, graph structure for query and RPC style for mutation, is very unique to GraphQL, and IMO still is a very suitable option for frontend-backend communication providing great DX for both frontend and backend dev even with RSC where more granular data fetch is preferred.
 
-Let me move on to the second topic of the talk...
+Now, let's step away from GraphQL for a moment and talk about Route Handlers.
 
 -->
 
@@ -281,7 +297,7 @@ Let me move on to the second topic of the talk...
 
 ## Next.js Route Handlers
 
-- Server-side code accessed like a backend API
+- Server-side execution accessed like a backend API
   - App Router → **Route Handlers**
   - Pages Router → **API Routes**
 
@@ -291,12 +307,10 @@ Let me move on to the second topic of the talk...
 
 <!--
 
-# 3. Co-Located Backend Architecture with Route Handler
-
 Next.js provides feature called Route Handlers (App Router) / API Routes (Pages Router).
-It's server side code and can be accessed from frontend just like backend API.
+It's executed on server side and can be accessed from frontend just like backend API.
 
-And it seems more and more people adapt the architecture to build Next.js application without a separate backend service using Route Handlers.
+And I've seen more and more dev adapt the architecture to build Next.js application without a separate backend service using this Route Handlers.
 
 -->
 
@@ -314,20 +328,20 @@ _Note: This template demonstrates the core concepts and is intended to be used i
 
 <!--
 
-So I wanted to explore the co-located backend architecture that provides GraphQL backend inside the Route Handler.
+So I wanted to explore the co-located backend architecture that provides GraphQL backend inside the Route Handler with RSC enabled Next.js app.
 
 I published the result as GitHub repository template here: https://github.com/KentaKudo/next-graphql-handler
 
 Keep in mind: This template is built to demonstrate the idea and architectural pattern.
-It's not intended to solve real-life production problems yet - you'll need to add proper authentication, authorization, error handling, and other production concerns.
+It's not intended to solve real-life production problems yet - you'll need to add proper authentication, error handling, and other production concerns.
 
-Let me explain how it works.
+Let me walk though the gist of it with code from the repo.
 
 -->
 
 ---
 
-# 3. Co-Located Backend Architecture — Implementation with graphql-yoga
+# 3. Co-Located Backend Architecture — Route Handler
 
 `/api/graphql/route.ts`
 
@@ -344,15 +358,20 @@ const { handleRequest } = createYoga({
 export { handleRequest as GET, handleRequest as POST };
 ```
 
-<!--
+For Apollo Server → [@as-integrations/next](https://github.com/apollo-server-integrations/apollo-server-integration-next)
 
-The GraphQL process is provided using graphql-yoga package.
+<!--
 
 The magic happens here in route.ts
 
-It creates yoga instance and then expose its handler methods, which are GET and POST, as Route Handler routes like this.
+The GraphQL request handler is implemented using graphql-yoga package.
 
-For production, you might need to add authentication, logging etc. but the bare minimum working example is as simple as this.
+- It creates yoga instance based on schema defined in a separate file
+- And then expose its handler methods as Route Handler routes GET and POST like this.
+
+For real life usecase you might want to add authentication, logging etc. but the bare minimum working example is as simple as this.
+
+I didn't try but for Apollo Server the @as-integration/next package exists for this binding.
 
 -->
 
@@ -376,9 +395,11 @@ Want to spin up a separate server?
 
 <!--
 
-Moving on to the client side, I use graphql-codegen to generate TypeScript code from GraphQL query then use urql as client library.
+Moving on to the client side, I used the graphql-codegen package to generate TypeScript code from GraphQL query then use urql as client library.
 
-By hitting `/api/graphql`, it can get the result via GraphQL interface.
+By hitting `/api/graphql`, it can get the result via GraphQL Route Handler.
+
+TODO: move bonus at the end of the section and add code example to build urql clients
 
 And a great thing is that even when you want to actually spin up dedicated server process, the only thing you need to do is take the yoga instance and hook into server process such as Express or Hono.
 Yoga is framework-agnostic; only the adapter changes.
@@ -391,7 +412,9 @@ Let's the check the client code.
 
 ---
 
-# 3. Co-Located Backend Architecture — Example: Server Component
+# 3. Co-Located Backend Architecture 
+
+**Example: Server Component**
 
 ```tsx
 import { graphql } from "@/graphql";
@@ -416,7 +439,7 @@ export default async function Home() {
 
 Here's an example of a Server Component querying the GraphQL endpoint.
 
-We use graphql-codegen to generate TypeScript types from the query.
+The query is defined and graphql-codegen generates TypeScript codes from it.
 The server component can directly await the query using the urql client accessed with getClient().
 
 This gives you full type safety from schema to component.
@@ -425,7 +448,9 @@ This gives you full type safety from schema to component.
 
 ---
 
-# 3. Co-Located Backend Architecture — Example: Client Component
+# 3. Co-Located Backend Architecture 
+
+**Example: Client Component**
 
 ```tsx
 "use client";
@@ -446,28 +471,29 @@ export const ClientComponent = () => {
 ```
 
 <!--
-And here's the Client Component using urql hooks.
+And here's the Client Component.
 
-The client component uses the standard urql hooks pattern.
+Similarly to Server Component it defines the query it uses.
+And it uses the standard urql hooks pattern.
 
 Both server and client components hit the same /api/graphql endpoint.
 
 This gives you flexibility to choose where to fetch based on your needs.
-For example you can mix it with Server Action to provide the best user experience.
+And also you can mix it with Server Action to provide the best user experience.
 
 -->
 
 ---
 
-# 4. Production Considerations — When GraphQL Still Shines
+# 4. Recap — When GraphQL Still Shines
 
 ## RSC + BFF Pattern
 
 RSC enables colocated fetching, but you can still benefit from:
 
 ✅ **Typed, discoverable, stable contract** (GraphQL schema)
-✅ **Multiple clients**: Web, mobile, different teams
-✅ **Multiple UI surfaces**: Different pages, widgets, micro-frontends
+✅ **Powerful combination**: Flexible graph queries & ergonomic mutations (RPC-style)
+✅ **Co-Located Architecture**: Next.js + GraphQL + Route Handlers
 
 ## Bottom Line
 
@@ -475,52 +501,17 @@ RSC changes **where** you fetch, not **what** your interface contract should be
 
 <!--
 
-# 5. Production Considerations: When GraphQL Still Shines
+Let me recap the talk.
 
 Even with RSC, GraphQL provides value:
 
-RSC enables colocated fetching at the component level, but you can still benefit from a typed, discoverable, stable contract when you have:
-- Multiple clients (web, mobile)
-- Multiple teams consuming the same API
-- Multiple UI surfaces (different pages, widgets, micro-frontends)
+- RSC enables colocated fetching at the component level, but you can still benefit from a typed, discoverable, and stable contract
+- The power of GraphQL comes from the combination of its flexible query and easy to understand mutation interface
+- Demonstrated Co-Located Backend Architecture with Next.js + GraphQL powered by Route Handlers
 
-The key insight: RSC changes WHERE you fetch data (component-level vs page-level), but it doesn't change WHAT your interface contract should be.
+The key insight: RSC changes WHERE you fetch data (component-level vs page-level), but it doesn't change WHAT your interface contract should look like.
 
-GraphQL still excels at providing a well-defined, typed, discoverable contract between frontend and backend.
-
--->
-
----
-
-# 5. Recap — GraphQL is Still a Great Option
-
-## Key Takeaways
-
-✅ **RSC era**: GraphQL remains excellent for BFF interface
-
-- RSC changes _where_ you fetch, not _what_ your contract should be
-
-✅ **Powerful combination**:
-
-- Flexible graph queries
-- Ergonomic mutations (RPC-style)
-
-✅ **Co-Located Architecture**: Next.js + GraphQL + Route Handlers
-
-⚠️ **Use with care**: Auth, N+1, limits, caching—production matters!
-
-<!--
-
-# Recap: GraphQL can still be an option
-
-Let me recap the talk.
-
-- Even after RSC era, I believe GraphQL stays great option for BFF interface
-  - RSC changes WHERE you fetch, not WHAT your interface contract should be
-- The power of GraphQL comes from the combination of its flexible query and easy to understand and evolve mutation interface
-- Co-Located Backend Architecture: Next.js + GraphQL powered by Route Handlers
-- But remember: with great power comes great responsibility
-  - Don't forget about authorization, N+1 prevention, query limits, and caching in production
+GraphQL still excels at providing a developer friendly contract, which remains very important between frontend and backend communication.
 
 -->
 
@@ -528,21 +519,33 @@ Let me recap the talk.
 
 # References
 
-### 🚀 Template Repository
 
-https://github.com/KentaKudo/next-graphql-handler
+- 📖 Recommended Reading: Black Hat GraphQL
+  - https://nostarch.com/black-hat-graphql
+  - **DoS via expensive queries** (deeply nested queries)
+  - **Authorization pitfalls** (forgetting field-level checks)
+  - **Information disclosure** (introspection in production)
+- 🚀 Template Repository
+  - https://github.com/KentaKudo/next-graphql-handler
+- 📚 _世界で働くエンジニア_
+  - Book: https://store.london-tech-talk.com/products/book_engineers_working_abroad
+  - London Tech Talk Podcast: https://london-tech-talk.com/
 
-### 📖 Recommended Reading: Black Hat GraphQL
+<!--
 
-https://nostarch.com/black-hat-graphql
+The talk mostly came out of my recent experience and realisation, but I recently read this book about GraphQL: "Black Hat GraphQL"
 
-- **DoS via expensive queries** (deeply nested queries)
-- **Authorization pitfalls** (forgetting field-level checks)
-- **Information disclosure** (introspection in production)
+The book is about implementing GraphQL server so more about server side topic.
+But it gives you great sense about how powerful GraphQL is and at the same time how dangerous it can be if implemented wrongly.
 
-### 📚 _世界で働くエンジニア_
+For example:
+- DoS attacks via expensive, deeply nested queries
+- Authorization pitfalls when you forget field-level checks
+- Information disclosure through introspection
 
-https://store.london-tech-talk.com/products/book_engineers_working_abroad
+Highly recommended if you have chance to implement GraphQL server.
+
+-->
 
 ---
 
@@ -551,17 +554,6 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 **Questions?**
 
 <!--
-
-The talk mostly came out of my recent experience and realization, but I recently read this book about GraphQL: "Black Hat GraphQL"
-
-The power comes with responsibility: there are several things you need to be careful about when implementing GraphQL server.
-
-For example:
-- DoS attacks via expensive, deeply nested queries
-- Authorization pitfalls when you forget field-level checks
-- Information disclosure through introspection in production
-
-Highly recommended if you have chance to implement GraphQL server side.
 
 Thank you for listening!
 
