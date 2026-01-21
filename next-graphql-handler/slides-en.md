@@ -428,13 +428,16 @@ Let's check the example of calling this route handler from both Server and Clien
 
 ```ts
 // lib/urql.ts
-import { cacheExchange, fetchExchange } from "@urql/core";
+import { cacheExchange, createClient, fetchExchange } from "@urql/core";
 import { registerUrql } from "@urql/next/rsc";
 
-export const { getClient } = registerUrql(() => ({
-  url: "/api/graphql",
-  exchanges: [cacheExchange, fetchExchange],
-}));
+const makeClient = () =>
+  createClient({
+    url: "http://localhost:3000/api/graphql",
+    exchanges: [cacheExchange, fetchExchange],
+  });
+
+export const { getClient } = registerUrql(makeClient);
 ```
 
 <!--
@@ -491,10 +494,10 @@ This gives you compile-time type safety from schema to component (via codegen).
 ## urql Client Setup (Client Components)
 
 ```tsx
-// app/providers.tsx
+// app/providers/urql.tsx
 "use client";
 import type { ReactNode } from "react";
-import { createClient, Provider } from "@urql/next";
+import { createClient, UrqlProvider as NextUrqlProvider } from "@urql/next";
 import { cacheExchange, fetchExchange } from "@urql/core";
 
 const client = createClient({
@@ -502,8 +505,8 @@ const client = createClient({
   exchanges: [cacheExchange, fetchExchange],
 });
 
-export const Providers = ({ children }: { children: ReactNode }) => (
-  <Provider value={client}>{children}</Provider>
+export const UrqlProvider = ({ children }: { children: ReactNode }) => (
+  <NextUrqlProvider value={client}>{children}</NextUrqlProvider>
 );
 ```
 

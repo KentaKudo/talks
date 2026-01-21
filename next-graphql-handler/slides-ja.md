@@ -24,12 +24,12 @@ Today I'm going to give a Lightning Talk based on my recent thoughts on GraphQL 
 
 ---
 
-# About Me
+# 自己紹介
 
-- 💼 Freelance software engineer
-- 🏢 Previously at Mercari UK
-- 🌍 Lived in the UK for 6 years; returned to Japan 3 years ago
-- 🏯 Moved to Kansai last year — still very new to the area!
+- 💼 フリーランスのソフトウェアエンジニア
+- 🏢 以前はMercari UKに在籍
+- 🌍 イギリスに6年住み、3年前に帰国
+- 🏯 昨年関西に移住 — まだ新参者です！
 
 <!--
 
@@ -46,7 +46,7 @@ Before we get technical, let me use this opportunity to announce something...
 
 ---
 
-# 📚 Book Announcement
+# 📚 書籍のお知らせ
 
 <style scoped>
 .columns {
@@ -61,10 +61,10 @@ Before we get technical, let me use this opportunity to announce something...
 
 ## _世界で働くエンジニア_
 
-- 10 Japanese software engineers working abroad
-- Beta release now, official release at the end of this month
-- Available as epub and pdf files (free updates)
-- Spin-off from the **London Tech Talk** podcast community
+- 海外で働く日本人ソフトウェアエンジニア10名の共著
+- 現在ベータ版公開中、今月末に正式リリース
+- epub/pdfで提供（アップデートは無料）
+- **London Tech Talk**ポッドキャストコミュニティ発のスピンオフ
 
 </div>
 <div>
@@ -88,16 +88,6 @@ Please have a look if you're interested in the topic, or please introduce it to 
 The project spun out of the community around the London Tech Talk podcast, hosted by my friend Ken, who lives in London now.
 The podcast is also highly recommended. Please check it out too.
 
-日本語の本なので日本語でもアナウンスしますね。
-
-- "世界で働くエンジニア"というタイトルの本を共著で書きました
-- オムニバス形式の自叙伝になっていて、10人の海外で働く日本人エンジニアで書きました
-- 今はベータリリースで、正式リリースは今月末を予定しています
-- ですが、すでに購入して読んでもらうことは可能なので次のスライドでリンクを共有します
-- epubとpdfどちらでもダウンロードでき、今後アップデートがあった場合にも最新版をダウンロードできるようになっています
-- なのでこのトピックに興味があればぜひ読んで欲しいのと、知り合いで興味ありそうな人がいたらぜひ紹介してください
-- この出版プロジェクトはロンドンに住んでいる友達がやっているLondon Tech Talkというポッドキャストのコミュニティで立ち上げたものなので、ポッドキャストの方も興味があればぜひチェックしてみてください
-
 By the way, one of my hobbies is film photography, and this is a picture I took.
 
 -->
@@ -114,11 +104,11 @@ section {
 }
 </style>
 
-# Purchase the Book
+# 書籍の購入
 
 <img src="adobe-express-qr-code.png" width="400" />
 
-**Scan to get your copy!**
+**スキャンして購入！**
 
 https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
@@ -128,10 +118,10 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 And here's the link to the book checkout page.
 
-- 僕も通して読んでみて、手前味噌にはなるんですが、とても面白かったです
-- まさに十人十色の移住ストーリーがあり、いろんな味がする本になっています
-- 海外住む前に読んでいたらすごく影響を受けただろうなという本になっているのでぜひ手に取ってもらいたいです
-- URLはこのあと共有するスライドにあるのと、僕もReact OsakaのDiscordにいるので何か質問等あれば気軽に声かけてください
+- I read it all the way through, and it was really enjoyable (biased, but true).
+- It has ten different migration stories, each with its own flavor.
+- If I had read this before moving abroad, I would have been strongly influenced by it, so I hope you pick it up.
+- The URL is on this slide, and I'm also on the React Osaka Discord, so feel free to reach out if you have questions.
 
 If you have any questions about the book, please let me know!
 
@@ -142,12 +132,12 @@ Okay, let's move on to the talk.
 
 ---
 
-# Today's Agenda
+# 本日のアジェンダ
 
-1. **Introduction**: Do we still need GraphQL?
-2. **Rediscover GraphQL**: Straightforward queries and granular mutations
-3. **Co-Located Backend Architecture** with Route Handlers
-4. **Recap**: GraphQL can still be an option
+1. **導入**: GraphQLはまだ必要？
+2. **GraphQLの再発見**: 素直なクエリと粒度の細かいミューテーション
+3. **同居型バックエンド構成**: Route HandlersでGraphQLを内包
+4. **まとめ**: GraphQLはまだ有力な選択肢
 
 <!--
 
@@ -166,20 +156,20 @@ Let's get started!
 
 ---
 
-# 1. Introduction — "Do we still need GraphQL?"
+# 1. 導入 — 「GraphQLはまだ必要？」
 
-## The React Server Component Era
+## React Server Componentの時代
 
-- **RSC** enables server-side data fetching **_per component_**
-- Prior to RSC...
-  - Next.js pages router data fetching was page-level
-  - fetch all data in a single query
-- Recent argument: _"GraphQL is less necessary for RSC"_
+- **RSC**は**コンポーネント単位**でのサーバー側データ取得を可能にする
+- RSC以前は...
+  - Next.jsのPages Routerはページ単位のデータ取得
+  - 1回のクエリでデータをまとめて取得
+- 最近の主張: _「RSCではGraphQLは不要になりつつある」_
 
-## 💡 My Realization
+## 💡 気づき
 
-- **GraphQL benefits go beyond fetching all data at once**
-- Still useful for **contract + ergonomics**
+- **GraphQLの価値は「一括取得」だけではない**
+- **型安全性 + DX**の点で依然有用
 
 <!--
 
@@ -201,9 +191,9 @@ Let me elaborate on this.
 
 ---
 
-# 2. Rediscover GraphQL — Straightforward Queries
+# 2. GraphQLの再発見 — 素直なクエリ
 
-**Graph Structure**
+**グラフ構造**
 
 ```graphql
 query GetUserWithPosts($id: ID!) {
@@ -217,10 +207,10 @@ query GetUserWithPosts($id: ID!) {
 }
 ```
 
-💡 Query resources as a graph and traverse relations
-💡 Discoverability via schema/introspection (when enabled) + dev tooling like GraphiQL
-💡 Flexible selection without new endpoints
-💡 Ask about node relationships, not endpoints
+💡 グラフとしてリソースを問い合わせ、関係を辿れる
+💡 スキーマ/イントロスペクション（有効時）+ GraphiQLなどのツールによる発見性
+💡 新しいエンドポイントなしで柔軟に選択
+💡 エンドポイントではなくノードの関係を辿る
 
 <!--
 
@@ -242,7 +232,7 @@ The straightforwardness of the graph structure still provides great DX even for 
 
 ---
 
-# 2. Rediscover GraphQL — Ergonomic Mutations
+# 2. GraphQLの再発見 — 使いやすいミューテーション
 
 **REST API**
 
@@ -250,10 +240,10 @@ The straightforwardness of the graph structure still provides great DX even for 
 PATCH /posts/:id
 ```
 
-- PATCH often leads to broad input shapes
-- Resource-oriented endpoints carry big responsibility
-  - APIs often consolidate updates into broader endpoints
-- More business logic on the client
+- PATCHはリクエストボディが大きくなりがち
+- リソース指向のエンドポイントは責務が重い
+  - 更新が広いエンドポイントに集約されがち
+- クライアント側のビジネスロジックが増える
 
 <!--
 
@@ -271,7 +261,7 @@ The second point is the ergonomics of mutations.
 
 ---
 
-# 2. Rediscover GraphQL — Ergonomic Mutations
+# 2. GraphQLの再発見 — 使いやすいミューテーション
 
 **GraphQL**
 
@@ -286,10 +276,10 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 }
 ```
 
-**Advantages**:
-- RPC-style mutations make intent explicit
-- Business logic surfaces at the interface level
-- First-class typed arguments, discoverability, consistent ergonomics
+**利点**:
+- RPC風のミューテーションで意図が明確
+- ビジネスロジックがインターフェース上に現れる
+- 型付き引数、発見性、一貫したエルゴノミクス
 
 <!--
 
@@ -308,17 +298,17 @@ Any questions so far?
 
 ---
 
-# 3. Co-Located Backend Architecture — with Route Handlers
+# 3. 同居型バックエンド構成 — Route Handlers
 
-## Next.js Route Handlers
+## Next.jsのRoute Handlers
 
-- Server-side execution accessed like a backend API
+- サーバー側で実行され、バックエンドAPIのようにアクセス可能
   - App Router → **Route Handlers**
   - Pages Router → **API Routes**
 
-## Growing Trend
+## 増えている潮流
 
-- Building Next.js apps **without a separate backend service** using Route Handlers
+- Route Handlersを使い**別バックエンドなし**でNext.jsアプリを構築
 
 <!--
 
@@ -331,15 +321,15 @@ And I've seen more and more devs adopt the architecture to build Next.js applica
 
 ---
 
-# 3. Co-Located Backend Architecture — with Route Handlers
+# 3. 同居型バックエンド構成 — Route Handlers
 
-## 🚀 Template Available
+## 🚀 テンプレート
 
-GitHub repository template: GraphQL + Route Handlers
+GitHubリポジトリテンプレート: GraphQL + Route Handlers
 
 https://github.com/KentaKudo/next-graphql-handler
 
-_Note: This template demonstrates the core concepts and is not intended for production; add auth, error handling, etc._
+_注: このテンプレートは概念のデモ用です。本番向けには認証やエラーハンドリング等が必要です。_
 
 <!--
 
@@ -356,7 +346,7 @@ Let me walk through the gist of it with code snippets from the repo.
 
 ---
 
-# 3. Co-Located Backend Architecture — Route Handlers
+# 3. 同居型バックエンド構成 — Route Handlers
 
 `/api/graphql/route.ts`
 
@@ -373,7 +363,7 @@ const { handleRequest } = createYoga({
 export { handleRequest as GET, handleRequest as POST };
 ```
 
-For Apollo Server → [@as-integrations/next](https://github.com/apollo-server-integrations/apollo-server-integration-next)
+Apollo Serverなら → [@as-integrations/next](https://github.com/apollo-server-integrations/apollo-server-integration-next)
 
 <!--
 
@@ -392,13 +382,13 @@ I didn't try it, but if you prefer Apollo Server, the @as-integrations/next pack
 
 ---
 
-# 3. Co-Located Backend Architecture — Client Side
+# 3. 同居型バックエンド構成 — クライアント側
 
-## Tech Stack
+## 技術スタック
 
-- **graphql-codegen**: Generate TypeScript from GraphQL queries
-- **urql**: GraphQL client library
-- Hit `/api/graphql` endpoint
+- **graphql-codegen**: GraphQLクエリからTypeScriptを生成
+- **urql**: GraphQLクライアントライブラリ
+- `/api/graphql`エンドポイントを叩く
 
 <!--
 
@@ -412,19 +402,22 @@ Let's check the example of calling this route handler from both Server and Clien
 
 ---
 
-# 3. Co-Located Backend Architecture — Client Side
+# 3. 同居型バックエンド構成 — クライアント側
 
-## urql Client Setup (Server Components)
+## urqlクライアント設定（Server Components）
 
 ```ts
 // lib/urql.ts
-import { cacheExchange, fetchExchange } from "@urql/core";
+import { cacheExchange, createClient, fetchExchange } from "@urql/core";
 import { registerUrql } from "@urql/next/rsc";
 
-export const { getClient } = registerUrql(() => ({
-  url: "/api/graphql",
-  exchanges: [cacheExchange, fetchExchange],
-}));
+const makeClient = () =>
+  createClient({
+    url: "http://localhost:3000/api/graphql",
+    exchanges: [cacheExchange, fetchExchange],
+  });
+
+export const { getClient } = registerUrql(makeClient);
 ```
 
 <!--
@@ -440,9 +433,9 @@ The client targets the same /api/graphql route handler.
 
 ---
 
-# 3. Co-Located Backend Architecture — Client Side
+# 3. 同居型バックエンド構成 — クライアント側
 
-**Example: Server Component**
+**例: Server Component**
 
 ```tsx
 import { graphql } from "@/graphql";
@@ -476,15 +469,15 @@ This gives you compile-time type safety from schema to component (via codegen).
 
 ---
 
-# 3. Co-Located Backend Architecture — Client Side
+# 3. 同居型バックエンド構成 — クライアント側
 
-## urql Client Setup (Client Components)
+## urqlクライアント設定（Client Components）
 
 ```tsx
-// app/providers.tsx
+// app/providers/urql.tsx
 "use client";
 import type { ReactNode } from "react";
-import { createClient, Provider } from "@urql/next";
+import { createClient, UrqlProvider as NextUrqlProvider } from "@urql/next";
 import { cacheExchange, fetchExchange } from "@urql/core";
 
 const client = createClient({
@@ -492,8 +485,8 @@ const client = createClient({
   exchanges: [cacheExchange, fetchExchange],
 });
 
-export const Providers = ({ children }: { children: ReactNode }) => (
-  <Provider value={client}>{children}</Provider>
+export const UrqlProvider = ({ children }: { children: ReactNode }) => (
+  <NextUrqlProvider value={client}>{children}</NextUrqlProvider>
 );
 ```
 
@@ -508,9 +501,9 @@ You can access the client through the standard useQuery hook.
 
 ---
 
-# 3. Co-Located Backend Architecture — Client Side
+# 3. 同居型バックエンド構成 — クライアント側
 
-**Example: Client Component**
+**例: Client Component**
 
 ```tsx
 "use client";
@@ -544,19 +537,19 @@ And also you can mix it with Server Actions to provide the best user experience.
 
 ---
 
-# 4. Recap — When GraphQL Still Shines
+# 4. まとめ — GraphQLがまだ輝く時
 
-## RSC + BFF Pattern
+## RSC + BFFパターン
 
-RSC enables co-located fetching, but you can still benefit from:
+RSCで同居型取得が可能になっても、次の価値は残る:
 
-✅ **Typed, discoverable, stable contract** (GraphQL schema)
-✅ **Powerful combination**: Flexible graph queries & ergonomic mutations (RPC-style)
-✅ **Co-Located Architecture**: Next.js + GraphQL + Route Handlers
+✅ **型付きで見通しの良いスキーマ**（GraphQL）
+✅ **強力な組み合わせ**: 柔軟なグラフクエリ & 使いやすいミューテーション（RPC風）
+✅ **同居型アーキテクチャ**: Next.js + GraphQL + Route Handlers
 
-## Bottom Line
+## 結論
 
-RSC changes **where** you fetch, not **what** your interface contract should be
+RSCは **_どこで_** 取得するかを変えるだけで、そのインターフェイスが **_どうあるべきか_** は変えない
 
 <!--
 
@@ -576,15 +569,15 @@ GraphQL should still remain as a great option for frontend and backend communica
 
 ---
 
-# References
+# 参考資料
 
 
-- 📖 Recommended Reading: Black Hat GraphQL
+- 📖 おすすめ: Black Hat GraphQL
   - https://nostarch.com/black-hat-graphql
-  - **DoS via expensive queries** (deeply nested queries)
-  - **Authorization pitfalls** (forgetting field-level checks)
-  - **Information disclosure** (introspection in production)
-- 🚀 Template Repository
+  - **高コストなクエリによるDoS**（深いネスト）
+  - **認可の落とし穴**（フィールド単位のチェック漏れ）
+  - **情報漏洩**（本番でのイントロスペクション）
+- 🚀 テンプレートリポジトリ
   - https://github.com/KentaKudo/next-graphql-handler
 - 📚 _世界で働くエンジニア_
   - Book: https://store.london-tech-talk.com/products/book_engineers_working_abroad
@@ -608,9 +601,9 @@ Highly recommended if you have a chance to implement a GraphQL server.
 
 ---
 
-# Thank You! 🙏
+# ご清聴ありがとうございました！ 🙏
 
-**Questions?**
+**質問はありますか？**
 
 <!--
 
@@ -630,13 +623,13 @@ Thank you for listening!
 
 ---
 
-## APPX. Easy Migration
+## 付録: 簡単な移行
 
-Want to spin up a separate server?
+別サーバーを立てたい？
 
-→ Yoga is framework-agnostic; only the adapter changes
-→ Just hook the Yoga instance into Express, Hono, etc.
-→ Keep React/Next.js-specific code in the binding layer
+→ Yogaはフレームワーク非依存で、変わるのはアダプタだけ
+→ ExpressやHonoなどにYogaを組み込むだけ
+→ React/Next.js特有のコードはバインディング層に閉じ込める
 
 <!--
 
@@ -649,25 +642,25 @@ Just be careful to contain all the React/Next.js support in the route.ts.
 
 ---
 
-# APPX. Code-first vs Schema-first
+# 付録: Code-first vs Schema-first
 
-### Code-first
+### コードファースト
 
-Generate GraphQL schema from codebase
-→ Code is the source of truth
-**When to choose**: Great DX in TypeScript mono-repo
+コードベースからGraphQLスキーマを生成
+→ コードが真実のソース
+**選ぶとき**: TypeScriptモノレポでDXが良い
 
-### Schema-first
+### スキーマファースト
 
-Write schema, generate resolver skeleton
-→ Schema is the source of truth
-**When to choose**: Language-agnostic teams / schema governance
+スキーマを書いて、リゾルバの骨組みを生成
+→ スキーマが真実のソース
+**選ぶとき**: 言語横断チーム / スキーマガバナンス
 
-### My Preference: Code-first with Pothos
+### 私の好み: Pothosのコードファースト
 
-Template uses **Pothos GraphQL** for code-first approach
+テンプレートは**Pothos GraphQL**でコードファーストを採用
 
-_(But choose whatever works for you!)_
+_(でも、状況に合わせて選べばOKです！)_
 
 <!--
 
@@ -685,7 +678,7 @@ But of course you can choose whichever style you like.
 
 ---
 
-# APPX. Code-first Example with Pothos
+# 付録: Pothosでのコードファースト例
 
 ```ts
 import SchemaBuilder from "@pothos/core";
@@ -704,7 +697,7 @@ builder.queryType({
 export const schema = builder.toSchema();
 ```
 
-Type-safe, concise, and TypeScript-native
+型安全で簡潔、TypeScriptネイティブ
 
 <!--
 
@@ -720,16 +713,16 @@ If you refactor your TypeScript types, the schema automatically updates.
 
 ---
 
-# APPX. Production Considerations — GraphQL is Powerful: Protect It
+# 付録: 本番運用の注意点 — GraphQLは強力、守るべき
 
-## Security & Performance
+## セキュリティと性能
 
-⚠️ **Authorization**: Field-level auth (not only route level)
-⚠️ **N+1 Prevention**: Batching / DataLoader patterns
-⚠️ **Query Complexity**: Depth & cost limits
-⚠️ **Introspection**: Disable in production (or gate it)
-⚠️ **Error Masking**: Don't leak internal errors
-⚠️ **Rate Limiting**: Protect against abuse
+⚠️ **認可**: フィールド単位の認可（ルート単位だけでなく）
+⚠️ **N+1対策**: バッチング / DataLoaderパターン
+⚠️ **クエリ複雑度**: 深さ・コスト制限
+⚠️ **イントロスペクション**: 本番では無効化（または制限）
+⚠️ **エラーマスキング**: 内部エラーを漏らさない
+⚠️ **レート制限**: 乱用対策
 
 <!--
 
