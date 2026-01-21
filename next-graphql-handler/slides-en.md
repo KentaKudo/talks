@@ -7,12 +7,6 @@ backgroundColor: #1a1a1a
 color: #f2f2f2
 ---
 
-<!--
-TODO:
-  - translate the slides into Japanese
-  - add Japanese announcement
--->
-
 `#LT` `#GraphQL` `#Next.js` `#RouteHandlers` `#RSC`
 
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
@@ -86,15 +80,25 @@ I co-authored a book titled "世界で働くエンジニア"
 
 - It's an omnibus-style autobiography by 10 different Japanese software engineers working abroad.
 - The book is currently in beta release and will be officially released at the end of this month.
-- But you can already purchase it, and I'll show you the link to the detail page in the next slide.
+- But you can already read it, and I'll show you the link to the detail page in the next slide.
 - The book is available as epub and pdf files, and you can get free updates whenever a new version is published.
 
-Please have a look if you're interested, or please introduce it to your friends who might be interested. Feedback is also very welcome.
-
-By the way, one of my hobbies is film photography, and this is a picture I took in Amsterdam.
+Please have a look if you're interested in the topic, or please introduce it to your friends who might be interested. Feedback is also very welcome.
 
 The project spun out of the community around the London Tech Talk podcast, hosted by my friend Ken, who lives in London now.
 The podcast is also highly recommended. Please check it out too.
+
+日本語の本なので日本語でもアナウンスしますね。
+
+- "世界で働くエンジニア"というタイトルの本を共著で書きました
+- オムニバス形式の自叙伝になっていて、10人の海外で働く日本人エンジニアで書きました
+- 今はベータリリースで、正式リリースは今月末を予定しています
+- ですが、すでに購入して読んでもらうことは可能なので次のスライドでリンクを共有します
+- epubとpdfどちらでもダウンロードでき、今後アップデートがあった場合にも最新版をダウンロードできるようになっています
+- なのでこのトピックに興味があればぜひ読んで欲しいのと、知り合いで興味ありそうな人がいたらぜひ紹介してください
+- この出版プロジェクトはロンドンに住んでいる友達がやっているLondon Tech Talkというポッドキャストのコミュニティで立ち上げたものなので、ポッドキャストの方も興味があればぜひチェックしてみてください
+
+By the way, one of my hobbies is film photography, and this is a picture I took.
 
 -->
 
@@ -122,13 +126,12 @@ https://store.london-tech-talk.com/products/book_engineers_working_abroad
 
 **[STAY ON THIS SLIDE - Let audiences scan the QR code]**
 
-And here's the link to the book detail page.
+And here's the link to the book checkout page.
 
-- I read through the book, and honestly it's a really fun and inspiring read.
-- You can enjoy ten different life stories about how they ended up working abroad.
-- I would have been motivated if I had read the book before I moved abroad.
-
-The link is included in the slides I'm going to share after the talk, and I'm also reachable on the Discord channel.
+- 僕も通して読んでみて、手前味噌にはなるんですが、とても面白かったです
+- まさに十人十色の移住ストーリーがあり、いろんな味がする本になっています
+- 海外住む前に読んでいたらすごく影響を受けただろうなという本になっているのでぜひ手に取ってもらいたいです
+- URLはこのあと共有するスライドにあるのと、僕もReact OsakaのDiscordにいるので何か質問等あれば気軽に声かけてください
 
 If you have any questions about the book, please let me know!
 
@@ -179,6 +182,7 @@ Let's get started!
 - Still useful for **contract + ergonomics**
 
 <!--
+
 React Server Components are gradually being adopted and used in real-world systems, even though they've been experiencing some issues.
 
 - With the emergence of RSC, you can now fetch data on the server side *per component*
@@ -192,6 +196,7 @@ React Server Components are gradually being adopted and used in real-world syste
 - Then I recently had a chance to design a REST API for an RSC-enabled Next.js application, and realized the benefit of GraphQL is not only that you can fetch all the data at once; it still provides value through its typed, discoverable contract and excellent ergonomics.
 
 Let me elaborate on this.
+
 -->
 
 ---
@@ -239,7 +244,7 @@ The straightforwardness of the graph structure still provides great DX even for 
 
 # 2. Rediscover GraphQL — Ergonomic Mutations
 
-## REST API
+**REST API**
 
 ```
 PATCH /posts/:id
@@ -247,8 +252,8 @@ PATCH /posts/:id
 
 - PATCH often leads to broad input shapes
 - Resource-oriented endpoints carry big responsibility
+  - APIs often consolidate updates into broader endpoints
 - More business logic on the client
-- Resource-oriented APIs often consolidate updates into broader endpoints
 
 <!--
 
@@ -268,7 +273,7 @@ The second point is the ergonomics of mutations.
 
 # 2. Rediscover GraphQL — Ergonomic Mutations
 
-## GraphQL
+**GraphQL**
 
 ```graphql
 mutation UpdatePostTitle($id: ID!, $title: String!) {
@@ -283,8 +288,8 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 
 **Advantages**:
 - RPC-style mutations make intent explicit
-- First-class typed arguments, discoverability, consistent ergonomics
 - Business logic surfaces at the interface level
+- First-class typed arguments, discoverability, consistent ergonomics
 
 <!--
 
@@ -296,6 +301,8 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 The combination of the interface, graph structure for queries, and RPC-style mutations is very unique to GraphQL, and IMO still is a very suitable option for frontend-backend communication, providing great DX for both frontend and backend devs even with RSC, where more granular data fetching is preferred.
 
 Now, let's step away from GraphQL for a moment and talk about Route Handlers.
+
+Any questions so far?
 
 -->
 
@@ -390,7 +397,7 @@ I didn't try it, but if you prefer Apollo Server, the @as-integrations/next pack
 ## Tech Stack
 
 - **graphql-codegen**: Generate TypeScript from GraphQL queries
-- **urql**: GraphQL client library for client components
+- **urql**: GraphQL client library
 - Hit `/api/graphql` endpoint
 
 <!--
@@ -422,7 +429,9 @@ export const { getClient } = registerUrql(() => ({
 
 <!--
 
-For Server Components, I use registerUrql from @urql/next/rsc.
+This is a urql client setup for Server Components.
+
+For Server Components, I use registerUrql from @urql/next/rsc package.
 It gives me a getClient() helper that I can call inside Server Component.
 
 The client targets the same /api/graphql route handler.
@@ -490,8 +499,10 @@ export const Providers = ({ children }: { children: ReactNode }) => (
 
 <!--
 
-For Client Components, I wrap the app with Provider from @urql/next.
-Then you can access the client through the standard useQuery hook.
+For Client Components,
+
+I setup the client using createClient() method, pass it to the Provider from @urql/next, and wrap the app with it.
+You can access the client through the standard useQuery hook.
 
 -->
 
@@ -521,7 +532,7 @@ export const ClientComponent = () => {
 
 <!--
 
-This is the Client Component.
+Like this.
 
 Similarly to the Server Component, it defines the query it uses.
 And it executes the query using the useQuery hook which then uses the client set up in the previous slide.
