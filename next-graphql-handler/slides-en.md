@@ -32,10 +32,10 @@ Today I'm going to give a Lightning Talk based on my recent thoughts on GraphQL 
 
 # About Me
 
-- 💼 Freelance Software Engineer
+- 💼 Freelance software engineer
 - 🏢 Previously at Mercari UK
-- 🌍 Lived in the UK for 6 years
-- 🏯 Moved to Kansai last year — Still very new!
+- 🌍 Lived in the UK for 6 years; returned to Japan 3 years ago
+- 🏯 Moved to Kansai last year — still very new to the area!
 
 <!--
 
@@ -68,9 +68,9 @@ Before we get technical, let me use this opportunity to announce something...
 ## _世界で働くエンジニア_
 
 - 10 Japanese software engineers working abroad
-- Beta release now, official release end of month
-- Available as epub and pdf (free updates)
-- Spin-off from **London Tech Talk** podcast
+- Beta release now, official release at the end of this month
+- Available as epub and pdf files (free updates)
+- Spin-off from the **London Tech Talk** podcast community
 
 </div>
 <div>
@@ -168,7 +168,9 @@ Let's get started!
 ## The React Server Component Era
 
 - **RSC** enables server-side data fetching **_per component_**
-- Prior to RSC: fetch all data in a single query
+- Prior to RSC...
+  - only page routes fetched on the server
+  - fetch all data in a single query
 - Recent argument: _"GraphQL is less necessary for RSC"_
 
 ## 💡 My Realization
@@ -196,7 +198,7 @@ Let me elaborate on this.
 
 # 2. Rediscover GraphQL — Straightforward Queries
 
-## Graph Structure
+**Graph Structure**
 
 ```graphql
 query GetUserWithPosts($id: ID!) {
@@ -210,8 +212,10 @@ query GetUserWithPosts($id: ID!) {
 }
 ```
 
-💡 Navigate nodes by tracing relations
-_(Schema design still matters: connections, pagination, etc.)_
+💡 Query resources as a graph and traverse relations
+💡 Discoverability via introspection and GraphiQL
+💡 Flexible selection without new endpoints
+💡 Ask about node relationships, not endpoints
 
 <!--
 
@@ -241,8 +245,10 @@ The straightforwardness of the graph structure still provides great DX even for 
 PATCH /posts/:id
 ```
 
-- Complex arguments
-- Requires scrutinizing API docs
+- PATCH updates any fields → complex inputs
+- Resource-oriented endpoints carry big responsibility
+- More business logic on the client
+- URI + HTTP method limits actions, so each endpoint grows heavy
 
 <!--
 
@@ -276,7 +282,8 @@ mutation UpdatePostTitle($id: ID!, $title: String!) {
 ```
 
 **Advantages**:
-- First-class typed arguments + discoverability + consistent client ergonomics
+- RPC-style mutations make intent explicit
+- First-class typed arguments, discoverability, consistent ergonomics
 - Business logic surfaces at the interface level
 
 <!--
@@ -325,7 +332,7 @@ GitHub repository template: GraphQL + Route Handlers
 
 https://github.com/KentaKudo/next-graphql-handler
 
-_Note: This template demonstrates the core concepts and is NOT intended to be used in production environment._
+_Note: This template demonstrates the core concepts and is not intended for production; add auth, error handling, etc._
 
 <!--
 
