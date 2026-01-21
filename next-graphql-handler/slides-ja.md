@@ -232,7 +232,7 @@ The straightforwardness of the graph structure still provides great DX even for 
 
 ---
 
-# 2. GraphQLの再発見 — 使いやすいミューテーション
+# 2. GraphQLの再発見 — 使いやすいmutation
 
 **REST API**
 
@@ -261,7 +261,7 @@ The second point is the ergonomics of mutations.
 
 ---
 
-# 2. GraphQLの再発見 — 使いやすいミューテーション
+# 2. GraphQLの再発見 — 使いやすいmutation
 
 **GraphQL**
 
