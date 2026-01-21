@@ -13,7 +13,7 @@ TODO:
   - add Japanese announcement
 -->
 
-`#LT` `#GraphQL` `#Next.js` `#Route Handler` `#RSC`
+`#LT` `#GraphQL` `#Next.js` `#RouteHandlers` `#RSC`
 
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
 
@@ -143,7 +143,7 @@ Okay, let's move on to the talk.
 
 1. **Introduction**: Do we still need GraphQL?
 2. **Rediscover GraphQL**: Straightforward queries and granular mutations
-3. **Co-Located Backend Architecture** with Route Handler
+3. **Co-Located Backend Architecture** with Route Handlers
 4. **Recap**: GraphQL can still be an option
 
 <!--
@@ -169,7 +169,7 @@ Let's get started!
 
 - **RSC** enables server-side data fetching **_per component_**
 - Prior to RSC...
-  - only page routes fetched on the server
+  - Next.js pages router data fetching was page-level
   - fetch all data in a single query
 - Recent argument: _"GraphQL is less necessary for RSC"_
 
@@ -181,11 +181,11 @@ Let's get started!
 <!--
 React Server Components are gradually being adopted and used in real-world systems, even though they've been experiencing some issues.
 
-- With the emergence of RSC, you can now fetch data on the server side *PER COMPONENT*
+- With the emergence of RSC, you can now fetch data on the server side *per component*
   - Prior to RSC, the best practice was to fetch all the relevant data on the page in a single query and pass it down to where it needs to go
-  - This is because at that time only page routes could fetch data on the server side
+  - This is because at that time data fetching in the Next.js pages router was page-level
   - GraphQL fit very well for this use case, turning it into one of the best options for frontend-backend communication
-- However, RSC enabled each component to fetch only the data they need by themselves without sacrificing performance
+- However, RSC enabled each component to fetch only the data they need by themselves
   - Some say "GraphQL is less necessary for RSC"
 
 - I've had some experience using GraphQL as a BFF, Backend for Frontend, for some time now
@@ -213,7 +213,7 @@ query GetUserWithPosts($id: ID!) {
 ```
 
 💡 Query resources as a graph and traverse relations
-💡 Discoverability via introspection and GraphiQL
+💡 Discoverability via schema/introspection (when enabled) + dev tooling like GraphiQL
 💡 Flexible selection without new endpoints
 💡 Ask about node relationships, not endpoints
 
@@ -225,9 +225,9 @@ The first point is the straightforwardness of queries
   - Meaning you can navigate one node after another, tracing the relationships it has
   - In this query example, a user has a posts node that returns the posts the user has
   - The mental model is so straightforward that I don't even need to read through API documentation
-    - ...You might still need to read documentation but it's very likely provided as introspection with handy built-in web UI such as GraphiQL.
+    - ...You might still need to read documentation but it's very likely provided as introspection (when enabled) with handy built-in web UI such as GraphiQL.
     - more importantly, because of its graph structure, the question becomes "I assume node X has node Y—does it?" instead of "Which endpoint returns what I need?"
-- Also one of the best-selling points of GraphQL has been that you can fetch as much data as you want without needing to ask backend devs to update the API
+- Also one of the best-selling points of GraphQL has been that you can fetch as much data as you want without needing to ask backend devs to update the API (as long as fields exist)
   - This is because as long as the resolver for the node is implemented, how you access the data is left to client developers
   - You may get a user node from different queries or mutations, but as long as it's the same user node there is always a posts node under it
 
@@ -245,22 +245,22 @@ The straightforwardness of the graph structure still provides great DX even for 
 PATCH /posts/:id
 ```
 
-- PATCH updates any fields → complex inputs
+- PATCH often leads to broad input shapes
 - Resource-oriented endpoints carry big responsibility
 - More business logic on the client
-- URI + HTTP method limits actions, so each endpoint grows heavy
+- Resource-oriented APIs often consolidate updates into broader endpoints
 
 <!--
 
 The second point is the ergonomics of mutations.
 
 - In REST API, you'd define a PATCH endpoint to update a specific post like this
-- This gives the endpoint responsibility to update any properties of the post, making the input of the endpoint complicated
+- This gives the endpoint responsibility to update many properties of the post, making the input of the endpoint complicated
 - This requires client devs to spelunk the API docs to understand and call the endpoint in the way the backend expects it to be consumed
 - REST API is resource-oriented and the endpoints are designed as a combination of a URI as a resource identifier and an HTTP method as an action
-- Because there are not many actions you can perform on a resource, each endpoint tends to take big responsibility
+- Resource-oriented APIs often consolidate updates into broader endpoints, so each endpoint tends to take big responsibility
   - for example PATCH endpoint to update any fields of a specific post
-- This ends up having more business logic on the client side
+- This can push more business logic to the client side
 
 -->
 
@@ -301,7 +301,7 @@ Now, let's step away from GraphQL for a moment and talk about Route Handlers.
 
 ---
 
-# 3. Co-Located Backend Architecture — with Route Handler
+# 3. Co-Located Backend Architecture — with Route Handlers
 
 ## Next.js Route Handlers
 
@@ -324,7 +324,7 @@ And I've seen more and more devs adopt the architecture to build Next.js applica
 
 ---
 
-# 3. Co-Located Backend Architecture — with Route Handler
+# 3. Co-Located Backend Architecture — with Route Handlers
 
 ## 🚀 Template Available
 
@@ -349,7 +349,7 @@ Let me walk through the gist of it with code snippets from the repo.
 
 ---
 
-# 3. Co-Located Backend Architecture — Route Handler
+# 3. Co-Located Backend Architecture — Route Handlers
 
 `/api/graphql/route.ts`
 
@@ -397,9 +397,9 @@ I didn't try it, but if you prefer Apollo Server, the @as-integrations/next pack
 
 Moving on to the client side, I used the graphql-codegen package to generate TypeScript code from GraphQL queries and then use urql as a client library.
 
-By hitting `/api/graphql`, it can get the result via GraphQL Route Handler.
+By hitting `/api/graphql`, it can get the result via the GraphQL route handler.
 
-Let's check the example of calling this Route Handler from both a Server Component and a Client Component.
+Let's check the example of calling this route handler from both Server and Client Components.
 
 -->
 
@@ -461,7 +461,7 @@ And this is the Server Component that consumes the client.
 The query is defined and graphql-codegen generates TypeScript code from it.
 It then directly awaits the query using the urql client.
 
-This gives you full type safety from schema to component.
+This gives you compile-time type safety from schema to component (via codegen).
 
 -->
 
@@ -537,7 +537,7 @@ And also you can mix it with Server Actions to provide the best user experience.
 
 ## RSC + BFF Pattern
 
-RSC enables colocated fetching, but you can still benefit from:
+RSC enables co-located fetching, but you can still benefit from:
 
 ✅ **Typed, discoverable, stable contract** (GraphQL schema)
 ✅ **Powerful combination**: Flexible graph queries & ergonomic mutations (RPC-style)
@@ -553,7 +553,7 @@ Let me recap the talk.
 
 Even with RSC, GraphQL provides value:
 
-- RSC enables colocated fetching at the component level, but you can still benefit from a typed, discoverable, and stable contract
+- RSC enables co-located fetching at the component level, but you can still benefit from a typed, discoverable, and stable contract
 - The power of GraphQL comes from the combination of its flexible query and easy-to-understand mutation interface
 - Demonstrated Co-Located Backend Architecture with Next.js + GraphQL powered by Route Handlers
 
