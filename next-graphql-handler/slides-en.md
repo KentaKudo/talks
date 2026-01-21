@@ -7,6 +7,16 @@ backgroundColor: #1a1a1a
 color: #f2f2f2
 ---
 
+<!--
+
+TODO:
+- translate the slide in japanese
+- export it as power point
+- upload to drive and check the transcript
+- run through the session
+
+-->
+
 `#LT` `#GraphQL` `#Next.js` `#RouteHandlers` `#RSC`
 
 # Revisiting GraphQL in the RSC Era, and Co-Located GraphQL Backend Inside Next.js
