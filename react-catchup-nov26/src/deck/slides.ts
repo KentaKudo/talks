@@ -96,7 +96,14 @@ return <ViewTransition>
   {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',
     title: copy('A ref, without the extra div.', 'ref のための div、もう不要。'),
-    code: `const group = useRef<FragmentInstance>(null)\n\n<Fragment ref={group}>\n  <NameField />\n  <EmailField />\n</Fragment>\n\n// Focus the first focusable descendant\ngroup.current?.focus()\n\n// Or observe the group's DOM children\ngroup.current?.observeUsing(observer)`, filename: 'FieldGroup.tsx',
+    code: `const group = useRef<FragmentInstance>(null)
+
+<div className="grid">
+  <Fragment ref={group}>
+    <SummaryCard />
+    <ActivityCard />
+  </Fragment>
+</div>`, filename: 'Dashboard.tsx · excerpt',
     items: [
       { title: copy('Keep the DOM flat', 'DOM 構造を変えない'), text: copy('Useful in grids, flex layouts, and component composition.', 'Grid・Flex やコンポーネントの組み合わせに便利。') },
       { title: copy('Work with a group', 'グループ単位で操作'), text: copy('Focus, measure, listen, or attach an observer.', 'フォーカス・計測・イベント・Observer をまとめて扱う。') },
@@ -104,10 +111,20 @@ return <ViewTransition>
   },
   {
     id: 'fragment-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'fragment',
-    filename: 'Demos.tsx · excerpt', code: `const group = useRef<FragmentInstance>(null)\n\n<div className="fragment-grid">\n  <Fragment ref={group}>\n    <label>Name <input /></label>\n    <label>Email <input type="email" /></label>\n  </Fragment>\n</div>\n\n<button onClick={() => group.current?.focus()}>\n  Focus first field\n</button>`,
-    title: copy('Focus the group. Skip the wrapper.', 'ラッパーなしで、フォーカス。'),
-    subtitle: copy('The two fields are direct children of a CSS grid.', '2 つの入力欄は CSS Grid の直接の子要素。'),
-    takeaway: copy('FragmentInstance provides group operations; it is not an HTMLElement.', 'FragmentInstance はグループ操作用。HTMLElement ではない。'), source: fragments,
+    filename: 'Demos.tsx · excerpt', code: `useEffect(() => {
+  const fragment = group.current
+  if (!fragment) return
+
+  const observer = new ResizeObserver(entries => {
+    // Read each card's width from entries.
+    updateWidths(entries)
+  })
+  fragment.observeUsing(observer)
+  return () => fragment.unobserveUsing(observer)
+}, [])`,
+    title: copy('One observer for both Grid cards.', 'Grid のカード 2 枚をまとめて監視。'),
+    subtitle: copy('Widen the first column to see both measurements update.', '左の列を広げると、両方のカードの幅が更新される。'),
+    takeaway: copy('One Fragment ref observes the cards. Both stay direct Grid children.', 'Fragment ref ひとつで 2 枚を監視。どちらも Grid の直接の子要素。'), source: fragments,
   },
   {
     id: 'browser', section: '01 / REACT · BROWSER-ONLY RENDERING',

@@ -1,4 +1,4 @@
-import { Fragment, ViewTransition, startTransition, useRef, useState, type FragmentInstance } from 'react'
+import { Fragment, ViewTransition, startTransition, useEffect, useRef, useState, type FragmentInstance } from 'react'
 import type {} from 'react-dom'
 
 export function Demos({ kind, lang }: { kind: 'transition' | 'fragment'; lang: 'ja' | 'en' }) {
@@ -28,15 +28,42 @@ function TransitionDemo({ ja }: { ja: boolean }) {
 
 function FragmentDemo({ ja }: { ja: boolean }) {
   const group = useRef<FragmentInstance>(null)
+  const [wide, setWide] = useState(false)
+  const [widths, setWidths] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    const fragment = group.current
+    if (!fragment || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(entries => {
+      setWidths(previous => {
+        const next = { ...previous }
+        for (const { target, contentRect } of entries) {
+          next[target.id] = Math.round(contentRect.width)
+        }
+        return next
+      })
+    })
+    fragment.observeUsing(observer)
+    return () => fragment.unobserveUsing(observer)
+  }, [])
+
   return <>
-    <div className="fragment-grid">
-      <div className="grid-label">CSS GRID</div>
+    <div className={`fragment-grid${wide ? ' fragment-grid-wide' : ''}`} role="group" aria-label="CSS Grid">
       <Fragment ref={group}>
-        <label>{ja ? '名前' : 'Name'}<input placeholder="React" /></label>
-        <label>{ja ? 'メール' : 'Email'}<input type="email" placeholder="hello@react.dev" /></label>
+        <GridCard id="summary-card" title={ja ? '概要' : 'Summary'} width={widths['summary-card']} />
+        <GridCard id="activity-card" title={ja ? '履歴' : 'Activity'} width={widths['activity-card']} />
       </Fragment>
     </div>
-    <button className="pill-button primary" onClick={() => group.current?.focus()}>{ja ? '最初の入力にフォーカス' : 'Focus first field'} <span aria-hidden="true">→</span></button>
-    <p className="demo-explanation">grid → label + label <span className="no-wrapper">{ja ? '追加の div なし' : 'no extra div'}</span></p>
+    <button className="pill-button primary" aria-pressed={wide} onClick={() => setWide(value => !value)}>
+      {ja ? '左の列を広げる' : 'Widen the first column'}
+    </button>
+    <p className="demo-explanation">1 ResizeObserver → 2 {ja ? '枚のカード' : 'cards'} <span className="no-wrapper">{ja ? '追加の div なし' : 'no extra div'}</span></p>
   </>
+}
+
+function GridCard({ id, title, width }: { id: string; title: string; width?: number }) {
+  return <article id={id} className="fragment-card">
+    <strong>{title}</strong>
+    <span>{width === undefined ? '—' : `${width} px`}</span>
+  </article>
 }
