@@ -64,6 +64,18 @@ export const slides: Slide[] = [
     takeaway: copy('View Transitions and Fragment refs are stable.', 'View Transitions と Fragment refs が stable に。'), source: reactRelease,
   },
   {
+    id: 'transition-background', section: '01 / REACT · VIEW TRANSITIONS', layout: 'flow',
+    title: copy('App-like transitions on the web.', 'Web でも、アプリのような画面遷移。'),
+    subtitle: copy('React’s <ViewTransition> uses the browser’s View Transition API to animate UI changes.', 'React の <ViewTransition> は、ブラウザの View Transition API で UI の変化をアニメーションにする。'),
+    items: [
+      { title: copy('2023 · Chrome 111', '2023 · Chrome 111'), text: copy('Same-document transitions. Now supported by all major browsers.', '同じページ内での遷移。現在は主要ブラウザで利用できる。') },
+      { title: copy('2024 · Chrome 126', '2024 · Chrome 126'), text: copy('Transitions between same-origin pages. Still off by default in Firefox stable.', '同一オリジンのページ間でも遷移。Firefox 安定版ではまだデフォルト無効。') },
+      { title: copy('April 2025 · React', '2025 年 4 月 · React'), text: copy('Experimental <ViewTransition>, then stable in React 19.3.', '実験版の <ViewTransition> を公開。React 19.3 で安定版に。') },
+    ],
+    takeaway: copy('Up next: animate a card change within the same page.', '次は、同じページ内でカードを切り替えるデモ。'),
+    source: { label: 'React Labs · View Transitions', url: 'https://react.dev/blog/2025/04/23/react-labs-view-transitions-activity-and-more#view-transitions' },
+  },
+  {
     id: 'transition-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'transition',
     filename: 'Demos.tsx · excerpt', code: `const [stop, setStop] = useState(0)\n\n<ViewTransition>\n  <strong>{cities[stop]}</strong>\n</ViewTransition>\n\n<button onClick={() => startTransition(() => {\n  setStop(value => (value + 1) % cities.length)\n})}>Next stop</button>`,
     title: copy('Same component. Next stop.', '同じコンポーネント、次の街へ。'),
