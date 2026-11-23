@@ -44,7 +44,7 @@ describe('presenting the bilingual deck', () => {
     render(<Deck slides={slides} />)
     fireEvent.keyDown(window, { key: 'o' })
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /変化に、つながりを/ }))
+    fireEvent.click(screen.getByRole('button', { name: /クリックで街を切り替える/ }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(screen.getByText(counter(slides.findIndex(slide => slide.id === 'view-transitions') + 1))).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Slide overview' }))
