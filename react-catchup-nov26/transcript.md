@@ -1,131 +1,172 @@
 # Intro
 
-Hi everyone, how are you guys doing.
+Hi everyone! How’s everyone doing?
 
-Since the new model of AI is released early this year, our life has changed; we spend more and more time telling agents to code instead of us writing code by ourselves.
+Today’s talk is called “Meanwhile, in React / そのころ、Reactは。”
+My agent came up with the title, and I liked it.
 
-We are busy catching up with the latest prompting technics, new topics popping out every week like harness engineering, loop engineering, and software factory, and maintaining harness by creating new skills, retiring old ones etc.
+Since the new AI model came out earlier this year, the way we work has changed. We’re spending more and more time asking agents to write code, and less time writing it ourselves.
 
-It’s a shame of me as an organiser of the react event but I haven’t caught up with the latest React topic for months.
+We’re busy keeping up with the latest prompting techniques and all the new terms that seem to appear every week: harness engineering, loop engineering, software factories…
 
-Today let me share the recent react news that I looked up with you who are busy catching up AI like me.
+And then there’s the work of creating new skills and updating existing ones, only for the next model release to make them obsolete a week later.
 
-I’ll cover these five topics today:
-- React 19.3 is released
-- Next.js 16.4 is released 
-- TanStack Start reached 1.0
-- TanStack Redact is announced
-- Recent React Compiler topics
+I’m a little embarrassed to admit this as someone who organises a React event, but I haven’t kept up with React for the past few months.
 
-Let’s get started with React 19.3
+So today, I’d like to share what I found while catching up—for anyone who’s been busy keeping up with AI, just like me.
+
+I’ll cover five topics:
+
+- The React 19.3 release
+- The Next.js 16.4 release
+- TanStack Start reaching 1.0
+- The announcement of TanStack Redact
+- Recent developments in React Compiler
+
+Let’s get started.
 
 # React 19.3
 
 React 19.3 was released in September.
-Two main topics: View Transitions and Fragment Refs.
+Two APIs became stable in this release: View Transitions and Fragment refs.
 
 ## <ViewTransition>
 
-View Transition was already introduced April last year as an experimental feature so you may be already familiar with it.
+View Transitions were first introduced as an experimental React feature in April last year, so you may already be familiar with them.
 
-It let you animate transitions using browser’s View Transition API in React. 
+The `<ViewTransition>` component lets you animate UI changes in React using the browser’s View Transition API.
 
-The motivation behind View Transition API was to enable browsers to animate transitions like mobile apps.
-Chrome introduced the API as Shared Element Transitions later renamed to View Transitions.
-The first version of the API, single-document transition, was introduced in 2023 followed by cross-document transition in 2024.
-Now we can say single-document transition is safely available across major browsers accounting for 93% of the share whereas cross-document transition needs to wait a bit more for Firefox support.
+The idea behind the browser API is to make smooth, app-like transitions possible on the web.
 
-And now you can access this API via React. Let me show you some examples:
-<demo with code snippets>
+Single-document transitions arrived in Chrome in 2023, followed by cross-document transitions in 2024.
+Single-document transitions are now supported across the major browsers. Cross-document transitions still need broader support, particularly in Firefox.
 
-This transition can be triggered with other React APIs such as state updates inside of startTransition(), sync resolution with <Suspense>, and the `useDeferredValue` hook.
-You can also customise the default cross-fade effect using View Transition Class in CSS or Web Animation via event props.
+React gives us APIs for using this browser feature. Here’s a quick demo.
 
-There are more things you can do with <ViewTransition> component. Check out the documentation for details.
+[Demo: View Transition]
 
-## Fragment Refs
+This card shows the name of a city. When I click the button, the city changes with a cross-fade animation.
 
-Now you can give a ref prop to the <Fragment> component without adding extra <div> wrapper.
+Here’s what the code looks like.
 
-Up until this release you cannot give a ref prop to <Fragment> component, and you had to wrap the component with <div> just to give ref. Sometimes it’s not even possible for styling or layout reasons.
+We wrap the content we want to animate in `<ViewTransition>`. Then, in the button’s `onClick` handler, we update the state inside `startTransition()`.
 
-But now you can write like this:<snippet>
+You can also trigger an animation with `<Suspense>`. When the content finishes loading, React animates the change from the fallback to the actual content.
 
-By using this, you can wire IntersectionObserver or ResizeObserver without changing the DOM structure even if the inner component doesn’t expose ref as a prop like this:<snippet>
+Another option is `useDeferredValue`, which lets you animate updates to things like search results.
+
+You can customise the default cross-fade using View Transition classes in CSS, or use the animation event props to control it with the Web Animations API.
+
+Check out the documentation for more examples and details.
+
+## Fragment refs
+
+You can now pass a `ref` to an explicit `<Fragment>`.
+
+Before this release, you couldn’t attach a ref to a Fragment. You often had to add a wrapper `<div>` just to get a ref, and that extra element could interfere with your styling or layout.
+
+With Fragment refs, you can work with a group of elements without adding a wrapper. For example, you can focus the first focusable element in the group, or observe the elements together.
+
+Let me show you the demo.
+
+[Demo: Fragment refs]
+
+Right now, only the first of these three items is marked as seen. As I scroll down, the second one gets marked as seen, and then the third.
+
+Previously, you had to register each item with an `IntersectionObserver` yourself. With a Fragment ref, you can register the elements in the group through a single ref.
+
+This is especially useful when the card component doesn’t accept a ref—for example, because it comes from a library maintained by another team.
 
 ## Other features
 
-React 19.3 is shipped with the browser() function too.
-Previously to prevent server from rendering component that accesses browser APIs, you need this boilerplate you may have come across:
+React 19.3 also introduces the `browser()` function in React DOM.
 
-<snippet>
+If you’ve needed to keep a component that uses browser APIs from rendering on the server, you’ve probably written boilerplate like this:
 
-Using browser(), you can now write like this:
+[Code snippet: before browser()]
 
-<snippet>
+With `browser()`, you can write it like this instead:
 
-You still need this, but it’s React official API and it’s a tiny bit cleaner.
+[Code snippet: with browser()]
 
-Other features like:
-- Integration with Trusted Types API for DOM-based XSS attacks, and
-- Ergonomics improvement by rendering <Context> in Server Components
+You still need to handle browser-only rendering, but now there’s an official API for it, and the code is a little cleaner.
+
+A couple of other updates worth mentioning:
+
+- Integration with the Trusted Types API, which helps protect against DOM-based XSS attacks.
+- Support for rendering a `<Context>` provider directly in Server Components, which makes the code a little more convenient to write.
 
 # Next.js 16.4
 
-Next topic is Next.js. Version 16.4 was released in October.
+Next up is Next.js. Version 16.4 was released in October.
 
-The biggest message was that now they recommend Cache Components as “the best choice for every Next.js app”.
+The main message of this release is that Cache Components are now recommended as “the best choice for every Next.js app”.
 
-<brief history of caches in Next.js and Cache Components>
+The caching model in Next.js has changed quite a bit over time.
 
-When you run `create-next-app`, Cache Components are enabled by default.
-Once the option is enabled, you can turn a component into a Cache Component using ‘use cache’ directive like this:<snippet>
+When the App Router first arrived, a lot of caching happened implicitly. It wasn’t always easy to tell what was cached and what wasn’t.
 
-Besides ‘use cache’ directive, you can use cacheLife() and cacheTag() functions to control cache behaviour.
+The team later changed direction, moving away from those implicit defaults towards more explicit control.
+
+Cache Components are the latest approach: you choose which parts can be cached and which need to run dynamically.
+
+Starting with 16.4, Cache Components are enabled by default in new projects created with `create-next-app`. In the next major version, they’ll become the framework default as well.
+
+Once you’ve enabled them, you can cache a component by adding the `'use cache'` directive, like this.
+
+[Code snippet: use cache]
+
+You can also use `cacheLife()` and `cacheTag()` to control how long the cache lasts and how it’s revalidated.
 
 ## Cache Components
 
-Next.js 16.4 introduced APIs to give finer control to the cache behaviour.
+Next.js 16.4 adds a few APIs for more precise control over this behaviour.
 
-ensureStatic constant is to control page or layout level cache behaviour.
+The `ensureStatic` setting lets you enforce static rendering requirements at the page or layout level.
 
-By setting this constant ‘navigation’ you can make sure the page is statically built raising error on build time when dynamic element is in the component tree.
+Set it to `'navigation'` on a page, and the build will fail if the page includes work that requires request-time rendering.
 
-You can also define ensureStatic to be ‘navigation’ to make sure all the pages that use the layout to be static.
+You can also set it on a layout to apply that requirement to all the pages underneath it.
 
-Next.js 16.4 also introduced navigation() function from ‘next/cache’ package to defer the prefetch until an actual navigation takes place:<snippets>
+Next.js 16.4 also introduces `navigation()` from `next/cache`. It lets you defer runtime work until the user actually navigates to the page, keeping that work out of prefetching.
+
+[Code snippets: ensureStatic and navigation()]
 
 ## Other updates
 
-Besides Cache Components, another topic was around support for agents.
+Beyond caching, there are also some updates for coding agents.
 
-- The `—agent` flag was added to the `next upgrade` command to help agents to upgrade the from start to finish.
-- They added other agent related config options such as `agentUpgrade` and `agentFeedback`
-Check out their document for details.
+- The `--agent` flag was added to `next upgrade` to help agents handle upgrades from start to finish.
+- There are also new configuration options, including `agentUpgrade` and `agentFeedback`.
+
+Check out the documentation for the details.
 
 # TanStack Start 1.0
 
-Since the announcement of the TanStack Start framework June 2024, they reached 1.0 this October.
+TanStack Start was first announced in June 2024, and it reached 1.0 this October.
+
+Has anyone here tried it yet? How has it been?
 
 # TanStack Redact
 
-Last month they also announced TanStack Redact which is a smaller replacement for React and React DOM packages in the browser.
+Last month, the TanStack team also announced Redact, a smaller replacement for React and React DOM in the browser.
 
-It has the same API as React but reduces the size by dropping concurrent rendering at all. It’s the same idea as preact but compatible with React 19.
+It offers the same API as React, but reduces the runtime size by leaving out concurrent rendering. The idea is similar to Preact: a smaller React-compatible runtime, in this case targeting React 19.
 
 # React Compiler
 
-The last topic is React Compiler.
+The final topic is React Compiler.
 
-It reached v1.0 October last year, and since then the focus was more on its tooling and ecosystem rather than new features.
+It reached 1.0 in October last year. Since then, much of the work has focused on tooling and ecosystem integration rather than new features.
 
-<quick recap of React Compiler>
+[Quick recap of React Compiler — to be written]
 
-The original React Compiler was written in TS/JS and provided as a babel plugin.
-Across this year other tooling systems build their own Compiler as their own plugin.
+The original React Compiler was written in TypeScript and JavaScript and distributed as a Babel plugin.
 
-oxc, used behind Vite, announced native React Compiler support in August and is now available in Vite.
-It’s written in Rust and they claim it’s 12-15x faster than the original Babel plugin.
+This year, other toolchains have started introducing their own implementations and integrations.
 
-Next.js’s standard React Compiler integration uses the Babel plugin, with an SWC optimization to limit which files are sent to it. Since v16.3, Next.js has also offered an experimental Rust implementation that runs inside Turbopack.
+Oxc, which is used in Vite’s toolchain, announced native React Compiler support in August, and that integration is now available in Vite.
 
+It’s written in Rust. The team reports that the compiler transform is 12–15 times faster than the original Babel plugin.
+
+Next.js’s standard React Compiler integration still uses the Babel plugin, with an SWC optimisation that limits which files are passed to it. Since version 16.3, Next.js has also offered an experimental Rust implementation that runs inside Turbopack.
