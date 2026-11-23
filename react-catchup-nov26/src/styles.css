@@ -151,7 +151,8 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 .update-progress progress { width: 33%; accent-color: var(--ink); }
 .update-feed {
   width: min(460px, 100%);
-  height: 105px;
+  /* Leave space for progress, scroll instructions, and reset inside the iframe. */
+  height: clamp(105px, calc(100svh - 94px), 230px);
   padding: 6px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -162,7 +163,8 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   background: var(--card);
 }
 .update-card {
-  min-height: 74px;
+  /* Keep a glimpse of the next card below the observer's visibility threshold. */
+  min-height: max(74px, 78%);
   margin-bottom: 8px;
   display: flex;
   gap: 8px;
