@@ -1,0 +1,61 @@
+name: React catch-up slides
+
+on:
+  pull_request:
+    paths: ['react-catchup-nov26/**', '.github/workflows/react-catchup.yml']
+  push:
+    branches: [main]
+    paths: ['react-catchup-nov26/**', '.github/workflows/react-catchup.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react-catchup-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react-catchup-nov26
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: react-catchup-nov26/package-lock.json
+      - run: npm ci
+      - run: npm run test:coverage
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/react-catchup-nov26/
+      - run: npm run check
+      - name: Stage static Pages artifact
+        run: |
+          mkdir -p ../_site/react-catchup-nov26
+          cp -R dist/client/. ../_site/react-catchup-nov26/
+          touch ../_site/.nojekyll
+          cp pages-index.html ../_site/index.html
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+          include-hidden-files: true
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy static slides
+        id: deployment
+        uses: actions/deploy-pages@v5

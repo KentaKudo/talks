@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.tanstack/
+coverage/
+public/demos/
+test-results/
+playwright-report/
+.playwright-cli/
+output/
