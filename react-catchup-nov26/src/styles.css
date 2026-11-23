@@ -311,3 +311,16 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   .compatibility-table { font-size: 3.1cqw; }
   .compatibility-table th, .compatibility-table td { padding: 1.2cqw; }
 }
+
+.has-code:has(.compatibility-table) .slide-body {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  column-gap: 2cqw;
+}
+.has-code:has(.compatibility-table) .code-panel {
+  grid-column: 1;
+  width: 100%;
+}
+.has-code .compatibility-table { align-self: center; }
+@media (min-width: 701px) {
+  .has-code:has(.compatibility-table) pre { font-size: 1.22cqw; }
+}

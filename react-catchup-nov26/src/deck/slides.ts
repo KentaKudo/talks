@@ -284,7 +284,17 @@ export const Route = createFileRoute('/')({
   },
   {
     id: 'redact-tradeoffs', section: '04 / TANSTACK REDACT · COMPATIBILITY',
-    title: copy('What works in Redact?', 'Redact で使える機能は？'),
+    title: copy('Same React imports. Different runtime.', 'import はそのまま、ランタイムを切り替える。'),
+    filename: 'Vite + React · excerpts',
+    code: `// vite.config.ts
+plugins: [
+  tanstackStart(),
+  react({ compiler: true }),
+  redact(),
+]
+
+// Deck.tsx
+import { useState } from 'react'`,
     compatibility: [
       { feature: copy('Core React', 'React の基本機能'), status: 'supported', detail: copy('Hooks, context, Suspense, SSR and hydration', 'Hooks・Context・Suspense・SSR・ハイドレーション') },
       { feature: copy('React 19.3 APIs', 'React 19.3 の API'), status: 'supported', detail: copy('Fragment refs and browser()', 'Fragment refs と browser()') },
@@ -294,6 +304,7 @@ export const Route = createFileRoute('/')({
       { feature: copy('React Compiler', 'React Compiler'), status: 'supported', detail: copy('Memo-cache runtime available', 'メモ化用ランタイムに対応') },
       { feature: copy('Server Components', 'Server Components'), status: 'upstream', detail: copy('Flight runs on upstream React', 'Flight は React 本体で実行') },
     ],
+    takeaway: copy('The Vite plugin redirects React imports at build time.', 'Vite プラグインがビルド時に React の import 先を切り替える。'),
     source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
   },
   {
