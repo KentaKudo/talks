@@ -96,35 +96,35 @@ return <ViewTransition>
   {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',
     title: copy('A ref, without the extra div.', 'ref のための div、もう不要。'),
-    code: `const rows = useRef<FragmentInstance>(null)
+    code: `const cards = useRef<FragmentInstance>(null)
 
-<tbody>
-  <Fragment ref={rows}>
-    <OrderRow item="Notebook" />
-    <OrderRow item="Pen" />
+<div ref={feed} className="update-feed">
+  <Fragment ref={cards}>
+    <SearchUpdate />
+    <ExportUpdate />
+    <ThemeUpdate />
   </Fragment>
-  <OrderRow item="Mug" />
-</tbody>`, filename: 'Orders.tsx · excerpt',
+</div>`, filename: 'Release notes · excerpt',
     items: [
-      { title: copy('Keep valid table rows', '表の行構造を保つ'), text: copy('Every tr stays a direct child of tbody.', 'すべての tr は tbody の直接の子要素。') },
-      { title: copy('Handle an order as a group', '注文ごとにまとめて操作'), text: copy('Attach the same click listener to the rows for one order.', '同じ注文の明細行に、共通のクリックリスナーを登録できる。') },
+      { title: copy('Keep each card separate', 'カードは独立したまま'), text: copy('Each card stays a direct child of the scroll container.', '各カードはスクロール領域の直接の子要素のまま。') },
+      { title: copy('Observe the group', 'グループをまとめて監視'), text: copy('One Fragment ref registers the cards with a browser observer. The card APIs stay unchanged.', '1 つの Fragment ref から各カードを Observer に登録。カード側に ref 用の props は不要。') },
     ], source: fragments,
   },
   {
     id: 'fragment-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'fragment',
-    filename: 'Demos.tsx · excerpt', code: `useEffect(() => {
-  const fragment = rows.current
-  if (!fragment) return
+    filename: 'Demos.tsx · excerpt', code: `const observer = new IntersectionObserver(
+  recordSeenCards,
+  { root: feed.current, threshold: 0.65 },
+)
 
-  const selectOrder = () => onSelect(order)
-  fragment.addEventListener('click', selectOrder)
-  return () => {
-    fragment.removeEventListener('click', selectOrder)
-  }
-}, [order, onSelect])`,
-    title: copy('Select the order from any of its rows.', 'どの明細からでも、同じ注文を選ぶ。'),
-    subtitle: copy('Try Notebook, then Mug. The highlight follows the order.', '「ノート」、次に「マグカップ」を押すと、注文単位で色が変わる。'),
-    takeaway: copy('One Fragment ref attaches a click listener to the rows of each order.', '注文ごとの Fragment ref ひとつで、明細行に共通のクリックリスナーを付ける。'), source: fragments,
+fragment.observeUsing(observer)
+return () => {
+  fragment.unobserveUsing(observer)
+  observer.disconnect()
+}`,
+    title: copy('Which updates have appeared on screen?', 'どの変更点が画面に表示された？'),
+    subtitle: copy('Scroll inside the release notes. Each card advances the counter once it comes into view.', '一覧の中を下へスクロール。カードが見えるたびに表示済み件数が増える。'),
+    takeaway: copy('The browser reports each card’s visibility through one observer on the group.', '1 つの Observer が、グループ内の各カードが見えたことを知らせる。'), source: fragments,
   },
   {
     id: 'browser-before', section: '01 / REACT · BROWSER-ONLY RENDERING',

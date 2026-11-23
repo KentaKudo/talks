@@ -26,43 +26,57 @@ function TransitionDemo({ ja }: { ja: boolean }) {
   </>
 }
 
+const updates = [
+  { id: 'search', en: 'Search by tag', ja: 'タグで検索' },
+  { id: 'export', en: 'Export your notes', ja: 'メモを書き出す' },
+  { id: 'theme', en: 'Choose a color theme', ja: '配色テーマを選ぶ' },
+]
+const visibleThreshold = 0.65
+
 function FragmentDemo({ ja }: { ja: boolean }) {
-  const [selected, setSelected] = useState<number | null>(null)
-  return <>
-    <table className="order-table" aria-label={ja ? '注文明細' : 'Order items'}>
-      <thead><tr><th scope="col">{ja ? '注文' : 'Order'}</th><th scope="col">{ja ? '商品' : 'Item'}</th></tr></thead>
-      <tbody>
-        <OrderRows order={42} items={ja ? ['ノート', 'ペン'] : ['Notebook', 'Pen']} selected={selected} onSelect={setSelected} />
-        <OrderRows order={43} items={ja ? ['マグカップ'] : ['Mug']} selected={selected} onSelect={setSelected} />
-      </tbody>
-    </table>
-    <p className="order-selection" role="status">
-      {selected === null
-        ? (ja ? '明細を押して注文を選ぶ' : 'Select an item to choose its order')
-        : (ja ? `注文 #${selected} を選択中` : `Order #${selected} selected`)}
-    </p>
-  </>
-}
+  const feed = useRef<HTMLDivElement>(null)
+  const cards = useRef<FragmentInstance>(null)
+  const [seen, setSeen] = useState<Set<string>>(() => new Set())
 
-function OrderRows({ order, items, selected, onSelect }: {
-  order: number
-  items: string[]
-  selected: number | null
-  onSelect: (order: number) => void
-}) {
-  const rows = useRef<FragmentInstance>(null)
   useEffect(() => {
-    const fragment = rows.current
-    if (!fragment) return
-    const selectOrder = () => onSelect(order)
-    fragment.addEventListener('click', selectOrder)
-    return () => fragment.removeEventListener('click', selectOrder)
-  }, [order, onSelect])
+    const root = feed.current
+    const fragment = cards.current
+    if (!root || !fragment || typeof IntersectionObserver === 'undefined') return
 
-  return <Fragment ref={rows}>
-    {items.map(item => <tr key={item}>
-      <td>#{order}</td>
-      <td><button className="order-item" aria-pressed={selected === order}>{item}</button></td>
-    </tr>)}
-  </Fragment>
+    const observer = new IntersectionObserver(entries => {
+      setSeen(previous => {
+        const next = new Set(previous)
+        for (const entry of entries) {
+          if (entry.intersectionRatio >= visibleThreshold) next.add(entry.target.id)
+        }
+        return next.size === previous.size ? previous : next
+      })
+    }, { root, threshold: visibleThreshold })
+
+    fragment.observeUsing(observer)
+    return () => {
+      fragment.unobserveUsing(observer)
+      observer.disconnect()
+    }
+  }, [])
+
+  const complete = seen.size === updates.length
+  return <>
+    <div className="update-progress">
+      <p role="status">{ja
+        ? (complete ? '✓ すべて表示済み' : `${seen.size} / ${updates.length} 件を表示済み`)
+        : (complete ? `✓ All ${updates.length} seen` : `${seen.size} / ${updates.length} seen`)}</p>
+      <progress value={seen.size} max={updates.length} aria-label={ja ? '表示済みの変更点' : 'Updates seen'} />
+    </div>
+    <div ref={feed} className="update-feed" role="region" aria-label={ja ? '変更点一覧' : 'Release notes'} tabIndex={0}>
+      <Fragment ref={cards}>
+        {updates.map((update, index) => <article className="update-card" id={update.id} key={update.id}>
+          <span className="update-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <strong>{update[ja ? 'ja' : 'en']}</strong>
+          {seen.has(update.id) && <span className="update-seen">{ja ? '表示済み' : 'Seen'}</span>}
+        </article>)}
+      </Fragment>
+    </div>
+    <p className="demo-explanation">{ja ? '一覧の中を下へスクロール ↓' : 'Scroll down inside the list ↓'}</p>
+  </>
 }
