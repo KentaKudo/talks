@@ -279,3 +279,8 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 @media (max-width: 700px) {
   .compiler-devtools-crop { width: 100%; }
 }
+
+[data-slide='compiler-history'] .item-number { display: none; }
+@media (min-width: 701px) {
+  [data-slide='compiler-history'] .slide-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

@@ -309,9 +309,21 @@ import { useState } from 'react'`,
   {
     id: 'compiler', section: '05 / REACT COMPILER', layout: 'statement',
     title: copy('You write intent.\nThe compiler memoizes.', '意図を書く。\nメモ化はコンパイラへ。'),
-    subtitle: copy('React Compiler 1.0 shipped in October 2025. The 2026 story is tooling.', 'React Compiler 1.0 は 2025 年 10 月。2026 年の話題はツールチェーン。'),
-    takeaway: copy('Automatic memoization at build time. The Rules of React still matter.', 'ビルド時に自動でメモ化。Rules of React は引き続き重要。'),
+    subtitle: copy('Build-time analysis can handle memoization you’d otherwise write with useMemo, useCallback, or React.memo.', 'useMemo・useCallback・React.memo で手動指定してきたメモ化を、ビルド時の解析で自動化。'),
+    takeaway: copy('React’s rendering model stays the same.', 'React のレンダリングモデルは同じ。'),
     source: { label: 'React · Compiler 1.0', url: 'https://react.dev/blog/2025/10/07/react-compiler-1' },
+  },
+  {
+    id: 'compiler-history', section: '05 / REACT COMPILER · HISTORY', layout: 'flow',
+    title: copy('From React Forget to 1.0.', 'React Forget から安定版 1.0 へ。'),
+    items: [
+      { title: copy('2021', '2021'), text: copy('React Forget prototype debuts at React Conf.', 'React Conf で React Forget の試作版を披露。') },
+      { title: copy('May 2024', '2024 年 5 月'), text: copy('Experimental version goes open source.', '実験版をオープンソースで公開。') },
+      { title: copy('April 2025', '2025 年 4 月'), text: copy('Release Candidate for wider testing.', '安定版に向けて RC を公開。') },
+      { title: copy('October 2025', '2025 年 10 月'), text: copy('Stable 1.0 ships for production use.', '本番利用に向けた安定版 1.0 をリリース。') },
+    ],
+    takeaway: copy('Optional build-time memoization for React 17+. The Rules of React still apply.', 'React 17 以降で選べるビルド時の自動メモ化。Rules of React は引き続き適用。'),
+    source: { label: 'React · Compiler v1.0', url: 'https://react.dev/blog/2025/10/07/react-compiler-1' },
   },
   {
     id: 'oxc', section: '05 / REACT COMPILER · VITE',
