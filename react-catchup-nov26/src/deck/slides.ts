@@ -127,6 +127,31 @@ return <ViewTransition>
     takeaway: copy('One Fragment ref observes the cards. Both stay direct Grid children.', 'Fragment ref ひとつで 2 枚を監視。どちらも Grid の直接の子要素。'), source: fragments,
   },
   {
+    id: 'browser-before', section: '01 / REACT · BROWSER-ONLY RENDERING',
+    title: copy('Before browser(): two common checks.', 'browser() 以前の 2 つの書き方。'),
+    filename: 'React 19.3 announcement · separate examples',
+    code: `function Component() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // ...
+}
+
+function Component() {
+  const isBrowser = typeof window !== 'undefined';
+
+  // ...
+}`,
+    items: [
+      { title: copy('Wait for mount', 'マウントを待つ'), text: copy('An effect flips the flag after mount and triggers a second render.', 'マウント後に Effect でフラグを切り替え、再レンダーする。') },
+      { title: copy('Check for window', 'window の有無を調べる'), text: copy('If the check changes the initial markup, hydration can mismatch.', '判定によって初回のマークアップが変わると、ハイドレーションが不一致になることがある。') },
+    ],
+    source: { label: 'React 19.3 · browser', url: 'https://react.dev/blog/2026/09/09/react-19-3#browser' },
+  },
+  {
     id: 'browser', section: '01 / REACT · BROWSER-ONLY RENDERING',
     title: copy('Browser APIs? Say so.', 'ブラウザ専用、と宣言する。'),
     code: `import { Suspense, use } from 'react'\nimport { browser } from 'react-dom'\n\nfunction WindowSize() {\n  use(browser('Reads the viewport'))\n  return <p>{window.innerWidth}px</p>\n}\n\n<Suspense fallback={<p>Loading…</p>}>\n  <WindowSize />\n</Suspense>`, filename: 'WindowSize.tsx',
