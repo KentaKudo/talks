@@ -89,18 +89,9 @@ return <ViewTransition>
     items: [
       { title: copy('Suspense', 'Suspense'), text: copy('Cross-fade from the fallback when the lazy content is ready.', '読み込みが完了したら、fallback からコンテンツへクロスフェード。') },
       { title: copy('useDeferredValue', 'useDeferredValue'), text: copy('Typing stays responsive. The results animate when the deferred query updates.', '入力はすぐに反映。遅延させた検索語の更新に合わせて、結果をアニメーション。') },
+      { title: copy('Style the motion', '動きをカスタマイズ'), text: copy('CSS transition classes or animation callbacks.', 'CSS の transition class やイベント props で調整。') },
     ],
     source: transitions,
-  },
-  {
-    id: 'view-transitions', section: '01 / REACT · VIEW TRANSITIONS · STARTTRANSITION',
-    title: copy('Animate a click with startTransition.', 'クリックで街を切り替える。'),
-    subtitle: copy('In the train demo, startTransition marks the city update.', 'デモでは、街を切り替える状態更新を startTransition で囲む。'),
-    code: `function Destination() {\n  const [city, setCity] = useState('Tokyo')\n  return <>\n    <button onClick={() => startTransition(() => {\n      setCity('Kyoto')\n    })}>Next stop</button>\n    <ViewTransition>\n      <h2>{city}</h2>\n    </ViewTransition>\n  </>\n}`, filename: 'Destination.tsx',
-    items: [
-      { title: copy('Wrap the heading', '見出しを囲む'), text: copy('ViewTransition cross-fades from the old city to the new one.', 'ViewTransition が切り替え前後の街の名前をクロスフェードする。') },
-      { title: copy('Style the motion', '動きをカスタマイズ'), text: copy('CSS transition classes or animation callbacks.', 'CSS の transition class やイベント props で調整。') },
-    ], source: transitions,
   },
   {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',

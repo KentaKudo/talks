@@ -73,7 +73,7 @@ try {
           }).map(node => node.className || node.tagName)
         })
         if (issues.length) clipping.push({ id, lang, issues })
-        if (lang === 'ja' && ['hello', 'view-transitions', 'transition-demo', 'start-stack'].includes(id)) {
+        if (lang === 'ja' && ['hello', 'transition-triggers', 'transition-demo', 'start-stack'].includes(id)) {
           if (id === 'transition-demo') await page.frameLocator('iframe').getByRole('button', { name: '次の街へ', exact: true }).waitFor()
           await page.screenshot({ path: `output/playwright/${id}.png` })
         }
