@@ -8,7 +8,7 @@ export interface Slide {
   section: string
   title: Copy
   subtitle?: Copy
-  layout?: 'cover' | 'statement' | 'chapter' | 'agenda' | 'flow' | 'demo' | 'closing'
+  layout?: 'cover' | 'statement' | 'chapter' | 'agenda' | 'flow' | 'demo' | 'closing' | 'compiler-devtools'
   number?: string
   items?: { title: Copy; text: Copy }[]
   code?: string
@@ -224,6 +224,11 @@ export const slides: Slide[] = [
     title: copy('What changed in our build?', 'ビルド出力はどう変わる？'),
     codeComparison: comparison.compiler,
     takeaway: copy('When title stays the same, the compiler reuses the heading from cache slot $[1].', 'title が同じなら、キャッシュの $[1] から見出しを再利用。'),
+  },
+  {
+    id: 'compiler-devtools', section: '05 / REACT COMPILER · DEVTOOLS', layout: 'compiler-devtools',
+    title: copy('Spot the Memo badge.', 'Memo バッジを確認。'),
+    takeaway: copy('The blue Memo ✨ badge on SlideTitle shows React Compiler optimized this component.', 'SlideTitle の青い Memo ✨ バッジが、React Compiler による最適化の目印。'),
   },
   {
     id: 'next-compiler', section: '05 / REACT COMPILER · NEXT.JS',

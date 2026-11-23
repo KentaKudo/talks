@@ -1,6 +1,6 @@
 # Meanwhile, in React.
 
-A bilingual, 26-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The original `transcript.md` is preserved.
+A bilingual, 27-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The original `transcript.md` is preserved.
 
 ## Run locally
 

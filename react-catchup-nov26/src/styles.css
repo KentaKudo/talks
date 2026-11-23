@@ -214,3 +214,36 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   .compiler-comparison { grid-template-columns: 1fr; gap: 3cqw; }
   .compiler-comparison pre { font-size: 2.8cqw; }
 }
+
+/* Frame the Components tree in the original 2880 × 1800 screenshot. */
+.compiler-devtools-crop {
+  position: relative;
+  width: min(66%, 750px);
+  aspect-ratio: 610 / 300;
+  align-self: center;
+  margin: 0;
+  overflow: hidden;
+  background: white;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.compiler-devtools-crop img {
+  position: absolute;
+  width: calc(2880 / 610 * 100%);
+  height: auto;
+  left: calc(-385 / 610 * 100%);
+  top: calc(-1386 / 300 * 100%);
+}
+.compiler-devtools-highlight {
+  position: absolute;
+  inset: 66.5% auto auto 38%;
+  width: 15%;
+  height: 12.5%;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px var(--yellow);
+}
+@media (max-width: 700px) {
+  .compiler-devtools-crop { width: 100%; }
+}

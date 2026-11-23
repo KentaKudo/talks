@@ -27,6 +27,17 @@ export function SlideView({ slide, lang }: { slide: Slide; lang: Language }) {
       {layout === 'chapter' && <div className="chapter-number"><span>{slide.number}</span><span className="chapter-caption">{slide.section.split('/ ')[1]}<br />{lang === 'ja' ? '最近のニュース' : 'RECENT NEWS'}</span></div>}
       {slide.demo && <DemoTabs slide={slide} lang={lang} />}
       {slide.code && !slide.demo && <Code code={slide.code} filename={slide.filename} />}
+      {layout === 'compiler-devtools' && <figure className="compiler-devtools-crop">
+        <img
+          src={`${import.meta.env.BASE_URL}react-compiler-devtools.png`}
+          alt={lang === 'ja'
+            ? 'React DevTools の Components ツリー。SlideTitle の横に青い Memo バッジ。'
+            : 'React DevTools Components tree with a blue Memo badge next to SlideTitle.'}
+          width={2880}
+          height={1800}
+        />
+        <span className="compiler-devtools-highlight" aria-hidden="true" />
+      </figure>}
       {slide.codeComparison && <div className="compiler-comparison">
         <Code code={slide.codeComparison.off} filename={lang === 'ja' ? 'Compiler 無効' : 'Compiler off'} />
         <Code code={slide.codeComparison.on} filename={lang === 'ja' ? 'Compiler 有効' : 'Compiler on'} />
