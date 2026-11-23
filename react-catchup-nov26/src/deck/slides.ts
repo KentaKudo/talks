@@ -41,14 +41,10 @@ export const slides: Slide[] = [
     takeaway: copy('Five topics. Twenty minutes. Let’s catch up.', '5 つのトピックを、20 分で。'),
   },
   {
-    id: 'why', section: 'BEFORE WE START', layout: 'flow',
-    title: copy('AI moved fast. React did too.', 'AI を追う間も、React は進んでいた。'),
-    items: [
-      { title: copy('Try new prompts', 'プロンプトを試す'), text: copy('Keep up with the latest prompting techniques.', '新しいプロンプトの書き方を試す。') },
-      { title: copy('Learn new terms', '新しい用語を追う'), text: copy('Harness engineering, loop engineering, software factory…', 'ハーネスエンジニアリング、ループエンジニアリング、ソフトウェアファクトリー……。') },
-      { title: copy('Maintain skills', 'スキルを整備する'), text: copy('Build and update skills. Next week’s model might make them obsolete.', 'スキルを作って更新する。でも翌週の新モデルで、もういらなくなることも。') },
-    ],
-    takeaway: copy('I organize a React meetup and still fell months behind. If AI kept you busy too, let’s catch up together.', 'React イベントを主催しているのに、何か月も React を追えていませんでした。AI を追うのに忙しかったみなさんと、今日は一緒にキャッチアップします。'),
+    id: 'why', section: 'BEFORE WE START', layout: 'statement',
+    title: copy('AI moved fast. React did too.', 'AI を追う間も、\nReact は進んでいた。'),
+    subtitle: copy('Prompts, harnesses, skills, loops… keeping up became a full-time job.', 'プロンプト、ハーネス、スキル、ループ……。追いかけるだけで忙しい。'),
+    takeaway: copy('I organize a React event. I still needed this catch-up.', 'React イベントの主催者だって、キャッチアップが必要でした。'),
   },
   {
     id: 'agenda', section: 'TODAY’S ROUTE', layout: 'agenda',
