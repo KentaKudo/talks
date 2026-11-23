@@ -179,6 +179,24 @@ export const slides: Slide[] = [
     source: { label: 'TanStack Start · Static prerendering', url: 'https://tanstack.com/start/latest/docs/framework/react/guide/static-prerendering' },
   },
   {
+    id: 'start-server-function', section: '03 / TANSTACK START · SERVER FUNCTIONS',
+    title: copy('How this route loads the deck.', 'このルートがスライドを取得する仕組み。'),
+    filename: 'get-slides.ts / routes/index.tsx · excerpt',
+    code: `// src/deck/get-slides.ts
+export const getSlides = createServerFn({ method: 'GET' })
+  .handler(async () => (await import('./slides')).slides)
+
+// src/routes/index.tsx
+export const Route = createFileRoute('/')({
+  loader: () => getSlides(),
+  staleTime: Infinity,
+  component: function SlidesPage() {
+    return <Deck slides={Route.useLoaderData()} />
+  },
+})`,
+    takeaway: copy('The loader fetches the slides. The component reads them with Route.useLoaderData().', 'loader がスライドを取得し、コンポーネントは Route.useLoaderData() で読み取る。'),
+  },
+  {
     id: 'redact', section: '04 / TANSTACK REDACT', layout: 'chapter', number: 'RE:\nACT',
     title: copy('Keep the components.\nChange the runtime.', 'コンポーネントはそのまま。\nランタイムを選ぶ。'),
     subtitle: copy('Announced October 26, 2026', '2026 年 10 月 26 日発表'),
@@ -218,6 +236,17 @@ export const slides: Slide[] = [
       { title: copy('Opt-in integration', 'オプトインで利用'), text: copy('Vite’s native React Compiler integration uses Oxc and is marked experimental.', 'Oxc を使う Vite のネイティブ連携は experimental。') },
       { title: copy('12–15× in two samples', '2 つのサンプルで 12〜15 倍'), text: copy('Preliminary transform benchmarks against Babel—not whole-app build speed.', 'Babel 比の予備的な変換ベンチマーク。アプリ全体のビルド速度ではない。') },
     ], source: oxc,
+  },
+  {
+    id: 'compiler-build-time', section: '05 / REACT COMPILER · THIS DECK',
+    title: copy('Rust cut build time by 24%.', 'Rust 版でビルド時間が 24% 短縮。'),
+    subtitle: copy('Median wall time across 9 runs per configuration on an Apple M2.', 'Apple M2 で各構成を 9 回ずつ交互にビルドしたときの中央値。'),
+    items: [
+      { title: copy('Babel · 756 ms', 'Babel · 756 ms'), text: copy('721–887 ms across runs', '実測範囲 721〜887 ms') },
+      { title: copy('Rust (Oxc) · 573 ms', 'Rust (Oxc) · 573 ms'), text: copy('548–811 ms across runs', '実測範囲 548〜811 ms') },
+      { title: copy('Compiler off · 591 ms', 'Compiler 無効 · 591 ms'), text: copy('554–939 ms across runs', '実測範囲 554〜939 ms') },
+    ],
+    takeaway: copy('Vite 8.3.8 + Redact. Production client and server builds. Prerendering and demo rebuild excluded.', 'Vite 8.3.8 + Redact。本番用の client・server ビルド。プリレンダリングとデモの再ビルドを除く。'),
   },
   {
     id: 'compiler-output', section: '05 / REACT COMPILER · BUILD OUTPUT',
