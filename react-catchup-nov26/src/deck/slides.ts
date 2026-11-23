@@ -81,6 +81,28 @@ export const slides: Slide[] = [
     takeaway: copy('Native React 19.3 demo · animation depends on browser support and motion preferences.', 'React 19.3 のデモ · アニメーションはブラウザ対応と動きの設定に依存。'), source: transitions,
   },
   {
+    id: 'transition-triggers', section: '01 / REACT · VIEW TRANSITIONS',
+    title: copy('Two more ways to start a transition.', '画面遷移を起こす、もう 2 つの方法。'),
+    filename: 'ViewTransition · TSX excerpts',
+    code: `// Suspense reveal
+<ViewTransition>
+  <Suspense fallback={<Skeleton />}>
+    <LazyDetails />
+  </Suspense>
+</ViewTransition>
+
+// Inside Search({ query })
+const deferred = useDeferredValue(query)
+return <ViewTransition>
+  <Results query={deferred} />
+</ViewTransition>`,
+    items: [
+      { title: copy('Suspense', 'Suspense'), text: copy('Cross-fade from the fallback when the lazy content is ready.', '読み込みが完了したら、fallback からコンテンツへクロスフェード。') },
+      { title: copy('useDeferredValue', 'useDeferredValue'), text: copy('Typing stays responsive. The results animate when the deferred query updates.', '入力はすぐに反映。遅延させた検索語の更新に合わせて、結果をアニメーション。') },
+    ],
+    source: transitions,
+  },
+  {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',
     title: copy('A ref, without the extra div.', 'ref のための div、もう不要。'),
     code: `const group = useRef<FragmentInstance>(null)\n\n<Fragment ref={group}>\n  <NameField />\n  <EmailField />\n</Fragment>\n\n// Focus the first focusable descendant\ngroup.current?.focus()\n\n// Or observe the group's DOM children\ngroup.current?.observeUsing(observer)`, filename: 'FieldGroup.tsx',
