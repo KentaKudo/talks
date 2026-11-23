@@ -1,5 +1,7 @@
 # Intro
 
+<!-- Working draft. Technical claims checked on 2026-11-23; sources and qualifications are in transcript-fact-check.md. Placeholders remain unfinished. -->
+
 Hi everyone! How’s everyone doing?
 
 Today’s talk is called “Meanwhile, in React / そのころ、Reactは。”
@@ -39,7 +41,7 @@ The `<ViewTransition>` component lets you animate UI changes in React using the 
 The idea behind the browser API is to make smooth, app-like transitions possible on the web.
 
 Single-document transitions arrived in Chrome in 2023, followed by cross-document transitions in 2024.
-Single-document transitions are now supported across the major browsers. Cross-document transitions still need broader support, particularly in Firefox.
+Same-document transitions are now supported in current Chrome, Edge, Safari, and Firefox. Cross-document transitions are supported in Chrome and Safari, but aren’t yet available in stable Firefox.
 
 React gives us APIs for using this browser feature. Here’s a quick demo.
 
@@ -50,6 +52,8 @@ This card shows the name of a city. When I click the button, the city changes wi
 Here’s what the code looks like.
 
 We wrap the content we want to animate in `<ViewTransition>`. Then, in the button’s `onClick` handler, we update the state inside `startTransition()`.
+
+Ordinary urgent state updates don’t trigger these animations.
 
 You can also trigger an animation with `<Suspense>`. When the content finishes loading, React animates the change from the fallback to the actual content.
 
@@ -91,10 +95,12 @@ With `browser()`, you can write it like this instead:
 
 You still need to handle browser-only rendering, but now there’s an official API for it, and the code is a little cleaner.
 
+The key is to call `use(browser())` in a Client Component inside a `<Suspense>` boundary. The server renders the fallback, and the component renders normally in the browser. Calling `browser()` on its own has no effect.
+
 A couple of other updates worth mentioning:
 
-- Integration with the Trusted Types API, which helps protect against DOM-based XSS attacks.
-- Support for rendering a `<Context>` provider directly in Server Components, which makes the code a little more convenient to write.
+- Integration with the Trusted Types API, so React preserves trusted values created by your policies when passing them to DOM APIs. You still need to configure those policies and the relevant Content Security Policy.
+- Support for rendering a `<Context>` provider imported from a Client Component module directly in Server Components. Server Components still can’t create or read context themselves.
 
 # Next.js 16.4
 
@@ -128,7 +134,7 @@ Set it to `'navigation'` on a page, and the build will fail if the page includes
 
 You can also set it on a layout to apply that requirement to all the pages underneath it.
 
-Next.js 16.4 also introduces `navigation()` from `next/cache`. It lets you defer runtime work until the user actually navigates to the page, keeping that work out of prefetching.
+Next.js 16.4 also introduces `navigation()` from `next/cache`. With Cache Components and Partial Prefetching, calling `await navigation()` keeps the runtime work below it out of the app shell and per-link prefetches until the user navigates. Static prerenders can still include that content, so it may appear in a static prefetch.
 
 [Code snippets: ensureStatic and navigation()]
 
@@ -137,13 +143,13 @@ Next.js 16.4 also introduces `navigation()` from `next/cache`. It lets you defer
 Beyond caching, there are also some updates for coding agents.
 
 - The `--agent` flag was added to `next upgrade` to help agents handle upgrades from start to finish.
-- There are also new configuration options, including `agentUpgrade` and `agentFeedback`.
+- There are also new experimental configuration options, including `experimental.agentUpgrade` and `experimental.agentFeedback`.
 
 Check out the documentation for the details.
 
 # TanStack Start 1.0
 
-TanStack Start was first announced in June 2024, and it reached 1.0 this October.
+After a long beta and release-candidate period, the TanStack team announced Start’s stable 1.0 milestone on October 13 this year.
 
 Has anyone here tried it yet? How has it been?
 
@@ -151,22 +157,24 @@ Has anyone here tried it yet? How has it been?
 
 Last month, the TanStack team also announced Redact, a smaller replacement for React and React DOM in the browser.
 
-It offers the same API as React, but reduces the runtime size by leaving out concurrent rendering. The idea is similar to Preact: a smaller React-compatible runtime, in this case targeting React 19.
+It implements React APIs so you can keep your existing components, hooks, and imports, but it uses synchronous rendering without React’s time slicing or interruptible rendering.
+
+The broad idea is similar to Preact: a smaller runtime for React-style apps. Redact supports React 19 APIs, but API compatibility doesn’t mean identical behaviour. For example, its View Transition animations are experimental and opt-in.
 
 # React Compiler
 
 The final topic is React Compiler.
 
-It reached 1.0 in October last year. Since then, much of the work has focused on tooling and ecosystem integration rather than new features.
+It reached 1.0 on October 7 last year. For this catch-up, I’m going to focus on the tooling and ecosystem integrations that have followed.
 
 [Quick recap of React Compiler — to be written]
 
 The original React Compiler was written in TypeScript and JavaScript and distributed as a Babel plugin.
 
-This year, other toolchains have started introducing their own implementations and integrations.
+This year, the React team ported the compiler to Rust, and other toolchains have been integrating and adapting that work.
 
-Oxc, which is used in Vite’s toolchain, announced native React Compiler support in August, and that integration is now available in Vite.
+Oxc, which is used in Vite’s toolchain, announced native React Compiler support in August. It’s available as an experimental, opt-in integration in `@vitejs/plugin-react` 6.1 and later for Vite 8.
 
-It’s written in Rust. The team reports that the compiler transform is 12–15 times faster than the original Babel plugin.
+It’s written in Rust. In Oxc’s preliminary benchmark, the compiler transform ran roughly 12–15 times as fast as the Babel plugin on two TSX samples. That’s a measurement of the compiler transform, rather than the speed of an entire application build.
 
 Next.js’s standard React Compiler integration still uses the Babel plugin, with an SWC optimisation that limits which files are passed to it. Since version 16.3, Next.js has also offered an experimental Rust implementation that runs inside Turbopack.
