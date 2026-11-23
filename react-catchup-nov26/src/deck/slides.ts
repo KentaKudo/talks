@@ -3,11 +3,6 @@ import comparison from './build-comparison.json' with { type: 'json' }
 export type Language = 'ja' | 'en'
 export type Copy = Record<Language, string>
 const copy = (en: string, ja: string): Copy => ({ en, ja })
-export interface CompatibilityRow {
-  feature: Copy
-  status: 'supported' | 'different' | 'unavailable' | 'experimental' | 'upstream'
-  detail: Copy
-}
 export interface Slide {
   id: string
   section: string
@@ -18,7 +13,6 @@ export interface Slide {
   items?: { title: Copy; text: Copy }[]
   code?: string
   filename?: string
-  compatibility?: CompatibilityRow[]
   codeComparison?: { off: string; on: string }
   demo?: 'transition' | 'fragment'
   takeaway?: Copy
@@ -283,8 +277,8 @@ export const Route = createFileRoute('/')({
     takeaway: copy('A smaller runtime built around React APIs, with synchronous rendering.', 'React API をベースにした、同期レンダリングの小さなランタイム。'), source: redactRelease,
   },
   {
-    id: 'redact-tradeoffs', section: '04 / TANSTACK REDACT · COMPATIBILITY',
-    title: copy('Same React imports. Different runtime.', 'import はそのまま、ランタイムを切り替える。'),
+    id: 'redact-tradeoffs', section: '04 / TANSTACK REDACT · TRADEOFFS',
+    title: copy('Same imports ≠ identical behavior.', '同じ import でも、挙動は同一ではない。'),
     filename: 'Vite + React · excerpts',
     code: `// vite.config.ts
 plugins: [
@@ -295,17 +289,12 @@ plugins: [
 
 // Deck.tsx
 import { useState } from 'react'`,
-    compatibility: [
-      { feature: copy('Core React', 'React の基本機能'), status: 'supported', detail: copy('Hooks, context, Suspense, SSR and hydration', 'Hooks・Context・Suspense・SSR・ハイドレーション') },
-      { feature: copy('React 19.3 APIs', 'React 19.3 の API'), status: 'supported', detail: copy('Fragment refs and browser()', 'Fragment refs と browser()') },
-      { feature: copy('Transition hooks', 'Transition の Hooks'), status: 'different', detail: copy('useTransition and useDeferredValue use synchronous rendering', 'useTransition・useDeferredValue の描画は同期') },
-      { feature: copy('Concurrent rendering', '並行レンダリング'), status: 'unavailable', detail: copy('No time slicing or interruptible renders', 'タイムスライスや描画の中断は不可') },
-      { feature: copy('ViewTransition animation', 'ViewTransition のアニメーション'), status: 'experimental', detail: copy('Opt-in. Animation is off by default.', 'デフォルトではアニメーションなし') },
-      { feature: copy('React Compiler', 'React Compiler'), status: 'supported', detail: copy('Memo-cache runtime available', 'メモ化用ランタイムに対応') },
-      { feature: copy('Server Components', 'Server Components'), status: 'upstream', detail: copy('Flight runs on upstream React', 'Flight は React 本体で実行') },
+    items: [
+      { title: copy('Synchronous rendering', '描画は同期処理'), text: copy('Redact drops React’s concurrent scheduler. Renders cannot yield or be interrupted based on priority.', 'React の並行レンダリングを省き、描画の中断や優先度に応じた切り替えを行わない。') },
+      { title: copy('Transition APIs still work', 'Transition API は使える'), text: copy('While new results suspend, useDeferredValue can keep the previous results visible.', '新しい検索結果を待つ間、useDeferredValue で直前の結果を表示し続けられる。') },
+      { title: copy('Closer to React in tested setups', 'テストでは Preact より React に近い'), text: copy('In TanStack’s tests, Redact passed Start hydration and implemented React 19’s useActionState. Preact compat fell short on both.', 'TanStack のテストでは、Redact は Start のハイドレーションに成功し、useActionState も動作。Preact compat はどちらも通らなかった。') },
     ],
-    takeaway: copy('The Vite plugin redirects React imports at build time.', 'Vite プラグインがビルド時に React の import 先を切り替える。'),
-    source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
+    source: { label: 'Redact · Framework comparison', url: 'https://tanstack.com/redact/latest/docs/framework-comparison' },
   },
   {
     id: 'runtime-size', section: '04 / TANSTACK REDACT · THIS DECK',

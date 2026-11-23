@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { SlideTitle } from './SlideTitle'
-import type { CompatibilityRow, Copy, Language, Slide } from './slides'
+import type { Language, Slide } from './slides'
 
 function Atom() {
   return <svg className="atom" viewBox="0 0 300 300" fill="none" aria-hidden="true">
@@ -14,29 +14,6 @@ function Code({ code, filename }: { code: string; filename?: string }) {
   return <div className="code-panel"><div className="code-header"><span className="code-lights" aria-hidden="true">● ● ●</span><span>{filename}</span><span>TSX</span></div>
     <pre tabIndex={0}><code>{code.split('\n').map((line, i) => <span className={`code-line ${line.trim().startsWith('//') ? 'code-comment' : ''}`} key={i}><span className="line-number" aria-hidden="true">{i + 1}</span><span>{line || ' '}</span></span>)}</code></pre>
   </div>
-}
-
-const compatibilityLabels: Record<CompatibilityRow['status'], Copy> = {
-  supported: { en: 'Supported', ja: '対応' },
-  different: { en: 'Different', ja: '挙動に差' },
-  unavailable: { en: 'Unavailable', ja: '非対応' },
-  experimental: { en: 'Experimental', ja: '実験的・要設定' },
-  upstream: { en: 'Native React', ja: 'React 本体' },
-}
-
-function CompatibilityTable({ rows, lang }: { rows: CompatibilityRow[]; lang: Language }) {
-  return <table className="compatibility-table">
-    <thead><tr>
-      <th scope="col">{lang === 'ja' ? '機能' : 'Feature'}</th>
-      <th scope="col">Redact</th>
-      <th scope="col">{lang === 'ja' ? '補足' : 'Details'}</th>
-    </tr></thead>
-    <tbody>{rows.map(row => <tr key={row.feature.en}>
-      <th scope="row">{row.feature[lang]}</th>
-      <td><span className={`compatibility-status status-${row.status}`}>{compatibilityLabels[row.status][lang]}</span></td>
-      <td>{row.detail[lang]}</td>
-    </tr>)}</tbody>
-  </table>
 }
 
 export function SlideView({ slide, lang }: { slide: Slide; lang: Language }) {
@@ -65,7 +42,6 @@ export function SlideView({ slide, lang }: { slide: Slide; lang: Language }) {
         <Code code={slide.codeComparison.off} filename={lang === 'ja' ? 'Compiler 無効' : 'Compiler off'} />
         <Code code={slide.codeComparison.on} filename={lang === 'ja' ? 'Compiler 有効' : 'Compiler on'} />
       </div>}
-      {slide.compatibility && <CompatibilityTable rows={slide.compatibility} lang={lang} />}
       {slide.items && <div className="slide-items">{slide.items.map((item, i) => <div className={`item item-${i}`} key={item.title.en}>
         <span className="item-number">{String(i + 1).padStart(2, '0')}</span><div><h2>{item.title[lang]}</h2><p>{item.text[lang]}</p></div>
       </div>)}</div>}

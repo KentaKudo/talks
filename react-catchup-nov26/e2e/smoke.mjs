@@ -65,7 +65,7 @@ try {
         const issues = await page.locator('article').evaluate(el => {
           const bounds = el.getBoundingClientRect()
           const body = el.querySelector('.slide-body').getBoundingClientRect()
-          return [...el.querySelectorAll('h1, h2, p, pre, .source, .code-panel, .demo-panel, .compatibility-table')].filter(node => {
+          return [...el.querySelectorAll('h1, h2, p, pre, .source, .code-panel, .demo-panel')].filter(node => {
             if (!node.getClientRects().length) return false
             const rect = node.getBoundingClientRect()
             const maxBottom = node.closest('.slide-body') ? body.bottom : bounds.bottom
