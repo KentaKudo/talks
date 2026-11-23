@@ -21,7 +21,7 @@ npm run build
 npm run preview
 ```
 
-Open [localhost:4173](http://localhost:4173). Fonts, scripts, and demos are local: internet access is unnecessary after installation/build. Keep the local server running. Source links open external documentation when a connection is available.
+Open [localhost:4173](http://localhost:4173). Fonts, scripts, and demos are local: internet access is unnecessary after installation/build. Keep the local server running; restart the preview after rebuilding. Source links open external documentation when a connection is available.
 
 | Control | Action |
 | --- | --- |

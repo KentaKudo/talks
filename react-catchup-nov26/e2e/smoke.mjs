@@ -85,6 +85,11 @@ try {
     const transitionFrame = page.frameLocator('iframe')
     const next = transitionFrame.getByRole('button', { name: 'Next stop', exact: true })
     await next.waitFor()
+    await next.evaluate(() => document.fonts.ready)
+    assert(await transitionFrame.locator('.native-demo').evaluate(el => [...el.querySelectorAll('.destination-card, button, p')].every(node => {
+      const box = node.getBoundingClientRect()
+      return box.top >= 0 && box.bottom <= window.innerHeight
+    })), 'Native transition demo must fit its iframe at 720p')
     await next.evaluate(() => {
       window.__transitionCalls = 0
       const start = document.startViewTransition?.bind(document)
@@ -98,6 +103,7 @@ try {
     await page.goto(`${base}#slide=fragment-demo&lang=en`)
     const fragmentFrame = page.frameLocator('iframe')
     await fragmentFrame.getByRole('button', { name: 'Focus first field', exact: true }).click()
+    assert(await fragmentFrame.getByRole('button', { name: 'Reset demo' }).evaluate(el => el.getBoundingClientRect().bottom <= window.innerHeight), 'Native Fragment controls must fit their iframe')
     assert(await fragmentFrame.getByRole('textbox', { name: 'Name', exact: true }).evaluate(el => el === document.activeElement), 'Fragment ref must focus the first field')
     assert(await fragmentFrame.locator('.fragment-grid > label').count() === 2, 'Fragment demo must keep grid children flat')
     await page.setViewportSize({ width: 390, height: 844 })
