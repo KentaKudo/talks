@@ -1,11 +1,11 @@
 {
   "react": {
-    "raw": 360085,
-    "gzip": 116155
+    "raw": 361608,
+    "gzip": 116681
   },
   "redact": {
-    "raw": 193775,
-    "gzip": 69100
+    "raw": 195185,
+    "gzip": 69641
   },
   "compiler": {
     "off": "function SlideTitle({ title }) {\n\treturn /* @__PURE__ */ (0, import_jsx_runtime.jsx)(\"h1\", { children: title });\n}",

@@ -279,3 +279,35 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 @media (max-width: 700px) {
   .compiler-devtools-crop { width: 100%; }
 }
+
+.compatibility-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.4cqw;
+  line-height: 1.45;
+}
+.compatibility-table th, .compatibility-table td {
+  padding: .65cqw 1cqw;
+  border-bottom: 1px solid var(--ink);
+  text-align: left;
+}
+.compatibility-table thead { background: var(--inset); }
+.compatibility-table th:first-child { width: 33%; }
+.compatibility-table td:nth-child(2) { width: 19%; }
+.compatibility-status {
+  display: inline-block;
+  padding: .12em .65em;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: .9em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.status-supported { background: var(--aqua); }
+.status-different, .status-experimental { background: var(--yellow); }
+.status-unavailable { background: var(--pink); }
+@media (max-width: 700px) {
+  .compatibility-table { font-size: 3.1cqw; }
+  .compatibility-table th, .compatibility-table td { padding: 1.2cqw; }
+}

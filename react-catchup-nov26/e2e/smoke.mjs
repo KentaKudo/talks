@@ -65,7 +65,7 @@ try {
         const issues = await page.locator('article').evaluate(el => {
           const bounds = el.getBoundingClientRect()
           const body = el.querySelector('.slide-body').getBoundingClientRect()
-          return [...el.querySelectorAll('h1, h2, p, pre, .source, .code-panel, .demo-panel')].filter(node => {
+          return [...el.querySelectorAll('h1, h2, p, pre, .source, .code-panel, .demo-panel, .compatibility-table')].filter(node => {
             if (!node.getClientRects().length) return false
             const rect = node.getBoundingClientRect()
             const maxBottom = node.closest('.slide-body') ? body.bottom : bounds.bottom
@@ -73,7 +73,7 @@ try {
           }).map(node => node.className || node.tagName)
         })
         if (issues.length) clipping.push({ id, lang, issues })
-        if (lang === 'ja' && ['hello', 'transition-triggers', 'transition-demo', 'start-stack'].includes(id)) {
+        if (lang === 'ja' && ['hello', 'transition-triggers', 'transition-demo', 'start-stack', 'redact-tradeoffs'].includes(id)) {
           if (id === 'transition-demo') await page.frameLocator('iframe').getByRole('button', { name: '次の街へ', exact: true }).waitFor()
           await page.screenshot({ path: `output/playwright/${id}.png` })
         }
