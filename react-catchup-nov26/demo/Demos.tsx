@@ -1,4 +1,4 @@
-import { Fragment, ViewTransition, startTransition, useEffect, useRef, useState, type FragmentInstance } from 'react'
+import { Fragment, ViewTransition, startTransition, useRef, useState, type FragmentInstance } from 'react'
 import type {} from 'react-dom'
 
 export function Demos({ kind, lang }: { kind: 'transition' | 'fragment'; lang: 'ja' | 'en' }) {
@@ -28,42 +28,41 @@ function TransitionDemo({ ja }: { ja: boolean }) {
 
 function FragmentDemo({ ja }: { ja: boolean }) {
   const group = useRef<FragmentInstance>(null)
-  const [wide, setWide] = useState(false)
-  const [widths, setWidths] = useState<Record<string, number>>({})
+  const wrapper = useRef<HTMLDivElement>(null)
+  const [wrapped, setWrapped] = useState(false)
+  const [count, setCount] = useState<number | null>(null)
+  const cards = <>
+    <article className="fragment-card">A</article>
+    <article className="fragment-card">B</article>
+  </>
 
-  useEffect(() => {
-    const fragment = group.current
-    if (!fragment || typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(entries => {
-      setWidths(previous => {
-        const next = { ...previous }
-        for (const { target, contentRect } of entries) {
-          next[target.id] = Math.round(contentRect.width)
-        }
-        return next
-      })
-    })
-    fragment.observeUsing(observer)
-    return () => fragment.unobserveUsing(observer)
-  }, [])
+  function measure() {
+    const target = wrapped ? wrapper.current : group.current
+    setCount(target?.getClientRects().length ?? null)
+  }
+
+  function chooseWrapper(value: boolean) {
+    setWrapped(value)
+    setCount(null)
+  }
 
   return <>
-    <div className={`fragment-grid${wide ? ' fragment-grid-wide' : ''}`} role="group" aria-label="CSS Grid">
-      <Fragment ref={group}>
-        <GridCard id="summary-card" title={ja ? '概要' : 'Summary'} width={widths['summary-card']} />
-        <GridCard id="activity-card" title={ja ? '履歴' : 'Activity'} width={widths['activity-card']} />
-      </Fragment>
+    <div className="fragment-controls" role="group" aria-label={ja ? '比べるレイアウト' : 'Layout to compare'}>
+      <button className="pill-button" aria-pressed={!wrapped} onClick={() => chooseWrapper(false)}>
+        {ja ? 'Fragment でまとめる' : 'With Fragment'}
+      </button>
+      <button className="pill-button" aria-pressed={wrapped} onClick={() => chooseWrapper(true)}>
+        {ja ? 'div で囲む' : 'With div'}
+      </button>
     </div>
-    <button className="pill-button primary" aria-pressed={wide} onClick={() => setWide(value => !value)}>
-      {ja ? '左の列を広げる' : 'Widen the first column'}
-    </button>
-    <p className="demo-explanation">1 ResizeObserver → 2 {ja ? '枚のカード' : 'cards'} <span className="no-wrapper">{ja ? '追加の div なし' : 'no extra div'}</span></p>
+    <div className="fragment-grid" role="group" aria-label="CSS Grid" data-measured={Boolean(count)}>
+      {wrapped
+        ? <div ref={wrapper} className="fragment-wrapper">{cards}</div>
+        : <Fragment ref={group}>{cards}</Fragment>}
+    </div>
+    <button className="pill-button primary" onClick={measure}>{ja ? '範囲を表示' : 'Show bounds'}</button>
+    <p className="demo-explanation fragment-result" role="status">
+      {count !== null && (ja ? `取得した領域: ${count} 個` : `${count} ${count === 1 ? 'rectangle' : 'rectangles'}`)}
+    </p>
   </>
-}
-
-function GridCard({ id, title, width }: { id: string; title: string; width?: number }) {
-  return <article id={id} className="fragment-card">
-    <strong>{title}</strong>
-    <span>{width === undefined ? '—' : `${width} px`}</span>
-  </article>
 }

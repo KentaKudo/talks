@@ -111,20 +111,20 @@ return <ViewTransition>
   },
   {
     id: 'fragment-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'fragment',
-    filename: 'Demos.tsx · excerpt', code: `useEffect(() => {
-  const fragment = group.current
-  if (!fragment) return
+    filename: 'Demos.tsx · excerpt', code: `const group = useRef<FragmentInstance>(null)
 
-  const observer = new ResizeObserver(entries => {
-    // Read each card's width from entries.
-    updateWidths(entries)
-  })
-  fragment.observeUsing(observer)
-  return () => fragment.unobserveUsing(observer)
-}, [])`,
-    title: copy('One observer for both Grid cards.', 'Grid のカード 2 枚をまとめて監視。'),
-    subtitle: copy('Widen the first column to see both measurements update.', '左の列を広げると、両方のカードの幅が更新される。'),
-    takeaway: copy('One Fragment ref observes the cards. Both stay direct Grid children.', 'Fragment ref ひとつで 2 枚を監視。どちらも Grid の直接の子要素。'), source: fragments,
+<div className="grid">
+  <Fragment ref={group}>
+    <Card label="A" />
+    <Card label="B" />
+  </Fragment>
+</div>
+
+// On "Show bounds"
+const rects = group.current?.getClientRects()`,
+    title: copy('One ref, two card outlines.', 'ref ひとつで、カード 2 枚の範囲を取得。'),
+    subtitle: copy('Switch between Fragment and div, then select Show bounds.', 'Fragment と div を切り替え、「範囲を表示」を押して比べる。'),
+    takeaway: copy('A div takes one Grid cell. Fragment keeps A and B in separate cells and gives you both bounds.', 'div で囲むと 1 マス。Fragment なら A と B は別々のマスに並び、両方の範囲を取得できる。'), source: fragments,
   },
   {
     id: 'browser-before', section: '01 / REACT · BROWSER-ONLY RENDERING',
