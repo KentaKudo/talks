@@ -64,6 +64,13 @@ export const slides: Slide[] = [
     takeaway: copy('View Transitions and Fragment refs are stable.', 'View Transitions と Fragment refs が stable に。'), source: reactRelease,
   },
   {
+    id: 'transition-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'transition',
+    filename: 'Demos.tsx · excerpt', code: `const [stop, setStop] = useState(0)\n\n<ViewTransition>\n  <strong>{cities[stop]}</strong>\n</ViewTransition>\n\n<button onClick={() => startTransition(() => {\n  setStop(value => (value + 1) % cities.length)\n})}>Next stop</button>`,
+    title: copy('Same component. Next stop.', '同じコンポーネント、次の街へ。'),
+    subtitle: copy('Tap Next stop to see the card animate to the next city.', '「次の街へ」を押して、カードが切り替わるアニメーションを見てみよう。'),
+    takeaway: copy('Native React 19.3 demo · animation depends on browser support and motion preferences.', 'React 19.3 のデモ · アニメーションはブラウザ対応と動きの設定に依存。'), source: transitions,
+  },
+  {
     id: 'transition-triggers', section: '01 / REACT · VIEW TRANSITIONS · CONTENT UPDATES',
     title: copy('Animate content as it becomes ready.', 'コンテンツの準備ができたら、アニメーション。'),
     filename: 'ViewTransition · TSX excerpts',
@@ -88,19 +95,12 @@ return <ViewTransition>
   {
     id: 'view-transitions', section: '01 / REACT · VIEW TRANSITIONS · STARTTRANSITION',
     title: copy('Animate a click with startTransition.', 'クリックで街を切り替える。'),
-    subtitle: copy('For a direct user action, mark the state update with startTransition.', 'クリックに応じた状態更新を startTransition で囲む。'),
+    subtitle: copy('In the train demo, startTransition marks the city update.', 'デモでは、街を切り替える状態更新を startTransition で囲む。'),
     code: `function Destination() {\n  const [city, setCity] = useState('Tokyo')\n  return <>\n    <button onClick={() => startTransition(() => {\n      setCity('Kyoto')\n    })}>Next stop</button>\n    <ViewTransition>\n      <h2>{city}</h2>\n    </ViewTransition>\n  </>\n}`, filename: 'Destination.tsx',
     items: [
       { title: copy('Wrap the heading', '見出しを囲む'), text: copy('ViewTransition cross-fades from the old city to the new one.', 'ViewTransition が切り替え前後の街の名前をクロスフェードする。') },
       { title: copy('Style the motion', '動きをカスタマイズ'), text: copy('CSS transition classes or animation callbacks.', 'CSS の transition class やイベント props で調整。') },
     ], source: transitions,
-  },
-  {
-    id: 'transition-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'transition',
-    filename: 'Demos.tsx · excerpt', code: `const [stop, setStop] = useState(0)\n\n<ViewTransition>\n  <strong>{cities[stop]}</strong>\n</ViewTransition>\n\n<button onClick={() => startTransition(() => {\n  setStop(value => (value + 1) % cities.length)\n})}>Next stop</button>`,
-    title: copy('Same component. Next stop.', '同じコンポーネント、次の街へ。'),
-    subtitle: copy('Tap Next stop to see the startTransition example in action.', '「次の街へ」を押して、startTransition の動きを見てみよう。'),
-    takeaway: copy('Native React 19.3 demo · animation depends on browser support and motion preferences.', 'React 19.3 のデモ · アニメーションはブラウザ対応と動きの設定に依存。'), source: transitions,
   },
   {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',
