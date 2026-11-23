@@ -96,35 +96,35 @@ return <ViewTransition>
   {
     id: 'fragment-refs', section: '01 / REACT · FRAGMENT REFS',
     title: copy('A ref, without the extra div.', 'ref のための div、もう不要。'),
-    code: `const group = useRef<FragmentInstance>(null)
+    code: `const rows = useRef<FragmentInstance>(null)
 
-<div className="grid">
-  <Fragment ref={group}>
-    <SummaryCard />
-    <ActivityCard />
+<tbody>
+  <Fragment ref={rows}>
+    <OrderRow item="Notebook" />
+    <OrderRow item="Pen" />
   </Fragment>
-</div>`, filename: 'Dashboard.tsx · excerpt',
+  <OrderRow item="Mug" />
+</tbody>`, filename: 'Orders.tsx · excerpt',
     items: [
-      { title: copy('Keep the DOM flat', 'DOM 構造を変えない'), text: copy('Useful in grids, flex layouts, and component composition.', 'Grid・Flex やコンポーネントの組み合わせに便利。') },
-      { title: copy('Work with a group', 'グループ単位で操作'), text: copy('Focus, measure, listen, or attach an observer.', 'フォーカス・計測・イベント・Observer をまとめて扱う。') },
+      { title: copy('Keep valid table rows', '表の行構造を保つ'), text: copy('Every tr stays a direct child of tbody.', 'すべての tr は tbody の直接の子要素。') },
+      { title: copy('Handle an order as a group', '注文ごとにまとめて操作'), text: copy('Attach the same click listener to the rows for one order.', '同じ注文の明細行に、共通のクリックリスナーを登録できる。') },
     ], source: fragments,
   },
   {
     id: 'fragment-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'fragment',
-    filename: 'Demos.tsx · excerpt', code: `const group = useRef<FragmentInstance>(null)
+    filename: 'Demos.tsx · excerpt', code: `useEffect(() => {
+  const fragment = rows.current
+  if (!fragment) return
 
-<div className="grid">
-  <Fragment ref={group}>
-    <Card label="A" />
-    <Card label="B" />
-  </Fragment>
-</div>
-
-// On "Show bounds"
-const rects = group.current?.getClientRects()`,
-    title: copy('One ref, two card outlines.', 'ref ひとつで、カード 2 枚の範囲を取得。'),
-    subtitle: copy('Switch between Fragment and div, then select Show bounds.', 'Fragment と div を切り替え、「範囲を表示」を押して比べる。'),
-    takeaway: copy('A div takes one Grid cell. Fragment keeps A and B in separate cells and gives you both bounds.', 'div で囲むと 1 マス。Fragment なら A と B は別々のマスに並び、両方の範囲を取得できる。'), source: fragments,
+  const selectOrder = () => onSelect(order)
+  fragment.addEventListener('click', selectOrder)
+  return () => {
+    fragment.removeEventListener('click', selectOrder)
+  }
+}, [order, onSelect])`,
+    title: copy('Select the order from any of its rows.', 'どの明細からでも、同じ注文を選ぶ。'),
+    subtitle: copy('Try Notebook, then Mug. The highlight follows the order.', '「ノート」、次に「マグカップ」を押すと、注文単位で色が変わる。'),
+    takeaway: copy('One Fragment ref attaches a click listener to the rows of each order.', '注文ごとの Fragment ref ひとつで、明細行に共通のクリックリスナーを付ける。'), source: fragments,
   },
   {
     id: 'browser-before', section: '01 / REACT · BROWSER-ONLY RENDERING',

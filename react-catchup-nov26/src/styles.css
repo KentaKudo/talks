@@ -139,22 +139,22 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 .city-japanese { font-size: 13px; }.rail-track { position: absolute; right: 30px; bottom: 28px; width: 70px; height: 5px; background: var(--ink); display: flex; justify-content: space-between; align-items: center; }.rail-track span { width: 12px; height: 12px; border-radius: 50%; background: var(--card); border: 2px solid; }
 .primary { background: var(--pink); }.reset-button { background: transparent; border: 0; font-size: 11px; padding: 5px 12px; text-decoration: underline; text-underline-offset: 3px; }
 .demo-explanation { font-family: monospace; font-size: 12px; text-align: center; }.demo-fallback { font-size: 11px; }
-.fragment-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; width: min(660px, 90%); border: 2px dashed; border-radius: 15px; padding: 16px 24px 22px; background: var(--card); }
-.fragment-grid { align-items: start; }
-.fragment-controls { display: flex; justify-content: center; gap: 10px; }
-.fragment-controls button[aria-pressed='true'] { background: var(--yellow); }
-.fragment-wrapper { display: grid; gap: 7px; }
-.fragment-card {
-  padding: 9px;
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-  background: var(--aqua);
-  text-align: center;
-  font: 400 19px 'Dela Gothic One', sans-serif;
+.order-table { width: min(520px, 100%); border-collapse: collapse; background: var(--card); }
+.order-table th, .order-table td { padding: 4px 12px; border: 2px solid var(--ink); text-align: left; }
+.order-table th { background: var(--yellow); }
+.order-table td:first-child { width: 32%; font-weight: 700; }
+.order-table tr:has(button[aria-pressed='true']) { background: var(--aqua); }
+.order-item {
+  width: 100%;
+  padding: 4px 5px;
+  border: 0;
+  background: none;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.fragment-card + .fragment-card { background: var(--yellow); }
-.fragment-grid[data-measured='true'] > * { outline: 3px solid var(--pink); outline-offset: 3px; }
-.fragment-result { min-height: 1.2em; font-weight: 700; }
+.order-item:focus-visible { outline-offset: 0; }
+.order-selection { min-height: 1.4em; font-weight: 700; text-align: center; }
 ::view-transition-group(*) { animation-duration: 650ms; }
 @media (max-width: 700px) {
   .toolbar { padding: 15px 5vw; }.edition, .issue-label, .keyboard-hint { display: none; }.wordmark { font-size: 15px; }.toolbar-actions { gap: 7px; }.toolbar .icon-button { width: 32px; height: 32px; }.language-switch button { padding: 6px 9px; font-size: 10px; }
@@ -171,7 +171,7 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   .demo-panel { min-height: 360px; }.demo-heading { font-size: 2.5cqw; padding: 3cqw; gap: 1.5cqw; }.runtime-label { font-size: 1.8cqw; }iframe { height: 310px; }
   .deck-footer { padding: 10px 5vw 16px; }.footer-meta { font-size: 8px; }.deck-footer .icon-button { width: 34px; height: 34px; }.slide-count { width: 55px; font-size: 10px; }.deck-footer nav { gap: 5px; }
   .overview { padding: 20px; }.overview-header h2 { font-size: 18px; }.overview-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }.overview-slide { padding: 12px; }.overview-slide > span:nth-child(2) { font-size: 11px; }
-  .fragment-grid { width: 100%; padding: 14px; gap: 10px; }.destination-card { width: 90%; }.native-demo { padding: 12px; }.demo-explanation { font-size: 10px; }.no-wrapper { display: block; margin: 8px 0 0; }
+  .destination-card { width: 90%; }.native-demo { padding: 12px; }.demo-explanation { font-size: 10px; }.no-wrapper { display: block; margin: 8px 0 0; }
 }
 /* An iframe can be short even on a wide projector. Keep every demo control visible. */
 @media (max-height: 350px) {
@@ -182,9 +182,10 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   .ticket-label { font-size: 9px; }.city-japanese { font-size: 11px; }
   .native-demo .pill-button { padding: 7px 18px; font-size: 12px; }
   .demo-explanation { font-size: 10px; }.reset-button { font-size: 10px; padding: 3px 10px; }
-  .demo-content:has(.fragment-grid) { gap: 5px; }
-  .fragment-grid { padding: 8px 14px; gap: 10px; }
-  .fragment-card { padding: 4px; font-size: 16px; }
+  .demo-content:has(.order-table) { gap: 6px; }
+  .order-table th, .order-table td { padding: 2px 10px; }
+  .order-item { padding: 2px 5px; }
+  .order-selection { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

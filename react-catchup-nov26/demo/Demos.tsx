@@ -1,4 +1,4 @@
-import { Fragment, ViewTransition, startTransition, useRef, useState, type FragmentInstance } from 'react'
+import { Fragment, ViewTransition, startTransition, useEffect, useRef, useState, type FragmentInstance } from 'react'
 import type {} from 'react-dom'
 
 export function Demos({ kind, lang }: { kind: 'transition' | 'fragment'; lang: 'ja' | 'en' }) {
@@ -27,42 +27,42 @@ function TransitionDemo({ ja }: { ja: boolean }) {
 }
 
 function FragmentDemo({ ja }: { ja: boolean }) {
-  const group = useRef<FragmentInstance>(null)
-  const wrapper = useRef<HTMLDivElement>(null)
-  const [wrapped, setWrapped] = useState(false)
-  const [count, setCount] = useState<number | null>(null)
-  const cards = <>
-    <article className="fragment-card">A</article>
-    <article className="fragment-card">B</article>
-  </>
-
-  function measure() {
-    const target = wrapped ? wrapper.current : group.current
-    setCount(target?.getClientRects().length ?? null)
-  }
-
-  function chooseWrapper(value: boolean) {
-    setWrapped(value)
-    setCount(null)
-  }
-
+  const [selected, setSelected] = useState<number | null>(null)
   return <>
-    <div className="fragment-controls" role="group" aria-label={ja ? '比べるレイアウト' : 'Layout to compare'}>
-      <button className="pill-button" aria-pressed={!wrapped} onClick={() => chooseWrapper(false)}>
-        {ja ? 'Fragment でまとめる' : 'With Fragment'}
-      </button>
-      <button className="pill-button" aria-pressed={wrapped} onClick={() => chooseWrapper(true)}>
-        {ja ? 'div で囲む' : 'With div'}
-      </button>
-    </div>
-    <div className="fragment-grid" role="group" aria-label="CSS Grid" data-measured={Boolean(count)}>
-      {wrapped
-        ? <div ref={wrapper} className="fragment-wrapper">{cards}</div>
-        : <Fragment ref={group}>{cards}</Fragment>}
-    </div>
-    <button className="pill-button primary" onClick={measure}>{ja ? '範囲を表示' : 'Show bounds'}</button>
-    <p className="demo-explanation fragment-result" role="status">
-      {count !== null && (ja ? `取得した領域: ${count} 個` : `${count} ${count === 1 ? 'rectangle' : 'rectangles'}`)}
+    <table className="order-table" aria-label={ja ? '注文明細' : 'Order items'}>
+      <thead><tr><th scope="col">{ja ? '注文' : 'Order'}</th><th scope="col">{ja ? '商品' : 'Item'}</th></tr></thead>
+      <tbody>
+        <OrderRows order={42} items={ja ? ['ノート', 'ペン'] : ['Notebook', 'Pen']} selected={selected} onSelect={setSelected} />
+        <OrderRows order={43} items={ja ? ['マグカップ'] : ['Mug']} selected={selected} onSelect={setSelected} />
+      </tbody>
+    </table>
+    <p className="order-selection" role="status">
+      {selected === null
+        ? (ja ? '明細を押して注文を選ぶ' : 'Select an item to choose its order')
+        : (ja ? `注文 #${selected} を選択中` : `Order #${selected} selected`)}
     </p>
   </>
+}
+
+function OrderRows({ order, items, selected, onSelect }: {
+  order: number
+  items: string[]
+  selected: number | null
+  onSelect: (order: number) => void
+}) {
+  const rows = useRef<FragmentInstance>(null)
+  useEffect(() => {
+    const fragment = rows.current
+    if (!fragment) return
+    const selectOrder = () => onSelect(order)
+    fragment.addEventListener('click', selectOrder)
+    return () => fragment.removeEventListener('click', selectOrder)
+  }, [order, onSelect])
+
+  return <Fragment ref={rows}>
+    {items.map(item => <tr key={item}>
+      <td>#{order}</td>
+      <td><button className="order-item" aria-pressed={selected === order}>{item}</button></td>
+    </tr>)}
+  </Fragment>
 }

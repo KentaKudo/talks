@@ -1,8 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { Demos } from './Demos'
-
-afterEach(() => vi.restoreAllMocks())
 
 describe('native React demonstrations', () => {
   it('changes a transition card and can reset it', async () => {
@@ -14,32 +12,28 @@ describe('native React demonstrations', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Reset demo' }))
     expect(await screen.findByText('TOKYO')).toBeInTheDocument()
   })
-  it('compares two Fragment rectangles with one wrapper rectangle', () => {
-    const rect = new DOMRect(0, 0, 180, 40)
-    vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue(
-      Object.assign([rect], { item: (index: number) => index === 0 ? rect : null }),
-    )
+  it('selects an order from either of its rows and keeps the other order separate', () => {
     render(<Demos kind="fragment" lang="en" />)
-    const grid = screen.getByRole('group', { name: 'CSS Grid' })
-    const measure = screen.getByRole('button', { name: 'Show bounds' })
-    expect(screen.getAllByRole('article').every(card => card.parentElement === grid)).toBe(true)
-    fireEvent.click(measure)
-    expect(screen.getByRole('status')).toHaveTextContent('2 rectangles')
-    fireEvent.click(screen.getByRole('button', { name: 'With div' }))
-    expect(screen.getByRole('status')).toBeEmptyDOMElement()
-    expect(grid.children).toHaveLength(1)
-    fireEvent.click(measure)
-    expect(screen.getByRole('status')).toHaveTextContent('1 rectangle')
-    fireEvent.click(screen.getByRole('button', { name: 'With Fragment' }))
-    expect(grid.children).toHaveLength(2)
+    const select = screen.getByRole('button', { name: 'Notebook' })
+    const second = screen.getByRole('button', { name: 'Pen' })
+    const unrelated = screen.getByRole('button', { name: 'Mug' })
+
+    fireEvent.click(unrelated)
+    expect(screen.getByRole('status')).toHaveTextContent('Order #43 selected')
+    fireEvent.click(select)
+    expect(screen.getByRole('status')).toHaveTextContent('Order #42 selected')
+    expect(select).toHaveAttribute('aria-pressed', 'true')
+    expect(second).toHaveAttribute('aria-pressed', 'true')
+    expect(unrelated).toHaveAttribute('aria-pressed', 'false')
     fireEvent.click(screen.getByRole('button', { name: 'Reset demo' }))
-    expect(screen.getByRole('status')).toBeEmptyDOMElement()
+    fireEvent.click(screen.getByRole('button', { name: 'Pen' }))
+    expect(screen.getByRole('status')).toHaveTextContent('Order #42 selected')
   })
   it('localizes both demos', () => {
     const { unmount } = render(<Demos kind="transition" lang="ja" />)
     expect(screen.getByRole('button', { name: '次の街へ' })).toBeInTheDocument()
     unmount()
     render(<Demos kind="fragment" lang="ja" />)
-    expect(screen.getByRole('button', { name: '範囲を表示' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ノート' })).toBeInTheDocument()
   })
 })
