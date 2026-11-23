@@ -66,6 +66,7 @@ try {
           const bounds = el.getBoundingClientRect()
           const body = el.querySelector('.slide-body').getBoundingClientRect()
           return [...el.querySelectorAll('h1, h2, p, pre, .source, .code-panel, .demo-panel')].filter(node => {
+            if (!node.getClientRects().length) return false
             const rect = node.getBoundingClientRect()
             const maxBottom = node.closest('.slide-body') ? body.bottom : bounds.bottom
             return rect.bottom > maxBottom + 2 || rect.right > bounds.right + 1 || rect.left < bounds.left - 1 || (node.tagName === 'PRE' && node.scrollWidth > node.clientWidth + 2)
@@ -98,6 +99,12 @@ try {
     await next.click()
     await transitionFrame.getByText('KYOTO', { exact: true }).waitFor()
     assert(await next.evaluate(() => !document.startViewTransition || window.__transitionCalls > 0), 'Native ViewTransition must call the browser API')
+    await page.getByRole('tab', { name: 'Code', exact: true }).click()
+    const codePanel = page.getByRole('tabpanel', { name: 'Code', exact: true })
+    await codePanel.getByText(/setStop\(value/).waitFor()
+    assert(await codePanel.evaluate(el => el.scrollHeight <= el.clientHeight + 2), 'Demo code should fit at 720p')
+    await page.getByRole('tab', { name: 'Demo', exact: true }).click()
+    await transitionFrame.getByText('KYOTO', { exact: true }).waitFor()
     await transitionFrame.getByRole('button', { name: 'Reset demo' }).click()
     await transitionFrame.getByText('TOKYO', { exact: true }).waitFor()
     await page.goto(`${base}#slide=fragment-demo&lang=en`)

@@ -9,7 +9,7 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}', 'demo/**/*.test.tsx'],
     coverage: {
       provider: 'v8',
-      include: ['src/deck/Deck.tsx', 'src/deck/navigation.ts', 'demo/Demos.tsx'],
+      include: ['src/deck/Deck.tsx', 'src/deck/SlideView.tsx', 'src/deck/navigation.ts', 'demo/Demos.tsx'],
       thresholds: { statements: 80, branches: 80, functions: 80, lines: 80 },
     },
   },

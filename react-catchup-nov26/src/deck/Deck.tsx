@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { slides, type Language } from './slides'
+import type { Slide, Language } from './slides'
 import { destination, positionHash, readPosition, type Direction } from './navigation'
 import { SlideView } from './SlideView'
 
-const ids = slides.map(slide => slide.id)
 const keys: Record<string, Direction> = {
   ArrowRight: 'next', PageDown: 'next', ' ': 'next',
   ArrowLeft: 'previous', PageUp: 'previous', Home: 'first', End: 'last',
 }
 
-export function Deck() {
+export function Deck({ slides }: { slides: Slide[] }) {
   // Start with identical server/client markup; restore browser hash after hydration.
   const [position, setPosition] = useState({ index: 0, lang: 'ja' as Language })
   const [overview, setOverview] = useState(false)
@@ -21,11 +20,11 @@ export function Deck() {
   const slide = slides[index]
 
   useEffect(() => {
-    const restore = () => setPosition(readPosition(window.location.hash, ids))
+    const restore = () => setPosition(readPosition(window.location.hash, slides.map(slide => slide.id)))
     restore()
     window.addEventListener('hashchange', restore)
     return () => window.removeEventListener('hashchange', restore)
-  }, [])
+  }, [slides])
 
   useEffect(() => { document.documentElement.lang = lang }, [lang])
   useEffect(() => {
@@ -56,6 +55,7 @@ export function Deck() {
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
+      if (event.defaultPrevented) return
       if (event.altKey || event.ctrlKey || event.metaKey) return
       if (overview) {
         if (event.key === 'Escape' || event.key === 'o') { event.preventDefault(); closeOverview() }

@@ -1,6 +1,6 @@
 # Meanwhile, in React.
 
-A bilingual, 24-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The original `transcript.md` is preserved.
+A bilingual, 26-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The original `transcript.md` is preserved.
 
 ## Run locally
 
@@ -45,7 +45,24 @@ Suggested rehearsal budget: opening 1½ minutes, React 6, Next.js 5, Start 2, Re
 
 ## Runtime and demos
 
-The deck runs on TanStack Start + TanStack Redact + Vite, with the experimental Oxc React Compiler integration enabled. Start prerenders the single route. `dist/client/` contains the entire static site; `dist/server/` is only a build/preview artifact and is unnecessary on GitHub Pages. No server functions or runtime API endpoints are used.
+The deck runs on TanStack Start, Vite, and Redact. The index route loader calls the `getSlides` server function, which reads the bilingual slide definitions. The regular build serves the route with SSR. The Pages build runs that same loader at build time and embeds its result in the generated HTML. Slide navigation uses the hydrated data.
+
+The Rust React Compiler integration in `@vitejs/plugin-react` uses Oxc and is marked experimental. See [Oxc’s Vite instructions](https://oxc.rs/blog/2026-08-18-react-compiler-support#vite) and the [Vite React plugin README](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler).
+
+To inspect the deck with native React DevTools in development or as readable production output:
+
+```sh
+npm run dev:react
+# Or build and preview native React with readable bundles and source maps:
+npm run build:inspect
+npm run preview
+```
+
+With `npm run dev:react`, look for the Memo badge on `SlideTitle` in the React DevTools Components panel. See the [React Compiler verification guide](https://react.dev/learn/react-compiler/installation#verify-your-setup).
+
+The inspection build uses SSR on request. In browser Sources, find `SlideTitle` in the emitted route chunk to see its compiler cache. For the same setup with the compiler disabled, run `SLIDES_COMPILER=off npm run build:inspect` and restart preview.
+
+Run `npm run compare:builds` to regenerate the two evidence slides. The script builds the same deck with React and Redact and sums raw and individually gzipped bytes across its minified client JS chunks. The common iframe bundle, CSS, fonts, HTML, and server output are outside that count. It also compares readable native React builds with the compiler on and off and extracts the actual emitted `SlideTitle` function. Both full builds are under `output/build-comparison/` and the slide data are in `src/deck/build-comparison.json`.
 
 `demo/` has a separate Vite build **without Redact**. Its bundled React 19.3 runs inside local iframes to demonstrate genuine `<ViewTransition>` and Fragment refs. Redact’s default ViewTransition does not animate. Native transitions respect reduced-motion settings and gracefully switch without animation in unsupported browsers. Next.js snippets are illustrations, not Next.js executed inside Start.
 
@@ -60,11 +77,11 @@ One-time repository setup: **Settings → Pages → Build and deployment → Sou
 To build for another prefix:
 
 ```sh
-VITE_BASE_PATH=/talks/react-catchup-nov26/ npm run build
+VITE_BASE_PATH=/talks/react-catchup-nov26/ npm run build:pages
 VITE_BASE_PATH=/talks/react-catchup-nov26/ npm run preview
 ```
 
-Always rebuild without `VITE_BASE_PATH` before presenting at localhost’s root. Upload the contents of `dist/client/` at the matching prefix. The demo uses relative asset paths, and slide navigation uses hashes, so refreshes do not require SPA rewrite rules.
+Build without `VITE_BASE_PATH` for the localhost root. Upload the contents of `dist/client/` at the matching prefix. The demo uses relative asset paths, and slide navigation uses hashes, so refreshes do not require SPA rewrite rules.
 
 ## Verify
 
@@ -77,4 +94,4 @@ npm run preview
 npm run test:browser
 ```
 
-For a prefixed preview, set `SLIDES_URL=http://127.0.0.1:4173/talks/react-catchup-nov26/` on `npm run test:browser`. The Playwright CLI opens its own isolated Chrome session, blocks external requests, checks all 48 slide/language combinations for clipping, exercises navigation and native demos, and captures representative screenshots under ignored `output/playwright/`. Coverage thresholds apply to executable presentation controls and demos; slide copy/layout data are checked visually in the browser.
+For a prefixed preview, set `SLIDES_URL=http://127.0.0.1:4173/talks/react-catchup-nov26/` on `npm run test:browser`. The Playwright CLI opens its own isolated Chrome session, blocks external requests, checks every slide in both languages for clipping, exercises navigation and native demos, and captures representative screenshots under ignored `output/playwright/`. Coverage thresholds apply to executable presentation controls and demos; slide copy/layout data are checked visually in the browser.

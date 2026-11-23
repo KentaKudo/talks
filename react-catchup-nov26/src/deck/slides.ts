@@ -1,3 +1,5 @@
+import comparison from './build-comparison.json' with { type: 'json' }
+
 export type Language = 'ja' | 'en'
 export type Copy = Record<Language, string>
 const copy = (en: string, ja: string): Copy => ({ en, ja })
@@ -11,10 +13,15 @@ export interface Slide {
   items?: { title: Copy; text: Copy }[]
   code?: string
   filename?: string
+  codeComparison?: { off: string; on: string }
   demo?: 'transition' | 'fragment'
   takeaway?: Copy
   source?: { label: string; url: string }
 }
+
+const kib = (bytes: number) => (bytes / 1024).toFixed(1)
+const gzipSavings = ((1 - comparison.redact.gzip / comparison.react.gzip) * 100).toFixed(1)
+const bundleSize = ({ raw, gzip }: typeof comparison.react) => `${kib(raw)} KiB raw · ${kib(gzip)} KiB gzip`
 
 const reactRelease = { label: 'React 19.3 · 2026.09.09', url: 'https://react.dev/blog/2026/09/09/react-19-3' }
 const transitions = { label: 'React · ViewTransition', url: 'https://react.dev/reference/react/ViewTransition' }
@@ -22,7 +29,7 @@ const fragments = { label: 'React · Fragment', url: 'https://react.dev/referenc
 const nextRelease = { label: 'Next.js 16.4 · 2026.10.06', url: 'https://nextjs.org/blog/next-16-4' }
 const startRelease = { label: 'TanStack Start · 2026.10.13', url: 'https://tanstack.com/blog/tanstack-start-1-0' }
 const redactRelease = { label: 'Introducing Redact · 2026.10.26', url: 'https://tanstack.com/blog/introducing-tanstack-redact' }
-const oxc = { label: 'Oxc · 2026.08.18', url: 'https://oxc.rs/blog/2026-08-18-react-compiler-support' }
+const oxc = { label: 'Oxc · 2026.08.18', url: 'https://oxc.rs/blog/2026-08-18-react-compiler-support#vite' }
 
 // One record per slide. Delete/reorder records to trim the talk; links use stable IDs.
 // Copy is intentionally concise: Japanese is projected while the talk is spoken in English.
@@ -68,6 +75,7 @@ export const slides: Slide[] = [
   },
   {
     id: 'transition-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'transition',
+    filename: 'Demos.tsx · excerpt', code: `const [stop, setStop] = useState(0)\n\n<ViewTransition>\n  <strong>{cities[stop]}</strong>\n</ViewTransition>\n\n<button onClick={() => startTransition(() => {\n  setStop(value => (value + 1) % cities.length)\n})}>Next stop</button>`,
     title: copy('Same component. Next stop.', '同じコンポーネント、次の街へ。'),
     subtitle: copy('Watch the card change with a native React ViewTransition.', 'React の ViewTransition でカードの変化を見てみよう。'),
     takeaway: copy('Native React 19.3 demo · animation depends on browser support and motion preferences.', 'React 19.3 のデモ · アニメーションはブラウザ対応と動きの設定に依存。'), source: transitions,
@@ -83,6 +91,7 @@ export const slides: Slide[] = [
   },
   {
     id: 'fragment-demo', section: '01 / REACT · LIVE DEMO', layout: 'demo', demo: 'fragment',
+    filename: 'Demos.tsx · excerpt', code: `const group = useRef<FragmentInstance>(null)\n\n<div className="fragment-grid">\n  <Fragment ref={group}>\n    <label>Name <input /></label>\n    <label>Email <input type="email" /></label>\n  </Fragment>\n</div>\n\n<button onClick={() => group.current?.focus()}>\n  Focus first field\n</button>`,
     title: copy('Focus the group. Skip the wrapper.', 'ラッパーなしで、フォーカス。'),
     subtitle: copy('The two fields are direct children of a CSS grid.', '2 つの入力欄は CSS Grid の直接の子要素。'),
     takeaway: copy('FragmentInstance provides group operations; it is not an HTMLElement.', 'FragmentInstance はグループ操作用。HTMLElement ではない。'), source: fragments,
@@ -163,7 +172,7 @@ export const slides: Slide[] = [
     id: 'start-stack', section: '03 / TANSTACK START · THIS DECK', layout: 'flow',
     title: copy('The talk runs on the topic.', 'このスライドも、このスタックで。'),
     items: [
-      { title: copy('TanStack Start', 'TanStack Start'), text: copy('Routing + build-time prerendering.', 'ルーティングとビルド時のプリレンダリング。') },
+      { title: copy('TanStack Start', 'TanStack Start'), text: copy('A route loader calls a server function to fetch this deck.', 'ルートの loader が Server Function からスライドを取得。') },
       { title: copy('Vite + Oxc', 'Vite + Oxc'), text: copy('Build pipeline + opt-in React Compiler.', 'ビルドパイプラインと React Compiler。') },
       { title: copy('Static files', '静的ファイル'), text: copy('GitHub Pages or a local static server. No production server needed.', 'GitHub Pages でもローカルでも。本番サーバーは不要。') },
     ], takeaway: copy('Start also supports server functions and SSR; this deck deliberately prerenders.', 'Start は Server Functions や SSR にも対応。このデッキでは静的出力を選択。'),
@@ -185,6 +194,16 @@ export const slides: Slide[] = [
     ], source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
   },
   {
+    id: 'runtime-size', section: '04 / TANSTACK REDACT · THIS DECK',
+    title: copy(`Redact ships ${gzipSavings}% less JS.`, `Redact で JS が ${gzipSavings}% 減少。`),
+    subtitle: copy('Same deck, compiler on, minified production JavaScript.', '同じデッキを Compiler 有効で本番ビルド。圧縮後の JS を比較。'),
+    items: [
+      { title: copy('React 19.3.1', 'React 19.3.1'), text: copy(bundleSize(comparison.react), bundleSize(comparison.react)) },
+      { title: copy('Redact 0.3.1', 'Redact 0.3.1'), text: copy(bundleSize(comparison.redact), bundleSize(comparison.redact)) },
+    ],
+    takeaway: copy('Savings use gzip. Counts cover deck JS and exclude the shared native demo iframe.', '削減率は gzip 比。両ビルド共通のネイティブデモ iframe は集計対象外。'),
+  },
+  {
     id: 'compiler', section: '05 / REACT COMPILER', layout: 'statement',
     title: copy('You write intent.\nThe compiler memoizes.', '意図を書く。\nメモ化はコンパイラへ。'),
     subtitle: copy('React Compiler 1.0 shipped in October 2025. The 2026 story is tooling.', 'React Compiler 1.0 は 2025 年 10 月。2026 年の話題はツールチェーン。'),
@@ -196,9 +215,15 @@ export const slides: Slide[] = [
     title: copy('A Rust path into Vite.', 'Vite にも、Rust のコンパイラ。'),
     code: `// npm i -D oxc-transform-react\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({\n  plugins: [\n    react({ compiler: true }),\n  ],\n})`, filename: 'vite.config.ts · plugin-react ≥ 6.1',
     items: [
-      { title: copy('Opt-in integration', 'オプトインで利用'), text: copy('Oxc’s native compiler integration is experimental.', 'Oxc のネイティブコンパイラ連携は experimental。') },
+      { title: copy('Opt-in integration', 'オプトインで利用'), text: copy('Vite’s native React Compiler integration uses Oxc and is marked experimental.', 'Oxc を使う Vite のネイティブ連携は experimental。') },
       { title: copy('12–15× in two samples', '2 つのサンプルで 12〜15 倍'), text: copy('Preliminary transform benchmarks against Babel—not whole-app build speed.', 'Babel 比の予備的な変換ベンチマーク。アプリ全体のビルド速度ではない。') },
     ], source: oxc,
+  },
+  {
+    id: 'compiler-output', section: '05 / REACT COMPILER · BUILD OUTPUT',
+    title: copy('What changed in our build?', 'ビルド出力はどう変わる？'),
+    codeComparison: comparison.compiler,
+    takeaway: copy('When title stays the same, the compiler reuses the heading from cache slot $[1].', 'title が同じなら、キャッシュの $[1] から見出しを再利用。'),
   },
   {
     id: 'next-compiler', section: '05 / REACT COMPILER · NEXT.JS',

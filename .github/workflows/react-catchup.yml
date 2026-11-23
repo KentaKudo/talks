@@ -30,7 +30,7 @@ jobs:
           cache-dependency-path: react-catchup-nov26/package-lock.json
       - run: npm ci
       - run: npm run test:coverage
-      - run: npm run build
+      - run: npm run build:pages
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/react-catchup-nov26/
       - run: npm run check

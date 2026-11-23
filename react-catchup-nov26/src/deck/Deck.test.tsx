@@ -7,7 +7,7 @@ const counter = (number: number) => `${String(number).padStart(2, '0')} / ${slid
 
 describe('presenting the bilingual deck', () => {
   it('starts in Japanese and switches language without losing the slide', () => {
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     expect(document.documentElement.lang).toBe('ja')
     fireEvent.click(screen.getByRole('button', { name: 'Next slide' }))
     const hash = window.location.hash
@@ -19,7 +19,7 @@ describe('presenting the bilingual deck', () => {
     expect(document.documentElement.lang).toBe('ja')
   })
   it('handles keyboard navigation, boundaries, and ignores interactive targets', () => {
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     expect(screen.getByRole('button', { name: 'Previous slide' })).toBeDisabled()
     fireEvent.keyDown(window, { key: 'ArrowRight' })
     expect(screen.getByText(counter(2))).toBeInTheDocument()
@@ -41,7 +41,7 @@ describe('presenting the bilingual deck', () => {
     expect(screen.getByRole('button', { name: 'Next slide' })).toBeDisabled()
   })
   it('opens overview, jumps to a slide, and restores focus on escape', () => {
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     fireEvent.keyDown(window, { key: 'o' })
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /変化に、つながりを/ }))
@@ -53,7 +53,7 @@ describe('presenting the bilingual deck', () => {
     expect(screen.getByRole('button', { name: 'Slide overview' })).toHaveFocus()
   })
   it('keeps keyboard focus inside the overview', () => {
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     fireEvent.click(screen.getByRole('button', { name: 'Slide overview' }))
     const close = screen.getByRole('button', { name: /閉じる/ })
     close.focus()
@@ -68,17 +68,37 @@ describe('presenting the bilingual deck', () => {
   })
   it('restores hash links, follows browser history, and embeds local native demos', async () => {
     window.history.replaceState(null, '', '/#slide=transition-demo&lang=en')
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     expect(screen.getByTitle('Native React demo')).toHaveAttribute('src', '/demos/index.html?demo=transition&lang=en')
     window.history.replaceState(null, '', '/#slide=fragment-demo&lang=ja')
     fireEvent(window, new HashChangeEvent('hashchange'))
     expect(screen.getByTitle('Native React demo')).toHaveAttribute('src', '/demos/index.html?demo=fragment&lang=ja')
     await waitFor(() => expect(document.documentElement.lang).toBe('ja'))
   })
+  it('shows code on the demo slide and preserves the mounted demo when switching back', () => {
+    window.history.replaceState(null, '', '/#slide=transition-demo&lang=en')
+    render(<Deck slides={slides} />)
+    const frame = screen.getByTitle('Native React demo')
+    const demo = screen.getByRole('tab', { name: 'Demo' })
+    fireEvent.keyDown(demo, { key: 'ArrowRight' })
+    expect(screen.getByRole('tab', { name: 'Code' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByText(/startTransition\(\(\)/)).toBeVisible()
+    expect(frame).not.toBeVisible()
+    fireEvent.keyDown(screen.getByRole('tab', { name: 'Code' }), { key: 'Tab' })
+    fireEvent.keyDown(screen.getByRole('tab', { name: 'Code' }), { key: 'Home' })
+    expect(demo).toHaveFocus()
+    fireEvent.keyDown(demo, { key: 'End' })
+    expect(screen.getByRole('tab', { name: 'Code' })).toHaveFocus()
+    fireEvent.click(screen.getByRole('tab', { name: 'Demo' }))
+    expect(screen.getByTitle('Native React demo')).toBe(frame)
+    expect(frame).toBeVisible()
+    expect(screen.queryByText(/startTransition\(\(\)/)).not.toBeVisible()
+  })
+
   it('toggles fullscreen and reports unsupported/failed fullscreen access', async () => {
     const request = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(document.documentElement, 'requestFullscreen', { configurable: true, value: request })
-    render(<Deck />)
+    render(<Deck slides={slides} />)
     fireEvent.click(screen.getByRole('button', { name: 'Fullscreen' }))
     expect(request).toHaveBeenCalled()
     Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: document.documentElement })
