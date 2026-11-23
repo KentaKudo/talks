@@ -252,6 +252,25 @@ export const Route = createFileRoute('/')({
     takeaway: copy('The loader fetches the slides. The component reads them with Route.useLoaderData().', 'loader がスライドを取得し、コンポーネントは Route.useLoaderData() で読み取る。'),
   },
   {
+    id: 'start-rsc-example', section: '03 / TANSTACK START · REACT SERVER COMPONENTS',
+    title: copy('What if the slide content were an RSC?', 'スライド本文を RSC にすると？'),
+    filename: 'routes/index.tsx · illustrative · experimental RSC opt-in',
+    code: `const getSlide = createServerFn().handler(async () => ({
+  slide: await renderServerComponent(
+    <SlideContent slide={slides[0]} />,
+  ),
+}))
+
+export const Route = createFileRoute('/')({
+  loader: () => getSlide(),
+  component: function SlidesPage() {
+    return <>{Route.useLoaderData().slide}</>
+  },
+})`,
+    takeaway: copy('The loader returns rendered slide content. Navigation and language controls still run in the browser.', 'loader が描画済みのスライド本文を返す。ページ送りや言語切り替えは引き続きブラウザで動く。'),
+    source: { label: 'TanStack Start · Server Components', url: 'https://tanstack.com/start/latest/docs/framework/react/guide/server-components#quick-start' },
+  },
+  {
     id: 'redact', section: '04 / TANSTACK REDACT', layout: 'chapter', number: 'RE:\nACT',
     title: copy('Keep the components.\nChange the runtime.', 'コンポーネントはそのまま。\nランタイムを選ぶ。'),
     subtitle: copy('Announced October 26, 2026', '2026 年 10 月 26 日発表'),
