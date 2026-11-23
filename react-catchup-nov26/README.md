@@ -29,11 +29,11 @@ Open [localhost:4173](http://localhost:4173). Fonts, scripts, and demos are loca
 | ← / Page Up | Previous slide |
 | Home / End | First / last slide |
 | O | Slide overview |
-| Esc | Close overview |
-| F | Fullscreen; browser fullscreen also works |
+| Esc | Close overview or exit fullscreen |
+| F | Toggle slide-only fullscreen |
 | 日本語 / English | Switch language, preserving the slide |
 
-The URL hash stores the slide ID and language, so reloads and browser back/forward work on static hosts. Keyboard events inside a demo iframe stay in that demo; use the outer navigation buttons to continue.
+The URL hash stores the slide ID and language, so reloads and browser back/forward work on static hosts. Keyboard events inside a demo iframe stay in that demo. Click the slide outside the demo before using keyboard navigation again.
 
 ## Edit or trim the talk
 

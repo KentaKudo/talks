@@ -284,3 +284,32 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 @media (min-width: 701px) {
   [data-slide='compiler-history'] .slide-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+:root:fullscreen { background: var(--card); }
+:root:fullscreen .presentation { min-height: 100dvh; }
+:root:fullscreen .toolbar,
+:root:fullscreen .deck-footer,
+:root:fullscreen .progress-track { display: none; }
+
+:root:fullscreen .stage {
+  padding: 0;
+  justify-items: center;
+}
+:root:fullscreen .slide {
+  --fullscreen-width: min(100vw, calc(100dvh * 16 / 9));
+  width: var(--fullscreen-width);
+  max-width: none;
+  margin: 0;
+  padding: calc(var(--fullscreen-width) * .032) calc(var(--fullscreen-width) * .04);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  :root:fullscreen .slide {
+    width: 100%;
+    min-height: 100dvh;
+    padding: 7%;
+  }
+}

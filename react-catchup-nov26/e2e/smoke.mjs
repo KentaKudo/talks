@@ -57,6 +57,19 @@ try {
       assert(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight && document.documentElement.scrollWidth <= window.innerWidth), `Presentation must fit ${size.width}×${size.height} without scrolling`)
     }
     await page.setViewportSize({ width: 1280, height: 720 })
+    const fullscreen = page.getByRole('button', { name: 'Fullscreen', exact: true })
+    await fullscreen.click()
+    await page.waitForFunction(() => document.fullscreenElement === document.documentElement)
+    assert(!await fullscreen.isVisible(), 'Fullscreen should hide the toolbar')
+    assert(!await page.getByRole('navigation', { name: 'Slide navigation' }).isVisible(), 'Fullscreen should hide the footer')
+    const fullscreenBounds = await page.locator('article').boundingBox()
+    assert(fullscreenBounds.x === 0 && fullscreenBounds.y === 0 && fullscreenBounds.width === 1280 && fullscreenBounds.height === 720, 'At 16:9 the fullscreen slide should fill the viewport')
+    await page.keyboard.press('ArrowRight')
+    await page.locator('[data-slide="agenda"]').waitFor()
+    await page.keyboard.press('f')
+    await fullscreen.waitFor()
+    assert(!await page.evaluate(() => document.fullscreenElement), 'F should exit fullscreen')
+
     for (const lang of ['ja', 'en']) {
       for (const id of SLIDE_IDS) {
         await page.goto(`${base}#slide=${id}&lang=${lang}`)
