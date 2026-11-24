@@ -1,6 +1,6 @@
 # Meanwhile, in React.
 
-A bilingual, 33-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The original `transcript.md` is preserved.
+A bilingual, 33-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The completed English rehearsal script is in `transcript.md`, with stage directions matching the deck and sources in `transcript-fact-check.md`. The expanded script is about 2,900 spoken words; allow roughly 22–24 minutes with demos and pauses, or trim it after rehearsal for a 20-minute slot.
 
 ## Run locally
 
