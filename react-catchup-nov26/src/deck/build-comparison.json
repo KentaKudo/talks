@@ -1,0 +1,14 @@
+{
+  "react": {
+    "raw": 360085,
+    "gzip": 116156
+  },
+  "redact": {
+    "raw": 193775,
+    "gzip": 69102
+  },
+  "compiler": {
+    "off": "function SlideTitle({ title }) {\n\treturn /* @__PURE__ */ (0, import_jsx_runtime.jsx)(\"h1\", { children: title });\n}",
+    "on": "function SlideTitle(t0) {\n\tconst $ = (0, import_compiler_runtime.c)(2);\n\tconst { title } = t0;\n\tlet t1;\n\tif ($[0] !== title) {\n\t\tt1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(\"h1\", { children: title });\n\t\t$[0] = title;\n\t\t$[1] = t1;\n\t} else t1 = $[1];\n\treturn t1;\n}"
+  }
+}
