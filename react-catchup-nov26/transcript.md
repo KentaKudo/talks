@@ -245,11 +245,11 @@ For an app with expensive interactive updates, I’d want to measure responsiven
 
 [Show slide: redact-compatibility]
 
-You might also ask: why consider this if Preact already exists?
+Redact isn't fully React-compatible. Keeping the same imports doesn't guarantee that every behavior or library works unchanged.
 
-TanStack publishes compatibility fixtures for frameworks, including Start. In the tested Start setups, Redact passed the hydration and interaction checks, while the standard Preact integration didn’t.
+For example, ViewTransition animations are off by default and require an experimental opt-in. Custom renderers that depend on React internals, such as React Three Fiber, need native React.
 
-Those are versioned tests of specific setups. They give us something concrete to investigate, rather than a promise that every existing React app will work unchanged.
+Before replacing the runtime, check the APIs and libraries your app uses, hydration, and actual interactions. That's also why this presentation's React demos run in their own native React bundle.
 
 ## What changed in this deck?
 

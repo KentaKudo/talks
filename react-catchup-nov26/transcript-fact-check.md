@@ -55,3 +55,7 @@ The runtime-size and build-time slides explicitly present recorded comparisons f
 Added `speaker-memo.md` in the deck's 38-slide order and `session-prep.md` for rehearsal and equipment preparation. The full transcript remains a reference. The cue sheet reuses the claims and qualifications above; its section times are rehearsal targets, not measured durations.
 
 Moved narration-dependent explanations into both slide languages: animation triggers, Fragment observer targets, the browser-only rendering prerequisites, Trusted Types/Context limitations, Cache Components prerequisites, the stable Start core versus experimental RSC, and compiler verification. The 65% visibility threshold comes from `demo/Demos.tsx`. Measurement slides now explicitly say their figures predate content expansion. No benchmark results were regenerated and no new release claims were researched for this pass.
+
+## Compatibility slide clarification — 2026-11-25
+
+Replaced the framework-fixture comparison on slide 27 with explicit compatibility limits, and aligned the memo and transcript. The [Redact compatibility guide](https://tanstack.com/redact/latest/docs/compatibility), checked for this revision, documents default-off experimental ViewTransition animations and the need for native React for custom renderers depending on React internals, including React Three Fiber. The slide's “not fully React-compatible” headline refers to these concrete gaps, not a claim that the common React APIs are generally unsupported.

@@ -163,11 +163,11 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 - This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
 - If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → compatibility also needs an app-specific check.
 
-## 27 · Compatibility needs a concrete setup / 構成ごとの互換性 `redact-compatibility`
+## 27 · Not fully React-compatible / React と完全互換ではない `redact-compatibility`
 
-- **Published fixtures are evidence for those tested setups.** / 結果は検証した構成に対するもの。
-- TanStack's tested Start setups: Redact passed, standard Preact setup didn't.
-- Not universal compatibility; check hydration, navigation, forms, APIs in your own app. Avoid a generic “Preact is broken” claim.
+- **Keeping React imports doesn't guarantee identical behavior or library support.** / import が同じでも、挙動やライブラリの対応は同じとは限らない。
+- Concrete gaps: ViewTransition animations are off by default, experimental opt-in; custom renderers using React internals, such as React Three Fiber, need native React.
+- Check your app's APIs, libraries, hydration, and interactions before switching. This is why the deck's React demos have a separate native runtime. Next → the measured bundle-size benefit.
 
 ## 28 · Recorded deck: 40.5% less JS / 記録した JS サイズ `runtime-size`
 
