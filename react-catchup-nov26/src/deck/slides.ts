@@ -38,7 +38,7 @@ export const slides: Slide[] = [
     id: 'hello', section: 'REACT CATCH-UP / NOV 2026', layout: 'cover',
     title: copy('Meanwhile,\nin React.', 'そのころ、\nReact は。'),
     subtitle: copy('A catch-up for people busy catching up with AI.', 'AI 時代の、React キャッチアップ。'),
-    takeaway: copy('Five topics. Twenty minutes. Let’s catch up.', '5 つのトピックを、20 分で。'),
+    takeaway: copy('Five topics. Let’s catch up.', '5 つのトピックを、キャッチアップ。'),
   },
   {
     id: 'why', section: 'BEFORE WE START', layout: 'statement',
@@ -264,6 +264,17 @@ export const Route = createFileRoute('/')({
     takeaway: copy('The loader fetches the slides. The component reads them with Route.useLoaderData().', 'loader がスライドを取得し、コンポーネントは Route.useLoaderData() で読み取る。'),
   },
   {
+    id: 'start-data-flow', section: '03 / TANSTACK START · FOLLOW THE DATA', layout: 'flow',
+    title: copy('Server function → loader → component.', 'Server Function → loader → コンポーネント。'),
+    items: [
+      { title: copy('getSlides()', 'getSlides()'), text: copy('The server-only handler returns typed slide definitions.', 'サーバー専用の handler が、型付きのスライド定義を返す。') },
+      { title: copy('Route loader', 'Route loader'), text: copy('Calls getSlides(). Its return type carries through to the route.', 'getSlides() を呼ぶ。戻り値の型がルートまでつながる。') },
+      { title: copy('Deck', 'Deck'), text: copy('Reads useLoaderData(). Navigation reuses the hydrated data.', 'useLoaderData() で取得。ページ送りでは読み込み済みのデータを再利用。') },
+    ],
+    takeaway: copy('Pages build: load once during prerendering. Slide changes stay in the browser.', 'Pages ビルドではプリレンダー時に取得。スライド切り替えはブラウザ内で完結。'),
+    source: { label: 'TanStack Start · Server Functions', url: 'https://tanstack.com/start/latest/docs/framework/react/guide/server-functions' },
+  },
+  {
     id: 'start-rsc-example', section: '03 / TANSTACK START · REACT SERVER COMPONENTS',
     title: copy('What if the slide content were an RSC?', 'スライド本文を RSC にすると？'),
     filename: 'routes/index.tsx · illustrative · experimental RSC opt-in',
@@ -279,7 +290,7 @@ export const Route = createFileRoute('/')({
     return <>{Route.useLoaderData().slide}</>
   },
 })`,
-    takeaway: copy('The loader returns rendered slide content. Navigation and language controls still run in the browser.', 'loader が描画済みのスライド本文を返す。ページ送りや言語切り替えは引き続きブラウザで動く。'),
+    takeaway: copy('Possible use: keep a Markdown parser on the server. Experimental opt-in; this deck returns data today.', 'たとえば Markdown パーサーをサーバーへ。実験的なオプトイン機能で、このデッキは現在データを返す方式。'),
     source: { label: 'TanStack Start · Server Components', url: 'https://tanstack.com/start/latest/docs/framework/react/guide/server-components#quick-start' },
   },
   {
@@ -290,7 +301,7 @@ export const Route = createFileRoute('/')({
   },
   {
     id: 'redact-tradeoffs', section: '04 / TANSTACK REDACT · TRADEOFFS',
-    title: copy('Same imports ≠ identical behavior.', '同じ import でも、挙動は同一ではない。'),
+    title: copy('Same components. A different runtime.', '同じコンポーネント、別のランタイム。'),
     filename: 'Vite + React · excerpts',
     code: `// vite.config.ts
 plugins: [
@@ -302,21 +313,43 @@ plugins: [
 // Deck.tsx
 import { useState } from 'react'`,
     items: [
-      { title: copy('Synchronous rendering', '描画は同期処理'), text: copy('Redact drops React’s concurrent scheduler. Renders cannot yield or be interrupted based on priority.', 'React の並行レンダリングを省き、描画の中断や優先度に応じた切り替えを行わない。') },
-      { title: copy('Transition APIs still work', 'Transition API は使える'), text: copy('While new results suspend, useDeferredValue can keep the previous results visible.', '新しい検索結果を待つ間、useDeferredValue で直前の結果を表示し続けられる。') },
-      { title: copy('Closer to React in tested setups', 'テストでは Preact より React に近い'), text: copy('In TanStack’s tests, Redact passed Start hydration and implemented React 19’s useActionState. Preact compat fell short on both.', 'TanStack のテストでは、Redact は Start のハイドレーションに成功し、useActionState も動作。Preact compat はどちらも通らなかった。') },
+      { title: copy('Build configuration', 'ビルド設定で切り替える'), text: copy('The Redact plugin replaces the browser runtime.', 'Redact プラグインがブラウザのランタイムを置き換える。') },
+      { title: copy('Component code', 'コンポーネントのコード'), text: copy('Keep React imports. Check the behavior your app depends on.', 'React の import はそのまま。アプリが依存する挙動を確認する。') },
     ],
-    source: { label: 'Redact · Framework comparison', url: 'https://tanstack.com/redact/latest/docs/framework-comparison' },
+    takeaway: copy('This deck uses Redact. Its native React demos run in separate iframes.', 'このデッキは Redact。React 本来の API を見せるデモは別の iframe で実行。'),
+    source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
+  },
+  {
+    id: 'redact-scheduling', section: '04 / TANSTACK REDACT · RENDERING TRADEOFFS',
+    title: copy('Waiting for data ≠ yielding CPU work.', 'データを待つことと、描画を中断すること。'),
+    items: [
+      { title: copy('While data loads', 'データの読み込み中'), text: copy('Redact can retain previous results while new results suspend.', 'Redact でも、新しい結果が suspend する間は直前の結果を表示できる。') },
+      { title: copy('While components render', 'コンポーネントの描画中'), text: copy('Rendering passes are synchronous. They cannot yield or be interrupted by priority.', '描画の処理は同期的。優先度に応じて中断したり、処理を譲ったりしない。') },
+      { title: copy('What to measure', '何を測る？'), text: copy('Download size and interaction responsiveness, especially during expensive updates.', 'ダウンロードサイズと操作への応答性。特に重い更新中の挙動を確認。') },
+    ],
+    takeaway: copy('For this deck, updates are small. Evaluate the tradeoff with your own interactions.', 'このデッキの更新は小さい。自分のアプリの操作で、このトレードオフを評価しよう。'),
+    source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
+  },
+  {
+    id: 'redact-compatibility', section: '04 / TANSTACK REDACT · WHY ANOTHER RUNTIME?',
+    title: copy('Compatibility needs a concrete setup.', '互換性は、具体的な構成で見る。'),
+    items: [
+      { title: copy('TanStack’s Start fixtures', 'TanStack の Start 検証'), text: copy('Redact passed hydration and interaction checks. The standard Preact setup did not.', 'Redact はハイドレーションと操作の検証を通過。標準の Preact 構成は通過せず。') },
+      { title: copy('What that tells us', 'そこから分かること'), text: copy('Framework, version, and integration matter. A passing fixture covers that tested setup.', 'フレームワーク・バージョン・連携方法が重要。結果は検証した構成に対するもの。') },
+      { title: copy('Check your own app', '自分のアプリでは'), text: copy('Exercise hydration, navigation, forms, and the React APIs you use.', 'ハイドレーション、画面遷移、フォーム、利用中の React API を確認。') },
+    ],
+    takeaway: copy('Published framework fixtures are a starting point for evaluation.', '公開されたフレームワークの検証結果を、評価の出発点に。'),
+    source: { label: 'TanStack · Framework comparison', url: 'https://tanstack.com/redact/latest/docs/framework-comparison' },
   },
   {
     id: 'runtime-size', section: '04 / TANSTACK REDACT · THIS DECK',
     title: copy(`Redact ships ${gzipSavings}% less JS.`, `Redact で JS が ${gzipSavings}% 減少。`),
-    subtitle: copy('Same deck, compiler on, minified production JavaScript.', '同じデッキを Compiler 有効で本番ビルド。圧縮後の JS を比較。'),
+    subtitle: copy('Recorded comparison: same deck, compiler on, minified client JavaScript.', '記録済みの比較。同じデッキ・Compiler 有効・本番用クライアント JS。'),
     items: [
       { title: copy('React 19.3.1', 'React 19.3.1'), text: copy(bundleSize(comparison.react), bundleSize(comparison.react)) },
       { title: copy('Redact 0.3.1', 'Redact 0.3.1'), text: copy(bundleSize(comparison.redact), bundleSize(comparison.redact)) },
     ],
-    takeaway: copy('Savings use gzip. Counts cover deck JS and exclude the shared native demo iframe.', '削減率は gzip 比。両ビルド共通のネイティブデモ iframe は集計対象外。'),
+    takeaway: copy('Whole-deck JS, gzip. Excludes CSS, fonts, HTML, and the common native demo bundle.', 'デッキ全体の JS を gzip 比較。CSS・フォント・HTML・共通の React デモバンドルを除く。'),
   },
   {
     id: 'compiler', section: '05 / REACT COMPILER', layout: 'statement',
@@ -338,6 +371,17 @@ import { useState } from 'react'`,
     source: { label: 'React · Compiler v1.0', url: 'https://react.dev/blog/2025/10/07/react-compiler-1' },
   },
   {
+    id: 'compiler-two-clocks', section: '05 / REACT COMPILER · TWO COSTS',
+    title: copy('Build time and update time.', 'ビルド時間と、更新にかかる時間。'),
+    items: [
+      { title: copy('During the build', 'ビルド時'), text: copy('The compiler analyses components and emits memoization code.', 'コンパイラがコンポーネントを解析し、メモ化のコードを出力。') },
+      { title: copy('During an update', '画面の更新時'), text: copy('The generated cache can reuse calculations and JSX when inputs stay the same.', '入力が同じなら、生成されたキャッシュで計算や JSX を再利用できる。') },
+      { title: copy('Evaluate separately', 'それぞれ評価する'), text: copy('Time the build. Profile real interactions to assess the runtime benefit.', 'ビルド時間を測り、実際の操作をプロファイルして実行時の効果を確認。') },
+    ],
+    takeaway: copy('Rust improves the compilation path. Memoization targets repeated rendering work.', 'Rust 化はコンパイルの経路を改善。メモ化は描画時に繰り返す処理を減らす。'),
+    source: { label: 'React · Compiler introduction', url: 'https://react.dev/learn/react-compiler/introduction' },
+  },
+  {
     id: 'oxc', section: '05 / REACT COMPILER · VITE',
     title: copy('A Rust path into Vite.', 'Vite にも、Rust のコンパイラ。'),
     code: `// npm i -D oxc-transform-react\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({\n  plugins: [\n    react({ compiler: true }),\n  ],\n})`, filename: 'vite.config.ts · plugin-react ≥ 6.1',
@@ -348,7 +392,7 @@ import { useState } from 'react'`,
   },
   {
     id: 'compiler-build-time', section: '05 / REACT COMPILER · THIS DECK',
-    title: copy('Rust cut build time by 24%.', 'Rust 版でビルド時間が 24% 短縮。'),
+    title: copy('Recorded builds: 24% less time.', '記録したビルドでは、24% 短縮。'),
     subtitle: copy('Median wall time across 9 runs per configuration on an Apple M2.', 'Apple M2 で各構成を 9 回ずつ交互にビルドしたときの中央値。'),
     items: [
       { title: copy('Babel · 756 ms', 'Babel · 756 ms'), text: copy('721–887 ms across runs', '実測範囲 721〜887 ms') },
@@ -358,10 +402,21 @@ import { useState } from 'react'`,
     takeaway: copy('Vite 8.3.8 + Redact. Production client and server builds. Prerendering and demo rebuild excluded.', 'Vite 8.3.8 + Redact。本番用の client・server ビルド。プリレンダリングとデモの再ビルドを除く。'),
   },
   {
+    id: 'compiler-reading-results', section: '05 / REACT COMPILER · READING THE NUMBERS',
+    title: copy('A faster transform is part of the build.', '変換処理は、ビルドの一部。'),
+    items: [
+      { title: copy('12–15× · transform', '12〜15 倍 · 変換処理'), text: copy('Oxc’s two-sample benchmark measures compiler work against Babel.', 'Oxc の 2 サンプルのベンチマーク。コンパイラの処理を Babel と比較。') },
+      { title: copy('24% · deck build', '24% · デッキのビルド'), text: copy('Our recorded client + server build also includes work outside the compiler.', '記録した client・server ビルドには、コンパイラ以外の処理も含む。') },
+      { title: copy('573 ms vs 591 ms', '573 ms と 591 ms'), text: copy('Rust and compiler-off ranges overlap. This does not show that enabling it speeds builds.', 'Rust 版と無効時の実測範囲は重なる。有効にすると速くなる、とは言えない。') },
+    ],
+    takeaway: copy('Keep the scope of each measurement attached to the number.', '数値と、その数値が何を測ったものかをセットで見る。'),
+    source: oxc,
+  },
+  {
     id: 'compiler-output', section: '05 / REACT COMPILER · BUILD OUTPUT',
     title: copy('What changed in our build?', 'ビルド出力はどう変わる？'),
     codeComparison: comparison.compiler,
-    takeaway: copy('When title stays the same, the compiler reuses the heading from cache slot $[1].', 'title が同じなら、キャッシュの $[1] から見出しを再利用。'),
+    takeaway: copy('Same title → reuse $[1]. Changed title → create and cache. A visible transform, not a measured speedup.', 'title が同じなら $[1] を再利用。変われば再作成して保存。変換の確認であり、速度向上の実測ではない。'),
   },
   {
     id: 'compiler-devtools', section: '05 / REACT COMPILER · DEVTOOLS', layout: 'compiler-devtools',
