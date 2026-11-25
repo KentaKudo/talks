@@ -245,11 +245,11 @@ For an app with expensive interactive updates, I’d want to measure responsiven
 
 [Show slide: redact-compatibility]
 
-Redact isn't fully React-compatible. Keeping the same imports doesn't guarantee that every behavior or library works unchanged.
+Why consider Redact when Preact already exists? One reason is broader support for React 19 APIs.
 
-For example, ViewTransition animations are off by default and require an experimental opt-in. Custom renderers that depend on React internals, such as React Three Fiber, need native React.
+As checked on November 25, Preact compat 11.1.0 doesn't provide useActionState, useOptimistic, or useFormStatus. Redact implements those APIs, including pending form state and optimistic updates. That doesn't mean Preact can't run any React 19 app; the distinction is which APIs and behaviors the app needs.
 
-Before replacing the runtime, check the APIs and libraries your app uses, hydration, and actual interactions. That's also why this presentation's React demos run in their own native React bundle.
+Redact still has limitations. Rendering is synchronous, and ViewTransition animations are off by default and require an experimental opt-in. Check your own app's dependencies and interactions before switching. This presentation's React demos use a separate native React bundle.
 
 ## What changed in this deck?
 

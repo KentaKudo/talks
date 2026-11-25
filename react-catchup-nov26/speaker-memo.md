@@ -163,11 +163,12 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 - This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
 - If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → compatibility also needs an app-specific check.
 
-## 27 · Not fully React-compatible / React と完全互換ではない `redact-compatibility`
+## 27 · React 19: Preact vs Redact / React 19 対応の違い `redact-compatibility`
 
-- **Keeping React imports doesn't guarantee identical behavior or library support.** / import が同じでも、挙動やライブラリの対応は同じとは限らない。
-- Concrete gaps: ViewTransition animations are off by default, experimental opt-in; custom renderers using React internals, such as React Three Fiber, need native React.
-- Check your app's APIs, libraries, hydration, and interactions before switching. This is why the deck's React demos have a separate native runtime. Next → the measured bundle-size benefit.
+- **Why Redact when Preact exists? Broader React 19 API support.** / Preact があるのに？ React 19 の API 対応が違う。
+- As checked November 25, 2026: Preact compat 11.1.0 lacks `useActionState`, `useOptimistic`, and `useFormStatus`; Redact implements them, including pending form state and optimistic updates.
+- Say “Preact is missing these APIs,” not “Preact cannot run any React 19 app.” It supports common React APIs and some React 19 APIs.
+- Redact still has limits: synchronous rendering; experimental opt-in ViewTransition animations. Check your app's dependencies and interactions. Next → the measured bundle-size benefit.
 
 ## 28 · Recorded deck: 40.5% less JS / 記録した JS サイズ `runtime-size`
 
