@@ -1,6 +1,6 @@
 # Meanwhile, in React.
 
-A bilingual, 33-slide React catch-up for a 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The completed English rehearsal script is in `transcript.md`, with stage directions matching the deck and sources in `transcript-fact-check.md`. The expanded script is about 2,900 spoken words; allow roughly 22–24 minutes with demos and pauses, or trim it after rehearsal for a 20-minute slot.
+A bilingual, 38-slide React catch-up, expanded from the original 20-minute talk. Japanese is the default projected language; English is available from the toolbar. The completed English rehearsal script is in `transcript.md`, with stage directions matching the deck and sources in `transcript-fact-check.md`. The expanded script is about 2,900 spoken words; allow roughly 22–24 minutes with demos and pauses, or trim it after rehearsal for a 20-minute slot.
 
 ## Run locally
 
@@ -39,7 +39,7 @@ The URL hash stores the slide ID and language, so reloads and browser back/forwa
 
 Edit `src/deck/slides.ts`. Each record contains an ID, paired English/Japanese text, optional code, layout, and source link. Delete or reorder records to shorten the talk; navigation and the overview follow automatically. Keep IDs unique and stable to preserve shared links. Code samples are shared between languages.
 
-Suggested rehearsal budget: opening 1½ minutes, React 6, Next.js 5, Start 2, Redact 2, Compiler 2½, closing 1. Trim `react-more`, `next-agents`, or `next-compiler` first if needed.
+Rehearse the expanded script for a 22–24 minute slot. For 20 minutes, shorten the React/Next.js overview and make `compiler-history`, `next-agents`, or `next-compiler` optional so the concrete Start, Redact, and Compiler examples have room.
 
 `src/styles.css` adapts Postdue Pop’s Riso palette, typography, sticker rims, outlines, and hard ink shadows for projection. Fonts are self-hosted with Fontsource (SIL Open Font License in the installed font packages).
 
@@ -62,7 +62,7 @@ With `npm run dev:react`, look for the Memo badge on `SlideTitle` in the React D
 
 The inspection build uses SSR on request. In browser Sources, find `SlideTitle` in the emitted route chunk to see its compiler cache. For the same setup with the compiler disabled, run `SLIDES_COMPILER=off npm run build:inspect` and restart preview.
 
-Run `npm run compare:builds` to regenerate the two evidence slides. The script builds the same deck with React and Redact and sums raw and individually gzipped bytes across its minified client JS chunks. The common iframe bundle, CSS, fonts, HTML, and server output are outside that count. It also compares readable native React builds with the compiler on and off and extracts the actual emitted `SlideTitle` function. Both full builds are under `output/build-comparison/` and the slide data are in `src/deck/build-comparison.json`.
+The bundle and build-time slides describe recorded measurements from before the content expansion. Run `npm run compare:builds` to regenerate the bundle and emitted-code evidence for the current deck; build timings require a separate repeated measurement. The script builds the same deck with React and Redact and sums raw and individually gzipped bytes across its minified client JS chunks. The common iframe bundle, CSS, fonts, HTML, and server output are outside that count. It also compares readable native React builds with the compiler on and off and extracts the actual emitted `SlideTitle` function. Both full builds are under `output/build-comparison/` and the slide data are in `src/deck/build-comparison.json`.
 
 `demo/` has a separate Vite build **without Redact**. Its bundled React 19.3 runs inside local iframes to demonstrate genuine `<ViewTransition>` and Fragment refs. Redact’s default ViewTransition does not animate. Native transitions respect reduced-motion settings and gracefully switch without animation in unsupported browsers. Next.js snippets are illustrations, not Next.js executed inside Start.
 

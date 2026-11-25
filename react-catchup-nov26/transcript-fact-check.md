@@ -43,3 +43,9 @@ Checked on 2026-11-23 for a November 2026 talk. The original technical review co
 - **Compiler output and verification:** The narration matches the stored emitted `SlideTitle` comparison in `src/deck/build-comparison.json`: compare the `title` input, cache the heading element, and reuse it when unchanged. This verifies a transformation, not a measured user-facing speedup. The existing DevTools screenshot is from the native React setup; the [installation guide](https://react.dev/learn/react-compiler/installation#verify-your-setup) documents the Memo badge.
 
 This completion pass changes prose only. It does not change the deck, runtime, demos, or benchmark artifacts. Live demos and builds were not rerun. Rehearsal timing is an estimate from spoken word count; audience responses and demo pacing need an actual rehearsal.
+
+## Slide alignment — 2026-11-25
+
+Expanded the bilingual deck with five slides: `start-data-flow`, `redact-scheduling`, `redact-compatibility`, `compiler-two-clocks`, and `compiler-reading-results`. The new content uses the sources checked in the completion pass above. Added matching script cues, clarified that Start RSC is hypothetical for this app, and separated runtime configuration from scheduling and compatibility discussion.
+
+The runtime-size and build-time slides explicitly present recorded comparisons from before this content expansion. Their numbers have not been regenerated for the longer deck. The emitted-code example still illustrates the unchanged `SlideTitle` component.

@@ -187,6 +187,8 @@ At the top, `getSlides` uses `createServerFn`. Its handler imports and returns t
 
 The route’s loader calls that function, and the component reads the result with `Route.useLoaderData()`.
 
+[Show slide: start-data-flow]
+
 Follow that path: server function, loader, component. The return type carries through, so the component knows the shape of the slide data.
 
 In an application with a live server, the same API lets a browser call server-only logic. Start handles the request and serialization across that boundary.
@@ -225,6 +227,8 @@ The broad idea is similar to Preact: a smaller runtime for React-style apps. Red
 
 [Show slide: redact-tradeoffs]
 
+[Show slide: redact-scheduling]
+
 The important question is what happens when an update is expensive.
 
 React’s concurrent renderer can interrupt rendering work. Redact’s default renderer completes a rendering pass synchronously. If a pass takes a long time, it can hold up the browser’s main thread.
@@ -234,6 +238,8 @@ That doesn’t mean transition hooks disappear. Redact can still retain previous
 For a slide deck like this, the updates are fairly small: move to another slide, change language, open the overview. That makes it a useful place to explore the smaller runtime.
 
 For an app with expensive interactive updates, I’d want to measure responsiveness as well as download size.
+
+[Show slide: redact-compatibility]
 
 You might also ask: why consider this if Preact already exists?
 
@@ -247,7 +253,7 @@ Those are versioned tests of specific setups. They give us something concrete to
 
 This presentation also uses Redact. The configuration changes the runtime, while the component code still imports hooks from React.
 
-The recorded build comparison uses the same deck with the Compiler enabled in both versions.
+The recorded build comparison uses the same deck with the Compiler enabled in both versions. These measurements were taken before the latest content additions.
 
 With native React, the client JavaScript totals about 113.4 kibibytes gzipped. With Redact, it’s about 67.5 kibibytes. That’s a reduction of around 40.5 percent.
 
@@ -270,6 +276,8 @@ React Compiler adds memoization at build time. It analyses components and hooks 
 That can reduce the manual work we’ve done with `useMemo`, `useCallback`, and `React.memo`. We still need to follow the Rules of React, including keeping rendering pure.
 
 The history goes back to the React Forget prototype shown in 2021. The compiler was open-sourced in 2024, reached release candidate in April 2025, and became stable that October.
+
+[Show slide: compiler-two-clocks]
 
 So automatic memoization itself isn’t this year’s announcement. This year’s story is how it fits into our build tools.
 
@@ -296,6 +304,8 @@ The deck includes a smaller, application-level comparison: nine builds per confi
 The Babel version took 756 milliseconds. The Rust version took 573 milliseconds—about 24 percent less time.
 
 That measures the production client and server builds, excluding prerendering and rebuilding the demo bundle.
+
+[Show slide: compiler-reading-results]
 
 With the compiler disabled, the median was 591 milliseconds. That’s close to the Rust result, and the ranges overlap. I wouldn’t read that as “turning the compiler on makes builds faster.” The useful result here is the reduction compared with the Babel path in this particular setup.
 
