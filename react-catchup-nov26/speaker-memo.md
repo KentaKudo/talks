@@ -203,33 +203,28 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 
 - **Babel 756 ms → Rust 573 ms: ~24% less time.**
 - Earlier deck, Apple M2, 9 alternating runs/config, medians. Client + server builds; exclude prerendering/demo rebuild.
-- Compiler off: 591 ms; ranges overlap with Rust. Recorded results, not a fresh benchmark of today's deck.
+- Compiler off: 591 ms; ranges overlap with Rust. Enabling Compiler is not shown to speed builds. Recorded results, not a fresh benchmark of today's deck.
+- 12–15× measures only the transform; 24% includes the rest of the build. Next → inspect the generated code.
 
-## 34 · A transform is part of a build / 変換は全体の一部 `compiler-reading-results`
-
-- **12–15× transform and 24% app-build reduction measure different scopes.** / 数字と測定対象をセットで。
-- Other build work limits whole-build improvement.
-- 573 vs 591 ms **doesn't show enabling Compiler makes builds faster**. Next → inspect what changed in output.
-
-## 35 · What changed in our build? / 出力の比較 `compiler-output`
+## 34 · What changed in our build? / 出力の比較 `compiler-output`
 
 - **Same title → reuse; changed title → create and cache.** / 同じなら再利用、変われば更新。
 - Off: heading created each call. On: compare input, store heading in `$[1]`.
 - We didn't handwrite the cache. Visible transformation, not measured user-facing speedup.
 
-## 36 · Spot the Memo badge / Memo バッジ `compiler-devtools`
+## 35 · Spot the Memo badge / Memo バッジ `compiler-devtools`
 
 - **DevTools confirms the component was compiled.** / コンパイルされたことを確認。
 - Point to blue Memo badge beside `SlideTitle`; screenshot is from native React inspection build.
 - Doesn't prove the app feels faster. Screenshot is enough; no live DevTools hunt.
 
-## 37 · Two paths in Next.js / Next.js の Compiler `next-compiler` · OPTIONAL
+## 36 · Two paths in Next.js / Next.js の Compiler `next-compiler` · OPTIONAL
 
 - **Standard: Babel + SWC file filter. Experimental: Rust inside Turbopack.**
 - Rust path available since 16.3; 16.4 conformance work continues.
 - Build improvements and browser interaction performance still need separate evaluation.
 
-## 38 · Caught up. For now / ひとまず追いついた `takeaways`
+## 37 · Caught up. For now / ひとまず追いついた `takeaways`
 
 - **React APIs; Next.js caching; stable Start; Redact tradeoffs; Compiler tooling.**
 - Invite one concrete next step: try an API, follow the data in this repo, or inspect a build.

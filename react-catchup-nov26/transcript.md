@@ -1,6 +1,6 @@
 # Intro
 
-For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 38 slides and includes demo actions and optional cuts.
+For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 37 slides and includes demo actions and optional cuts.
 
 <!-- Complete rehearsal draft, updated 2026-11-24. Bracketed lines are stage directions, not spoken text. Sources and measurement qualifications are in transcript-fact-check.md. -->
 
@@ -309,11 +309,9 @@ The Babel version took 756 milliseconds. The Rust version took 573 milliseconds�
 
 That measures the production client and server builds, excluding prerendering and rebuilding the demo bundle.
 
-[Show slide: compiler-reading-results]
-
 With the compiler disabled, the median was 591 milliseconds. That’s close to the Rust result, and the ranges overlap. I wouldn’t read that as “turning the compiler on makes builds faster.” The useful result here is the reduction compared with the Babel path in this particular setup.
 
-This is also why I wanted both numbers in the talk. A much faster compiler transform can produce a more modest improvement in the full build, because the build does other work too.
+The transform benchmark covers only part of a build; the application build includes other work too.
 
 ## What does the compiler actually generate?
 

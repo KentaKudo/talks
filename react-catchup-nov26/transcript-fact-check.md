@@ -63,3 +63,7 @@ Replaced the framework-fixture comparison on slide 27 with explicit compatibilit
 ## Preact comparison refinement — 2026-11-25
 
 Slide 27 now emphasizes why Redact is an alternative to Preact: broader support for React 19 APIs, with remaining behavioral limits. Checked [Preact compat 11.1.0 exports](https://raw.githubusercontent.com/preactjs/preact/11.1.0/compat/src/index.js), which do not provide `useActionState`, `useOptimistic`, or `useFormStatus`, against [TanStack's comparison](https://tanstack.com/redact/latest/docs/comparison) and [API comparison](https://tanstack.com/redact/latest/docs/preact). Redact implements those APIs. The earlier API comparison pins Preact 11.0.2; the three-way table tests 11.1.0, and the export check corroborates the listed missing APIs for 11.1.0. These sources do not support saying Preact is wholly incompatible with React 19. The slide dates the check and preserves Redact's synchronous-rendering and experimental-animation limitations.
+
+## Remove repeated benchmark slide — 2026-11-25
+
+Removed `compiler-reading-results` (formerly slide 34). Its compiler-off qualification is now on `compiler-build-time`; the memo retains the transform-versus-whole-build distinction. The current deck has 37 slides, and the memo and transcript cues follow that order. Recorded benchmark values are unchanged.

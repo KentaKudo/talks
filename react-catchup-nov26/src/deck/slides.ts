@@ -399,20 +399,9 @@ import { useState } from 'react'`,
     items: [
       { title: copy('Babel · 756 ms', 'Babel · 756 ms'), text: copy('721–887 ms across runs', '実測範囲 721〜887 ms') },
       { title: copy('Rust (Oxc) · 573 ms', 'Rust (Oxc) · 573 ms'), text: copy('548–811 ms across runs', '実測範囲 548〜811 ms') },
-      { title: copy('Compiler off · 591 ms', 'Compiler 無効 · 591 ms'), text: copy('554–939 ms across runs', '実測範囲 554〜939 ms') },
+      { title: copy('Compiler off · 591 ms', 'Compiler 無効 · 591 ms'), text: copy('554–939 ms; overlaps Rust. No evidence that enabling the compiler speeds builds.', '554〜939 ms。Rust 版と範囲が重なる。有効にすると速くなる、とは言えない。') },
     ],
     takeaway: copy('Vite 8.3.8 + Redact. Production client and server builds. Prerendering and demo rebuild excluded.', 'Vite 8.3.8 + Redact。本番用の client・server ビルド。プリレンダリングとデモの再ビルドを除く。'),
-  },
-  {
-    id: 'compiler-reading-results', section: '05 / REACT COMPILER · READING THE NUMBERS',
-    title: copy('A faster transform is part of the build.', '変換処理は、ビルドの一部。'),
-    items: [
-      { title: copy('12–15× · transform', '12〜15 倍 · 変換処理'), text: copy('Oxc’s two-sample benchmark measures compiler work against Babel.', 'Oxc の 2 サンプルのベンチマーク。コンパイラの処理を Babel と比較。') },
-      { title: copy('24% · deck build', '24% · デッキのビルド'), text: copy('Our recorded client + server build also includes work outside the compiler.', '記録した client・server ビルドには、コンパイラ以外の処理も含む。') },
-      { title: copy('573 ms vs 591 ms', '573 ms と 591 ms'), text: copy('Rust and compiler-off ranges overlap. This does not show that enabling it speeds builds.', 'Rust 版と無効時の実測範囲は重なる。有効にすると速くなる、とは言えない。') },
-    ],
-    takeaway: copy('Keep the scope of each measurement attached to the number.', '数値と、その数値が何を測ったものかをセットで見る。'),
-    source: oxc,
   },
   {
     id: 'compiler-output', section: '05 / REACT COMPILER · BUILD OUTPUT',
