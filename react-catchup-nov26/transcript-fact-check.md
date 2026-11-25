@@ -49,3 +49,9 @@ This completion pass changes prose only. It does not change the deck, runtime, d
 Expanded the bilingual deck with five slides: `start-data-flow`, `redact-scheduling`, `redact-compatibility`, `compiler-two-clocks`, and `compiler-reading-results`. The new content uses the sources checked in the completion pass above. Added matching script cues, clarified that Start RSC is hypothetical for this app, and separated runtime configuration from scheduling and compatibility discussion.
 
 The runtime-size and build-time slides explicitly present recorded comparisons from before this content expansion. Their numbers have not been regenerated for the longer deck. The emitted-code example still illustrates the unchanged `SlideTitle` component.
+
+## Freestyle delivery — 2026-11-25
+
+Added `speaker-memo.md` in the deck's 38-slide order and `session-prep.md` for rehearsal and equipment preparation. The full transcript remains a reference. The cue sheet reuses the claims and qualifications above; its section times are rehearsal targets, not measured durations.
+
+Moved narration-dependent explanations into both slide languages: animation triggers, Fragment observer targets, the browser-only rendering prerequisites, Trusted Types/Context limitations, Cache Components prerequisites, the stable Start core versus experimental RSC, and compiler verification. The 65% visibility threshold comes from `demo/Demos.tsx`. Measurement slides now explicitly say their figures predate content expansion. No benchmark results were regenerated and no new release claims were researched for this pass.

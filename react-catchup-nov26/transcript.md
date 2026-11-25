@@ -1,5 +1,7 @@
 # Intro
 
+For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 38 slides and includes demo actions and optional cuts.
+
 <!-- Complete rehearsal draft, updated 2026-11-24. Bracketed lines are stage directions, not spoken text. Sources and measurement qualifications are in transcript-fact-check.md. -->
 
 Hi everyone! How’s everyone doing?
