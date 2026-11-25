@@ -233,6 +233,8 @@ The broad idea is similar to Preact: a smaller runtime for React-style apps. Red
 
 The important question is what happens when an update is expensive.
 
+This is a tradeoff between bundle size and responsiveness. Redact gives us a smaller runtime; React's concurrent rendering can prioritize urgent input while a non-urgent update is still rendering. For example, typing can stay responsive while a heavy results view updates.
+
 React’s concurrent renderer can interrupt rendering work. Redact’s default renderer completes a rendering pass synchronously. If a pass takes a long time, it can hold up the browser’s main thread.
 
 That doesn’t mean transition hooks disappear. Redact can still retain previous results while new results suspend. Keeping old content visible while waiting for data and interrupting CPU work during rendering are different capabilities.

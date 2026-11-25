@@ -156,11 +156,12 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 - This deck uses Redact. The two demos use native React in separate iframes.
 - API compatibility ≠ identical behavior; default Redact ViewTransition doesn't animate. Next → scheduling tradeoff.
 
-## 26 · Waiting for data ≠ yielding CPU / データ待ちと描画中断 `redact-scheduling`
+## 26 · Bundle size vs responsiveness / バンドルサイズと応答性 `redact-scheduling`
 
-- **Keeping old results while suspended is different from interrupting render work.** / 待機中の表示維持と CPU 処理の中断は別。
-- Redact retains previous results during data waits, but rendering passes are synchronous.
-- This deck has small updates; expensive app updates need responsiveness profiling as well as size measurements.
+- **A smaller bundle trades off against responsiveness supported by concurrent rendering.** / 小さなバンドルと、並行レンダリングによる応答性のトレードオフ。
+- Redact: smaller runtime, synchronous rendering; a long rendering pass can delay input. React: concurrent rendering can pause non-urgent work to prioritize typing during a heavy update.
+- This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
+- If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → compatibility also needs an app-specific check.
 
 ## 27 · Compatibility needs a concrete setup / 構成ごとの互換性 `redact-compatibility`
 

@@ -322,13 +322,13 @@ import { useState } from 'react'`,
   },
   {
     id: 'redact-scheduling', section: '04 / TANSTACK REDACT · RENDERING TRADEOFFS',
-    title: copy('Waiting for data ≠ yielding CPU work.', 'データを待つことと、描画を中断すること。'),
+    title: copy('Bundle size vs responsiveness.', 'バンドルサイズと、操作への応答性。'),
     items: [
-      { title: copy('While data loads', 'データの読み込み中'), text: copy('Redact can retain previous results while new results suspend.', 'Redact でも、新しい結果が suspend する間は直前の結果を表示できる。') },
-      { title: copy('While components render', 'コンポーネントの描画中'), text: copy('Rendering passes are synchronous. They cannot yield or be interrupted by priority.', '描画の処理は同期的。優先度に応じて中断したり、処理を譲ったりしない。') },
-      { title: copy('What to measure', '何を測る？'), text: copy('Download size and interaction responsiveness, especially during expensive updates.', 'ダウンロードサイズと操作への応答性。特に重い更新中の挙動を確認。') },
+      { title: copy('Redact · smaller bundle', 'Redact · 小さなバンドル'), text: copy('Synchronous rendering reduces runtime machinery, but a long render can delay input.', '同期レンダリングで実行基盤を小さく。その分、長い描画処理は入力への応答を遅らせうる。') },
+      { title: copy('React · concurrent rendering', 'React · 並行レンダリング'), text: copy('Can pause non-urgent rendering to handle urgent input, such as typing during a heavy update.', '緊急でない描画を中断し、重い更新中でも文字入力などの応答を優先できる。') },
+      { title: copy('Measure both in your app', '自分のアプリで両方を測る'), text: copy('Compare downloaded JS and input responsiveness during expensive updates.', '配信する JS のサイズと、重い更新中の入力への応答性を比較する。') },
     ],
-    takeaway: copy('For this deck, updates are small. Evaluate the tradeoff with your own interactions.', 'このデッキの更新は小さい。自分のアプリの操作で、このトレードオフを評価しよう。'),
+    takeaway: copy('Smaller downloads trade off against concurrent scheduling. The impact depends on your workload.', '小さなダウンロードと、並行処理による応答性のトレードオフ。影響はアプリの処理次第。'),
     source: { label: 'Redact · Compatibility', url: 'https://tanstack.com/redact/latest/docs/compatibility' },
   },
   {
