@@ -283,13 +283,13 @@ The history goes back to the React Forget prototype shown in 2021. The compiler 
 
 [Show slide: compiler-two-clocks]
 
-So automatic memoization itself isn’t this year’s announcement. This year’s story is how it fits into our build tools.
+Since 1.0, the tooling has been catching up. The React team ported the compiler to Rust, and Oxc and Turbopack have integrated it through experimental paths.
+
+The compiler's analysis is also reaching lint tools: Oxlint uses its validation passes to catch violations of the Rules of React.
+
+That's the recap: a Rust implementation, native toolchain integrations, and compiler-powered lint checks. Let's look at the Vite integration used by this deck.
 
 ## A faster path through the toolchain
-
-The original React Compiler was written in TypeScript and JavaScript and distributed as a Babel plugin.
-
-This year, the React team ported the compiler to Rust, and other toolchains have been integrating and adapting that work.
 
 Oxc, which is used in Vite’s toolchain, announced native React Compiler support in August. It’s available as an experimental, opt-in integration in `@vitejs/plugin-react` 6.1 and later for Vite 8.
 

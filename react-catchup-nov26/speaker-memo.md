@@ -187,11 +187,12 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 - **2021 prototype → 2024 open source → April 2025 RC → October 2025 stable.**
 - Automatic memoization isn't new this year. Keep to one sentence if short on time.
 
-## 31 · Build time and update time / 2 つのコスト `compiler-two-clocks`
+## 31 · Since 1.0: the tooling catches up / 1.0 以降の動き `compiler-two-clocks`
 
-- **Build cost and user-facing update benefit are separate measurements.** / ビルドの負荷と更新の効果は別。
-- Compiler analyzes/emits cache at build time; cache reuses work during updates.
-- Rust changes compilation cost. Profiling interactions tells us about runtime benefit.
+- **Rust port → native integrations → compiler-powered lint.** / Rust 化、ツール連携、lint への展開。
+- React team ported the compiler to Rust; Oxc and Turbopack integrate it through experimental paths.
+- Oxlint uses compiler validation to catch Rules of React violations.
+- Keep this a recap; setup and benchmark details belong on the next slides. Next → this deck's Vite integration.
 
 ## 32 · A Rust path into Vite / Vite の Rust 連携 `oxc`
 
