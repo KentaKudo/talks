@@ -229,6 +229,14 @@ The broad idea is similar to Preact: a smaller runtime for React-style apps. Red
 
 [Show slide: redact-tradeoffs]
 
+[Show slide: redact-compatibility]
+
+Why consider Redact when Preact already exists? One reason is broader support for React 19 APIs.
+
+As checked on November 25, Preact compat 11.1.0 doesn't provide useActionState, useOptimistic, or useFormStatus. Redact implements those APIs, including pending form state and optimistic updates. That doesn't mean Preact can't run any React 19 app; the distinction is which APIs and behaviors the app needs.
+
+Redact still has limitations. Rendering is synchronous, and ViewTransition animations are off by default and require an experimental opt-in. Check your own app's dependencies and interactions before switching. This presentation's React demos use a separate native React bundle.
+
 [Show slide: redact-scheduling]
 
 The important question is what happens when an update is expensive.
@@ -242,14 +250,6 @@ That doesn’t mean transition hooks disappear. Redact can still retain previous
 For a slide deck like this, the updates are fairly small: move to another slide, change language, open the overview. That makes it a useful place to explore the smaller runtime.
 
 For an app with expensive interactive updates, I’d want to measure responsiveness as well as download size.
-
-[Show slide: redact-compatibility]
-
-Why consider Redact when Preact already exists? One reason is broader support for React 19 APIs.
-
-As checked on November 25, Preact compat 11.1.0 doesn't provide useActionState, useOptimistic, or useFormStatus. Redact implements those APIs, including pending form state and optimistic updates. That doesn't mean Preact can't run any React 19 app; the distinction is which APIs and behaviors the app needs.
-
-Redact still has limitations. Rendering is synchronous, and ViewTransition animations are off by default and require an experimental opt-in. Check your own app's dependencies and interactions before switching. This presentation's React demos use a separate native React bundle.
 
 ## What changed in this deck?
 
@@ -283,13 +283,13 @@ The history goes back to the React Forget prototype shown in 2021. The compiler 
 
 [Show slide: compiler-two-clocks]
 
-So automatic memoization itself isn’t this year’s announcement. This year’s story is how it fits into our build tools.
+Since 1.0, the tooling has been catching up. The React team ported the compiler to Rust, and Oxc and Turbopack have integrated it through experimental paths.
+
+The compiler's analysis is also reaching lint tools: Oxlint uses its validation passes to catch violations of the Rules of React.
+
+That's the recap: a Rust implementation, native toolchain integrations, and compiler-powered lint checks. Let's look at the Vite integration used by this deck.
 
 ## A faster path through the toolchain
-
-The original React Compiler was written in TypeScript and JavaScript and distributed as a Babel plugin.
-
-This year, the React team ported the compiler to Rust, and other toolchains have been integrating and adapting that work.
 
 Oxc, which is used in Vite’s toolchain, announced native React Compiler support in August. It’s available as an experimental, opt-in integration in `@vitejs/plugin-react` 6.1 and later for Vite 8.
 

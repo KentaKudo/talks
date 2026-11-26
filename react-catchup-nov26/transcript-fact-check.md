@@ -67,3 +67,7 @@ Slide 27 now emphasizes why Redact is an alternative to Preact: broader support 
 ## Remove repeated benchmark slide — 2026-11-25
 
 Removed `compiler-reading-results` (formerly slide 34). Its compiler-off qualification is now on `compiler-build-time`; the memo retains the transform-versus-whole-build distinction. The current deck has 37 slides, and the memo and transcript cues follow that order. Recorded benchmark values are unchanged.
+
+## Post-1.0 recap slide
+
+Replaced the two-costs explanation with a brief bridge from Compiler history to the existing Vite slide. The React team's Rust port, Oxc integration, and compiler-powered Oxlint validation are described in the [Oxc announcement](https://oxc.rs/blog/2026-08-18-react-compiler-support). Turbopack's experimental Rust integration is documented in the [Next.js 16.3 announcement](https://nextjs.org/blog/next-16-3#rust-based-react-compiler). Integration setup and benchmark details remain on the following slides. The slide retains `compiler-two-clocks` as its stable URL ID.

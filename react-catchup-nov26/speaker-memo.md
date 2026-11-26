@@ -154,21 +154,21 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 
 - **Plugin changes runtime; React imports stay.** / 設定で切り替え、import はそのまま。
 - This deck uses Redact. The two demos use native React in separate iframes.
-- API compatibility ≠ identical behavior; default Redact ViewTransition doesn't animate. Next → scheduling tradeoff.
+- API compatibility ≠ identical behavior; default Redact ViewTransition doesn't animate. Next → React 19 API compatibility.
 
-## 26 · Bundle size vs responsiveness / バンドルサイズと応答性 `redact-scheduling`
-
-- **A smaller bundle trades off against responsiveness supported by concurrent rendering.** / 小さなバンドルと、並行レンダリングによる応答性のトレードオフ。
-- Redact: smaller runtime, synchronous rendering; a long rendering pass can delay input. React: concurrent rendering can pause non-urgent work to prioritize typing during a heavy update.
-- This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
-- If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → compatibility also needs an app-specific check.
-
-## 27 · React 19: Preact vs Redact / React 19 対応の違い `redact-compatibility`
+## 26 · React 19: Preact vs Redact / React 19 対応の違い `redact-compatibility`
 
 - **Why Redact when Preact exists? Broader React 19 API support.** / Preact があるのに？ React 19 の API 対応が違う。
 - As checked November 25, 2026: Preact compat 11.1.0 lacks `useActionState`, `useOptimistic`, and `useFormStatus`; Redact implements them, including pending form state and optimistic updates.
 - Say “Preact is missing these APIs,” not “Preact cannot run any React 19 app.” It supports common React APIs and some React 19 APIs.
-- Redact still has limits: synchronous rendering; experimental opt-in ViewTransition animations. Check your app's dependencies and interactions. Next → the measured bundle-size benefit.
+- Redact still has limits: synchronous rendering; experimental opt-in ViewTransition animations. Check your app's dependencies and interactions. Next → scheduling tradeoff.
+
+## 27 · Bundle size vs responsiveness / バンドルサイズと応答性 `redact-scheduling`
+
+- **A smaller bundle trades off against responsiveness supported by concurrent rendering.** / 小さなバンドルと、並行レンダリングによる応答性のトレードオフ。
+- Redact: smaller runtime, synchronous rendering; a long rendering pass can delay input. React: concurrent rendering can pause non-urgent work to prioritize typing during a heavy update.
+- This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
+- If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → the measured bundle-size benefit.
 
 ## 28 · Recorded deck: 40.5% less JS / 記録した JS サイズ `runtime-size`
 
@@ -187,11 +187,12 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 - **2021 prototype → 2024 open source → April 2025 RC → October 2025 stable.**
 - Automatic memoization isn't new this year. Keep to one sentence if short on time.
 
-## 31 · Build time and update time / 2 つのコスト `compiler-two-clocks`
+## 31 · Since 1.0: the tooling catches up / 1.0 以降の動き `compiler-two-clocks`
 
-- **Build cost and user-facing update benefit are separate measurements.** / ビルドの負荷と更新の効果は別。
-- Compiler analyzes/emits cache at build time; cache reuses work during updates.
-- Rust changes compilation cost. Profiling interactions tells us about runtime benefit.
+- **Rust port → native integrations → compiler-powered lint.** / Rust 化、ツール連携、lint への展開。
+- React team ported the compiler to Rust; Oxc and Turbopack integrate it through experimental paths.
+- Oxlint uses compiler validation to catch Rules of React violations.
+- Keep this a recap; setup and benchmark details belong on the next slides. Next → this deck's Vite integration.
 
 ## 32 · A Rust path into Vite / Vite の Rust 連携 `oxc`
 
