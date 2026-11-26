@@ -52,6 +52,32 @@ try {
     assert(await page.getByRole('button', { name: 'Slide overview' }).evaluate(el => el === document.activeElement), 'Overview must restore focus')
 
     const clipping = []
+    await page.goto(`${base}#slide=compiler-devtools&lang=ja`)
+    const checkMemoHighlight = async () => {
+      const aligned = await page.locator('.compiler-devtools-crop').evaluate(frame => {
+        const image = frame.querySelector('img').getBoundingClientRect()
+        const highlight = frame.querySelector('.compiler-devtools-highlight').getBoundingClientRect()
+        const scale = image.width / 2880
+        // SlideTitle's badge in the source screenshot, including the outline padding.
+        return Math.abs(highlight.x - (image.x + 617 * scale)) < 3
+          && Math.abs(highlight.y - (image.y + 1586 * scale)) < 3
+          && Math.abs(highlight.width - 92 * scale) < 3
+          && Math.abs(highlight.height - 38 * scale) < 3
+      })
+      assert(aligned, 'Memo highlight must follow the SlideTitle badge when the crop resizes')
+    }
+    for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(size)
+      await page.evaluate(() => document.fonts.ready)
+      await checkMemoHighlight()
+    }
+    await page.setViewportSize({ width: 1280, height: 720 })
+    await page.getByRole('button', { name: 'Fullscreen', exact: true }).click()
+    await page.waitForFunction(() => document.fullscreenElement)
+    await checkMemoHighlight()
+    await page.keyboard.press('f')
+    await page.waitForFunction(() => !document.fullscreenElement)
+    await page.goto(`${base}#slide=why&lang=ja`)
     for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }]) {
       await page.setViewportSize(size)
       assert(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight && document.documentElement.scrollWidth <= window.innerWidth), `Presentation must fit ${size.width}×${size.height} without scrolling`)

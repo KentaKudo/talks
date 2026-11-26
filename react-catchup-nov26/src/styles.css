@@ -265,13 +265,16 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
   width: calc(2880 / 610 * 100%);
   height: auto;
   left: calc(-385 / 610 * 100%);
-  top: calc(-1386 / 300 * 100%);
+  top: 0;
+  /* Percentage margins use the frame width, even when flex layout shrinks its height. */
+  margin-top: calc(-1386 / 610 * 100%);
 }
 .compiler-devtools-highlight {
   position: absolute;
-  inset: 66.5% auto auto 38%;
+  inset: 0 auto auto 38%;
+  margin-top: calc(199.5 / 610 * 100%);
   width: 15%;
-  height: 12.5%;
+  aspect-ratio: 91.5 / 37.5;
   border: 3px solid var(--ink);
   border-radius: 6px;
   box-shadow: 0 0 0 3px var(--yellow);
