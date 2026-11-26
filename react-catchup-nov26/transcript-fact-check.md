@@ -49,3 +49,21 @@ This completion pass changes prose only. It does not change the deck, runtime, d
 Expanded the bilingual deck with five slides: `start-data-flow`, `redact-scheduling`, `redact-compatibility`, `compiler-two-clocks`, and `compiler-reading-results`. The new content uses the sources checked in the completion pass above. Added matching script cues, clarified that Start RSC is hypothetical for this app, and separated runtime configuration from scheduling and compatibility discussion.
 
 The runtime-size and build-time slides explicitly present recorded comparisons from before this content expansion. Their numbers have not been regenerated for the longer deck. The emitted-code example still illustrates the unchanged `SlideTitle` component.
+
+## Freestyle delivery — 2026-11-25
+
+Added `speaker-memo.md` in the deck's 38-slide order and `session-prep.md` for rehearsal and equipment preparation. The full transcript remains a reference. The cue sheet reuses the claims and qualifications above; its section times are rehearsal targets, not measured durations.
+
+Moved narration-dependent explanations into both slide languages: animation triggers, Fragment observer targets, the browser-only rendering prerequisites, Trusted Types/Context limitations, Cache Components prerequisites, the stable Start core versus experimental RSC, and compiler verification. The 65% visibility threshold comes from `demo/Demos.tsx`. Measurement slides now explicitly say their figures predate content expansion. No benchmark results were regenerated and no new release claims were researched for this pass.
+
+## Compatibility slide clarification — 2026-11-25
+
+Replaced the framework-fixture comparison on slide 27 with explicit compatibility limits, and aligned the memo and transcript. The [Redact compatibility guide](https://tanstack.com/redact/latest/docs/compatibility), checked for this revision, documents default-off experimental ViewTransition animations and the need for native React for custom renderers depending on React internals, including React Three Fiber. The slide's “not fully React-compatible” headline refers to these concrete gaps, not a claim that the common React APIs are generally unsupported.
+
+## Preact comparison refinement — 2026-11-25
+
+Slide 27 now emphasizes why Redact is an alternative to Preact: broader support for React 19 APIs, with remaining behavioral limits. Checked [Preact compat 11.1.0 exports](https://raw.githubusercontent.com/preactjs/preact/11.1.0/compat/src/index.js), which do not provide `useActionState`, `useOptimistic`, or `useFormStatus`, against [TanStack's comparison](https://tanstack.com/redact/latest/docs/comparison) and [API comparison](https://tanstack.com/redact/latest/docs/preact). Redact implements those APIs. The earlier API comparison pins Preact 11.0.2; the three-way table tests 11.1.0, and the export check corroborates the listed missing APIs for 11.1.0. These sources do not support saying Preact is wholly incompatible with React 19. The slide dates the check and preserves Redact's synchronous-rendering and experimental-animation limitations.
+
+## Remove repeated benchmark slide — 2026-11-25
+
+Removed `compiler-reading-results` (formerly slide 34). Its compiler-off qualification is now on `compiler-build-time`; the memo retains the transform-versus-whole-build distinction. The current deck has 37 slides, and the memo and transcript cues follow that order. Recorded benchmark values are unchanged.

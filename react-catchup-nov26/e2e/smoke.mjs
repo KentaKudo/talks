@@ -123,6 +123,8 @@ try {
     await page.goto(`${base}#slide=fragment-demo&lang=en`)
     const fragmentFrame = page.frameLocator('iframe')
     const feed = fragmentFrame.getByRole('region', { name: 'Release notes' })
+    // count() does not wait for the newly navigated iframe to finish loading.
+    await feed.waitFor()
     assert(await feed.locator(':scope > article').count() === 3, 'Cards must be direct children of the scroll container')
     await fragmentFrame.getByText('1 / 3 seen', { exact: true }).waitFor()
     await feed.getByText('Export your notes').evaluate(el => el.closest('article').scrollIntoView({ block: 'start' }))

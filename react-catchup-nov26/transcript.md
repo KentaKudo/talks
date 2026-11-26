@@ -1,5 +1,7 @@
 # Intro
 
+For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 37 slides and includes demo actions and optional cuts.
+
 <!-- Complete rehearsal draft, updated 2026-11-24. Bracketed lines are stage directions, not spoken text. Sources and measurement qualifications are in transcript-fact-check.md. -->
 
 Hi everyone! How’s everyone doing?
@@ -231,6 +233,8 @@ The broad idea is similar to Preact: a smaller runtime for React-style apps. Red
 
 The important question is what happens when an update is expensive.
 
+This is a tradeoff between bundle size and responsiveness. Redact gives us a smaller runtime; React's concurrent rendering can prioritize urgent input while a non-urgent update is still rendering. For example, typing can stay responsive while a heavy results view updates.
+
 React’s concurrent renderer can interrupt rendering work. Redact’s default renderer completes a rendering pass synchronously. If a pass takes a long time, it can hold up the browser’s main thread.
 
 That doesn’t mean transition hooks disappear. Redact can still retain previous results while new results suspend. Keeping old content visible while waiting for data and interrupting CPU work during rendering are different capabilities.
@@ -241,11 +245,11 @@ For an app with expensive interactive updates, I’d want to measure responsiven
 
 [Show slide: redact-compatibility]
 
-You might also ask: why consider this if Preact already exists?
+Why consider Redact when Preact already exists? One reason is broader support for React 19 APIs.
 
-TanStack publishes compatibility fixtures for frameworks, including Start. In the tested Start setups, Redact passed the hydration and interaction checks, while the standard Preact integration didn’t.
+As checked on November 25, Preact compat 11.1.0 doesn't provide useActionState, useOptimistic, or useFormStatus. Redact implements those APIs, including pending form state and optimistic updates. That doesn't mean Preact can't run any React 19 app; the distinction is which APIs and behaviors the app needs.
 
-Those are versioned tests of specific setups. They give us something concrete to investigate, rather than a promise that every existing React app will work unchanged.
+Redact still has limitations. Rendering is synchronous, and ViewTransition animations are off by default and require an experimental opt-in. Check your own app's dependencies and interactions before switching. This presentation's React demos use a separate native React bundle.
 
 ## What changed in this deck?
 
@@ -305,11 +309,9 @@ The Babel version took 756 milliseconds. The Rust version took 573 milliseconds�
 
 That measures the production client and server builds, excluding prerendering and rebuilding the demo bundle.
 
-[Show slide: compiler-reading-results]
-
 With the compiler disabled, the median was 591 milliseconds. That’s close to the Rust result, and the ranges overlap. I wouldn’t read that as “turning the compiler on makes builds faster.” The useful result here is the reduction compared with the Babel path in this particular setup.
 
-This is also why I wanted both numbers in the talk. A much faster compiler transform can produce a more modest improvement in the full build, because the build does other work too.
+The transform benchmark covers only part of a build; the application build includes other work too.
 
 ## What does the compiler actually generate?
 
