@@ -55,16 +55,38 @@ try {
     await page.goto(`${base}#slide=compiler-devtools&lang=ja`)
     const checkMemoHighlight = async () => {
       const aligned = await page.locator('.compiler-devtools-crop').evaluate(frame => {
-        const image = frame.querySelector('img').getBoundingClientRect()
+        const source = frame.querySelector('img')
+        const image = source.getBoundingClientRect()
         const highlight = frame.querySelector('.compiler-devtools-highlight').getBoundingClientRect()
-        const scale = image.width / 2880
-        // SlideTitle's badge in the source screenshot, including the outline padding.
-        return Math.abs(highlight.x - (image.x + 617 * scale)) < 3
-          && Math.abs(highlight.y - (image.y + 1586 * scale)) < 3
-          && Math.abs(highlight.width - 92 * scale) < 3
-          && Math.abs(highlight.height - 38 * scale) < 3
+        const scale = image.width / source.naturalWidth
+        // Measure the blue pixels in SlideTitle's row independently of the CSS coordinates.
+        const canvas = document.createElement('canvas')
+        canvas.width = 120
+        canvas.height = 50
+        const context = canvas.getContext('2d')
+        context.drawImage(source, 600, 1560, 120, 50, 0, 0, 120, 50)
+        const { data } = context.getImageData(0, 0, 120, 50)
+        const xs = [], ys = []
+        for (let y = 0; y < 50; y++) for (let x = 0; x < 120; x++) {
+          const i = (y * 120 + x) * 4
+          if (data[i] < 70 && data[i + 1] > 75 && data[i + 1] < 180 && data[i + 2] > 180) {
+            xs.push(x + 600)
+            ys.push(y + 1560)
+          }
+        }
+        if (!xs.length) return false
+        const left = image.x + Math.min(...xs) * scale
+        const top = image.y + Math.min(...ys) * scale
+        const right = image.x + (Math.max(...xs) + 1) * scale
+        const bottom = image.y + (Math.max(...ys) + 1) * scale
+        // The outline must surround the badge with even padding on opposing sides.
+        const ok = highlight.x < left && highlight.y < top
+          && highlight.right > right && highlight.bottom > bottom
+          && Math.abs((left - highlight.x) - (highlight.right - right)) < 2 * scale
+          && Math.abs((top - highlight.y) - (highlight.bottom - bottom)) < 2 * scale
+        return { ok, scale, badge: { left, top, right, bottom }, highlight: highlight.toJSON() }
       })
-      assert(aligned, 'Memo highlight must follow the SlideTitle badge when the crop resizes')
+      assert(aligned.ok, `Memo highlight must follow the SlideTitle badge when the crop resizes: ${JSON.stringify(aligned)}`)
     }
     for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(size)
@@ -75,6 +97,7 @@ try {
     await page.getByRole('button', { name: 'Fullscreen', exact: true }).click()
     await page.waitForFunction(() => document.fullscreenElement)
     await checkMemoHighlight()
+    await page.screenshot({ path: 'output/playwright/compiler-devtools-fullscreen.png' })
     await page.keyboard.press('f')
     await page.waitForFunction(() => !document.fullscreenElement)
     await page.goto(`${base}#slide=why&lang=ja`)

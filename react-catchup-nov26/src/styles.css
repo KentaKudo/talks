@@ -271,10 +271,12 @@ iframe { border: 0; width: 100%; height: calc(100% - 3cqw); display: block; }
 }
 .compiler-devtools-highlight {
   position: absolute;
-  inset: 0 auto auto 38%;
-  margin-top: calc(199.5 / 610 * 100%);
-  width: 15%;
-  aspect-ratio: 91.5 / 37.5;
+  /* Badge bounds: (620, 1579)–(703, 1608), padded by 4 source pixels.
+     Subtract the image crop origin (385, 1386) before scaling with its width. */
+  inset: 0 auto auto calc(231 / 610 * 100%);
+  margin-top: calc(189 / 610 * 100%);
+  width: calc(91 / 610 * 100%);
+  aspect-ratio: 91 / 37;
   border: 3px solid var(--ink);
   border-radius: 6px;
   box-shadow: 0 0 0 3px var(--yellow);
