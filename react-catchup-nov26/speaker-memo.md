@@ -131,101 +131,95 @@ Keep this on a **private second screen, tablet, or printout**. Extend the projec
 
 - **`getSlides` → route loader → `useLoaderData()` → Deck.**
 - Point through the actual code in that order. Server-only import returns typed slide data.
-- This returns data, not an RSC. Next slide follows the boundary explicitly.
+- This returns data, not an RSC. Next → what if we returned renderable content?
 
-## 22 · Follow the data / データの流れ `start-data-flow`
-
-- **The return type carries through to the component.** / 戻り値の型がコンポーネントまでつながる。
-- Live server: Start handles request/serialization. Pages: loader result embedded at build time.
-- Slide/language changes reuse hydrated data; clicking next is not a server request.
-
-## 23 · What if the content were an RSC? / 本文を RSC に？ `start-rsc-example`
+## 22 · What if the content were an RSC? / 本文を RSC に？ `start-rsc-example`
 
 - **Return renderable content instead of slide data.** / データではなく、描画可能な本文を返す。
 - Hypothetical Markdown parser/highlighter stays server-side; interactive controls remain client-side.
 - Experimental opt-in; **not enabled here**; no measured bundle saving claimed. Next → change runtime instead of framework.
 
-## 24 · TanStack Redact / ランタイムを選ぶ `redact`
+## 23 · TanStack Redact / ランタイムを選ぶ `redact`
 
 - **Smaller browser runtime, familiar React APIs, synchronous rendering.** / API はなじみのまま、同期描画へ。
 - Announced October 26. Preact is a useful analogy, not an identical compatibility guarantee.
 
-## 25 · Same components, different runtime / 同じコード、別の実行基盤 `redact-tradeoffs`
+## 24 · Same components, different runtime / 同じコード、別の実行基盤 `redact-tradeoffs`
 
 - **Plugin changes runtime; React imports stay.** / 設定で切り替え、import はそのまま。
 - This deck uses Redact. The two demos use native React in separate iframes.
 - API compatibility ≠ identical behavior; default Redact ViewTransition doesn't animate. Next → React 19 API compatibility.
 
-## 26 · React 19: Preact vs Redact / React 19 対応の違い `redact-compatibility`
+## 25 · React 19: Preact vs Redact / React 19 対応の違い `redact-compatibility`
 
 - **Why Redact when Preact exists? Broader React 19 API support.** / Preact があるのに？ React 19 の API 対応が違う。
 - As checked November 25, 2026: Preact compat 11.1.0 lacks `useActionState`, `useOptimistic`, and `useFormStatus`; Redact implements them, including pending form state and optimistic updates.
 - Say “Preact is missing these APIs,” not “Preact cannot run any React 19 app.” It supports common React APIs and some React 19 APIs.
 - Redact still has limits: synchronous rendering; experimental opt-in ViewTransition animations. Check your app's dependencies and interactions. Next → scheduling tradeoff.
 
-## 27 · Bundle size vs responsiveness / バンドルサイズと応答性 `redact-scheduling`
+## 26 · Bundle size vs responsiveness / バンドルサイズと応答性 `redact-scheduling`
 
 - **A smaller bundle trades off against responsiveness supported by concurrent rendering.** / 小さなバンドルと、並行レンダリングによる応答性のトレードオフ。
 - Redact: smaller runtime, synchronous rendering; a long rendering pass can delay input. React: concurrent rendering can pause non-urgent work to prioritize typing during a heavy update.
 - This deck has small updates. Measure downloaded JS and responsiveness under real interactions; React is not automatically faster for every workload.
 - If asked about Suspense: Redact can keep old results while waiting for data; that is separate from interrupting rendering work. Next → the measured bundle-size benefit.
 
-## 28 · Recorded deck: 40.5% less JS / 記録した JS サイズ `runtime-size`
+## 27 · Recorded deck: 40.5% less JS / 記録した JS サイズ `runtime-size`
 
 - **113.4 → 67.5 KiB gzip; about 40.5% less.** / デッキ全体のクライアント JS。
 - Same earlier deck, compiler on in both. **Recorded before content expansion**, not today's rebuilt totals.
 - Excludes CSS, fonts, HTML, common native demo bundle. Not standalone runtime size or a responsiveness measurement.
 
-## 29 · React Compiler / メモ化をコンパイラへ `compiler`
+## 28 · React Compiler / メモ化をコンパイラへ `compiler`
 
 - **Build-time memoization reuses calculations and JSX.** / ビルド時に再利用の仕組みを生成。
 - Less manual `useMemo` / `useCallback` / `React.memo`; still pure rendering and Rules of React.
 - 1.0 shipped October 2025; this year's focus is toolchain integration.
 
-## 30 · From React Forget to 1.0 / Compiler の歴史 `compiler-history` · OPTIONAL
+## 29 · From React Forget to 1.0 / Compiler の歴史 `compiler-history` · OPTIONAL
 
 - **2021 prototype → 2024 open source → April 2025 RC → October 2025 stable.**
 - Automatic memoization isn't new this year. Keep to one sentence if short on time.
 
-## 31 · Since 1.0: the tooling catches up / 1.0 以降の動き `compiler-two-clocks`
+## 30 · Since 1.0: the tooling catches up / 1.0 以降の動き `compiler-two-clocks`
 
 - **Rust port → native integrations → compiler-powered lint.** / Rust 化、ツール連携、lint への展開。
 - React team ported the compiler to Rust; Oxc and Turbopack integrate it through experimental paths.
 - Oxlint uses compiler validation to catch Rules of React violations.
 - Keep this a recap; setup and benchmark details belong on the next slides. Next → this deck's Vite integration.
 
-## 32 · A Rust path into Vite / Vite の Rust 連携 `oxc`
+## 31 · A Rust path into Vite / Vite の Rust 連携 `oxc`
 
 - **Install `oxc-transform-react`; opt in with `compiler: true`.**
 - React team's Rust port adapted by Oxc; Vite 8 + plugin-react 6.1+, **experimental**. This deck uses it.
 - **12–15× = preliminary transform benchmark, two samples vs Babel.** Not whole-app build speed. Next → app-level evidence.
 
-## 33 · Recorded builds: 24% less time / 記録したビルド時間 `compiler-build-time`
+## 32 · Recorded builds: 24% less time / 記録したビルド時間 `compiler-build-time`
 
 - **Babel 756 ms → Rust 573 ms: ~24% less time.**
 - Earlier deck, Apple M2, 9 alternating runs/config, medians. Client + server builds; exclude prerendering/demo rebuild.
 - Compiler off: 591 ms; ranges overlap with Rust. Enabling Compiler is not shown to speed builds. Recorded results, not a fresh benchmark of today's deck.
 - 12–15× measures only the transform; 24% includes the rest of the build. Next → inspect the generated code.
 
-## 34 · What changed in our build? / 出力の比較 `compiler-output`
+## 33 · What changed in our build? / 出力の比較 `compiler-output`
 
 - **Same title → reuse; changed title → create and cache.** / 同じなら再利用、変われば更新。
 - Off: heading created each call. On: compare input, store heading in `$[1]`.
 - We didn't handwrite the cache. Visible transformation, not measured user-facing speedup.
 
-## 35 · Spot the Memo badge / Memo バッジ `compiler-devtools`
+## 34 · Spot the Memo badge / Memo バッジ `compiler-devtools`
 
 - **DevTools confirms the component was compiled.** / コンパイルされたことを確認。
 - Point to blue Memo badge beside `SlideTitle`; screenshot is from native React inspection build.
 - Doesn't prove the app feels faster. Screenshot is enough; no live DevTools hunt.
 
-## 36 · Two paths in Next.js / Next.js の Compiler `next-compiler` · OPTIONAL
+## 35 · Two paths in Next.js / Next.js の Compiler `next-compiler` · OPTIONAL
 
 - **Standard: Babel + SWC file filter. Experimental: Rust inside Turbopack.**
 - Rust path available since 16.3; 16.4 conformance work continues.
 - Build improvements and browser interaction performance still need separate evaluation.
 
-## 37 · Caught up. For now / ひとまず追いついた `takeaways`
+## 36 · Caught up. For now / ひとまず追いついた `takeaways`
 
 - **React APIs; Next.js caching; stable Start; Redact tradeoffs; Compiler tooling.**
 - Invite one concrete next step: try an API, follow the data in this repo, or inspect a build.

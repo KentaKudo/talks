@@ -1,6 +1,6 @@
 # Intro
 
-For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 37 slides and includes demo actions and optional cuts.
+For freestyle delivery, use [speaker-memo.md](speaker-memo.md). This full draft remains a rehearsal/reference script; the memo follows all 36 slides and includes demo actions and optional cuts.
 
 <!-- Complete rehearsal draft, updated 2026-11-24. Bracketed lines are stage directions, not spoken text. Sources and measurement qualifications are in transcript-fact-check.md. -->
 
@@ -188,16 +188,6 @@ So using a full-stack framework doesn’t mean this presentation needs a running
 At the top, `getSlides` uses `createServerFn`. Its handler imports and returns the slide definitions.
 
 The route’s loader calls that function, and the component reads the result with `Route.useLoaderData()`.
-
-[Show slide: start-data-flow]
-
-Follow that path: server function, loader, component. The return type carries through, so the component knows the shape of the slide data.
-
-In an application with a live server, the same API lets a browser call server-only logic. Start handles the request and serialization across that boundary.
-
-For this static deck, the initial result is embedded during prerendering. Once it loads, changing slides or switching languages uses the data already in the browser. Clicking “next” doesn’t call the server again.
-
-That’s a small example, but I think it makes the model easier to understand: choose where the data comes from, then let the route deliver it to the component.
 
 ## What about Server Components?
 

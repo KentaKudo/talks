@@ -265,17 +265,6 @@ export const Route = createFileRoute('/')({
     takeaway: copy('The loader fetches the slides. The component reads them with Route.useLoaderData().', 'loader がスライドを取得し、コンポーネントは Route.useLoaderData() で読み取る。'),
   },
   {
-    id: 'start-data-flow', section: '03 / TANSTACK START · FOLLOW THE DATA', layout: 'flow',
-    title: copy('Server function → loader → component.', 'Server Function → loader → コンポーネント。'),
-    items: [
-      { title: copy('getSlides()', 'getSlides()'), text: copy('The server-only handler returns typed slide definitions.', 'サーバー専用の handler が、型付きのスライド定義を返す。') },
-      { title: copy('Route loader', 'Route loader'), text: copy('Calls getSlides(). Its return type carries through to the route.', 'getSlides() を呼ぶ。戻り値の型がルートまでつながる。') },
-      { title: copy('Deck', 'Deck'), text: copy('Reads useLoaderData(). Navigation reuses the hydrated data.', 'useLoaderData() で取得。ページ送りでは読み込み済みのデータを再利用。') },
-    ],
-    takeaway: copy('Pages build: load once during prerendering. Slide changes stay in the browser.', 'Pages ビルドではプリレンダー時に取得。スライド切り替えはブラウザ内で完結。'),
-    source: { label: 'TanStack Start · Server Functions', url: 'https://tanstack.com/start/latest/docs/framework/react/guide/server-functions' },
-  },
-  {
     id: 'start-rsc-example', section: '03 / TANSTACK START · REACT SERVER COMPONENTS',
     title: copy('What if the slide content were an RSC?', 'スライド本文を RSC にすると？'),
     filename: 'routes/index.tsx · illustrative · experimental RSC opt-in',
