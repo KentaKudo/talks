@@ -1,6 +1,6 @@
 # Meanwhile, in React.
 
-A bilingual, 37-slide React catch-up, expanded from the original 20-minute talk. Japanese is the default projected language; English is available from the toolbar. For freestyle delivery, use the [per-slide speaker memo](speaker-memo.md) and [session preparation guide](session-prep.md). The memo has short cues, demo steps, optional cuts, and Japanese anchors; keep it on a private display or printout and scroll manually alongside the deck.
+A bilingual, 36-slide React catch-up, expanded from the original 20-minute talk. Japanese is the default projected language; English is available from the toolbar. For freestyle delivery, use the [per-slide speaker memo](speaker-memo.md) and [session preparation guide](session-prep.md). The memo has short cues, demo steps, optional cuts, and Japanese anchors; keep it on a private display or printout and scroll manually alongside the deck.
 
 The completed English rehearsal script remains in `transcript.md`, with sources in `transcript-fact-check.md`. The expanded script is about 2,900 spoken words; allow roughly 22–24 minutes with demos and pauses, or trim it after rehearsal for a 20-minute slot. Both projected languages include key explanations and caveats so readers can follow without hearing every spoken point.
 
